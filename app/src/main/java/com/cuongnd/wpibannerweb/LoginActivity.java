@@ -5,15 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +27,8 @@ public class LoginActivity extends Activity {
      */
     private UserLoginTask mAuthTask = null;
 
+    private ConnectionManager connectionManager;
+
     // UI references.
     private EditText mUsernameView;
     private EditText mPasswordView;
@@ -40,7 +40,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUsernameView = (EditText) findViewById(R.id.email);
+        mUsernameView = (EditText) findViewById(R.id.username);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -65,6 +65,7 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        connectionManager = ConnectionManager.getInstance();
     }
 
     /**
@@ -172,27 +173,24 @@ public class LoginActivity extends Activity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
+            mUsername = email;
             mPassword = password;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+            connectionManager.setUsernameAndPin(mUsername, mPassword);
+            if (connectionManager.logIn()) {
+                SessionManager sm = SessionManager.getInstance(getApplicationContext());
+                sm.createSession(mUsername, mPassword);
+                return true;
             }
-
-            // TODO: register the new account here.
-            return true;
+            else
+                return false;
         }
 
         @Override
@@ -203,9 +201,12 @@ public class LoginActivity extends Activity {
             if (success) {
                 Intent intent = new Intent(getApplicationContext(),
                         DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                finish();
+
             } else {
+                // TODO: check for reason
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

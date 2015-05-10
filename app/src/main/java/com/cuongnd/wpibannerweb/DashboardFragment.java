@@ -1,6 +1,8 @@
 package com.cuongnd.wpibannerweb;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,10 +19,10 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mConn = ConnectionManager.getInstance(getActivity().getApplicationContext());
-        if (!mConn.isActivated()) {
 
-        }
+        SessionManager sm = SessionManager.getInstance(getActivity().getApplicationContext());
+        sm.checkStatus();
+
     }
 
     @Override

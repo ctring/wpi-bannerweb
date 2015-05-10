@@ -1,8 +1,6 @@
 package com.cuongnd.wpibannerweb;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,6 +20,16 @@ import java.util.Scanner;
  * Created by Cuong Nguyen on 5/8/2015.
  */
 public class ConnectionManager {
+    private static final String TAG = "ConnectionManager";
+
+    private static ConnectionManager connectionManager;
+
+    public static ConnectionManager getInstance() {
+        if (connectionManager == null) {
+            connectionManager = new ConnectionManager();
+        }
+        return connectionManager;
+    }
 
     private static final String HOME = "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_WWWLogin";
     private static final String LOGIN_PATH = "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_ValLogin";
@@ -32,21 +40,10 @@ public class ConnectionManager {
 
     private String mUsername;
     private String mPin;
-    private Context mContext;
-
-    private static ConnectionManager connectionManager;
 
     HashMap<String, String> mCookies;
 
-    public static ConnectionManager getInstance(Context context) {
-        if (connectionManager == null) {
-            connectionManager = new ConnectionManager(context);
-        }
-        return connectionManager;
-    }
-
-    private ConnectionManager(Context context) {
-        mContext = context;
+    private ConnectionManager() {
 
         // Set cookie manager VM-wide. This will not be effective so there is need of
         // manually managing cookie session later on.
@@ -55,34 +52,21 @@ public class ConnectionManager {
 
         mCookies = new HashMap<String, String>();
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mUsername = pref.getString(PARAM_SID, null);
-        mPin = pref.getString(PARAM_PIN, null);
+    }
+
+    public void setUsernameAndPin(String username, String pin) {
+        mUsername = username;
+        mPin = pin;
     }
 
     /**
-     * Determine if BannerWeb is activated.
-     * @return True if activated, false otherwise.
-     */
-    public boolean isActivated() {
-        return mUsername != null;
-    }
-
-    /**
-     * Log into the BannerWeb with stored username and password.
-     * @return True of log in succesfully, false otherwise.
-     */
-    public boolean LogIn() {
-        return isActivated() && LogIn(mUsername, mPin);
-    }
-
-    /**
-     * Log into the BannerWeb with specified username and password, then save the cookie session
-     * @param username WPI BannerWeb username
-     * @param pin WPI BannerWeb password
+     * Log into the BannerWeb with stored username and password, then save the cookie session
      * @return True of login successfully, false otherwise.
      */
-    public boolean LogIn(String username, String pin) {
+    public boolean logIn() {
+        if (mUsername == null || mPin == null) {
+            throw new RuntimeException("Username and password is null.");
+        }
         try {
             // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
             // assume that cookies are not enabled
@@ -97,7 +81,7 @@ public class ConnectionManager {
 
             BufferedWriter wr = new BufferedWriter(
                     new OutputStreamWriter(conn.getOutputStream(), CHARSET));
-            wr.write(String.format("%s=%s&%s=%s", PARAM_SID, username, PARAM_PIN, pin));
+            wr.write(String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
             wr.close();
 
             int response = conn.getResponseCode();
@@ -106,11 +90,13 @@ public class ConnectionManager {
                 // Log in successfully
                 if (data.contains("refresh")) {
                     updateCookies(conn);
-                    saveLoginInfo(username, pin);
                     return true;
                 }
+                else {
+                    Log.d(TAG, "Log in failed.");
+                }
             } else {
-                // TODO: Should determine why logging in failed.
+                Log.d(TAG, "Connection failed. Response code: " + response);
                 return false;
             }
 
@@ -147,13 +133,6 @@ public class ConnectionManager {
         }
     }
 
-    private void saveLoginInfo(String username, String pin) {
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .edit()
-                .putString(PARAM_SID, username)
-                .putString(PARAM_PIN, pin)
-                .commit();
-    }
 
     /**
      * Get a page from a specifed url.
