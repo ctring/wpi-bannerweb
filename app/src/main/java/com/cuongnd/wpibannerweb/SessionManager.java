@@ -51,8 +51,13 @@ public class SessionManager {
     }
 
     public void deactivate() {
-        pref.edit().clear().apply();
-        connectionManager.logOut();
+        new Thread() {
+            @Override
+            public void run() {
+                pref.edit().clear().apply() ;
+                connectionManager.logOut();
+            }
+        }.start();
         startLoginActivity();
     }
 
