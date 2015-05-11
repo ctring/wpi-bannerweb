@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
@@ -10,6 +11,7 @@ public class DashboardActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return new DashboardFragment();
+        Intent i = getIntent();
+        return DashboardFragment.newInstance(i.getStringExtra(DashboardFragment.EXTRA_USERNAME));
     }
 }

@@ -19,6 +19,8 @@ import android.widget.TextView;
  */
 public class DashboardFragment extends Fragment {
 
+    public static final String EXTRA_USERNAME = "username";
+
     private ConnectionManager connectionManager;
 
     private ImageView imageProfile;
@@ -31,6 +33,15 @@ public class DashboardFragment extends Fragment {
     private TableLayout tableInfo;
 
     private TextView textTest;
+
+    public static DashboardFragment newInstance(String username) {
+        Bundle args = new Bundle();
+        args.putString(EXTRA_USERNAME, username);
+
+        DashboardFragment fragment = new DashboardFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +58,10 @@ public class DashboardFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         imageProfile = (ImageView) v.findViewById(R.id.image_profile);
+
         textName = (TextView) v.findViewById(R.id.text_name);
+        textName.setText(getArguments().getString(EXTRA_USERNAME));
+
         textWpiId = (TextView) v.findViewById(R.id.text_wpiid);
 
         textTest = (TextView) v.findViewById(R.id.text_test);

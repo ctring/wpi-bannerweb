@@ -3,9 +3,7 @@ package com.cuongnd.wpibannerweb;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInstaller;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * Created by Cuong Nguyen on 5/10/2015.
@@ -24,29 +22,29 @@ public class SessionManager {
     private static final String PREF_PIN = "password";
 
     private Context mContext;
-    private SharedPreferences pref;
-    private ConnectionManager connectionManager;
+    private SharedPreferences mPref;
+    private ConnectionManager mConnectionManager;
 
     private SessionManager(Context context) {
         mContext = context;
-        pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        connectionManager = ConnectionManager.getInstance();
+        mPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mConnectionManager = ConnectionManager.getInstance();
     }
 
     public void createSession(String username, String pin) {
-        pref.edit()
+        mPref.edit()
             .putString(PREF_SID, username)
             .putString(PREF_PIN, pin)
             .apply();
     }
 
     public void checkStatus() {
-        String username = pref.getString(PREF_SID, null);
-        String password = pref.getString(PREF_PIN, null);
+        String username = mPref.getString(PREF_SID, null);
+        String password = mPref.getString(PREF_PIN, null);
         if (username == null || password == null) {
             startLoginActivity();
         } else {
-            connectionManager.setUsernameAndPin(username, password);
+            mConnectionManager.setUsernameAndPin(username, password);
         }
     }
 
@@ -54,8 +52,8 @@ public class SessionManager {
         new Thread() {
             @Override
             public void run() {
-                pref.edit().clear().apply() ;
-                connectionManager.logOut();
+                mPref.edit().clear().apply();
+                mConnectionManager.logOut();
             }
         }.start();
         startLoginActivity();

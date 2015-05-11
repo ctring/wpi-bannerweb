@@ -33,6 +33,8 @@ public class ConnectionManager {
         return connectionManager;
     }
 
+    public static final String BASE_URI = "https://bannerweb.wpi.edu/pls/prod/";
+
     private static final String HOME =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_WWWLogin";
     private static final String MAIN_MENU =

@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -196,13 +195,12 @@ public class LoginActivity extends Activity {
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
-
             if (success) {
                 Intent intent = new Intent(getApplicationContext(),
                         DashboardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(DashboardFragment.EXTRA_USERNAME, mUsername);
                 startActivity(intent);
 
             } else {
@@ -210,6 +208,7 @@ public class LoginActivity extends Activity {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
+            showProgress(false);
         }
 
         @Override
