@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:layout_height="match_parent">
+             android:layout_height="match_parent"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin" >
 
     <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:scrollbars="none">
 
         <LinearLayout
             android:orientation="vertical"
@@ -46,7 +51,8 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="200dp"
+                android:id="@+id/table_info">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -58,8 +64,6 @@
                         android:layout_height="match_parent"
                         android:id="@+id/button_balance"
                         android:layout_weight="1"
-                        android:layout_marginLeft="24dp"
-                        android:layout_marginStart="24dp"
                         android:layout_marginRight="12dp"
                         android:layout_marginEnd="12dp"
                         android:layout_marginBottom="12dp"/>
@@ -69,10 +73,8 @@
                         android:layout_height="match_parent"
                         android:id="@+id/button_mailbox"
                         android:layout_weight="1"
-                        android:layout_marginRight="24dp"
                         android:layout_marginStart="24dp"
                         android:layout_marginLeft="12dp"
-                        android:layout_marginEnd="12dp"
                         android:layout_marginBottom="12dp"/>
                 </TableRow>
 
@@ -86,8 +88,6 @@
                         android:layout_height="match_parent"
                         android:id="@+id/button_advisor"
                         android:layout_weight="1"
-                        android:layout_marginLeft="24dp"
-                        android:layout_marginStart="24dp"
                         android:layout_marginRight="12dp"
                         android:layout_marginEnd="12dp"
                         android:layout_marginTop="12dp"/>
@@ -99,11 +99,15 @@
                         android:layout_weight="1"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
-                        android:layout_marginRight="24dp"
-                        android:layout_marginEnd="24dp"
                         android:layout_marginTop="12dp"/>
                 </TableRow>
             </TableLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Test View"
+                android:id="@+id/text_test"/>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

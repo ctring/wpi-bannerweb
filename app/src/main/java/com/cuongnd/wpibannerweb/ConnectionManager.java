@@ -52,13 +52,11 @@ public class ConnectionManager {
 
     HashMap<String, String> mCookies;
 
-    private CookieManager cookieManager;
-
     private ConnectionManager() {
 
         // Set cookie manager VM-wide. This will not be effective so there is need of
         // manually managing cookie session later on.
-        cookieManager = new CookieManager();
+        CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
 
         mCookies = new HashMap<>();
@@ -82,18 +80,9 @@ public class ConnectionManager {
             // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
             // assume that cookies are not enabled
             HttpURLConnection init = (HttpURLConnection) new URL(HOME).openConnection();
-            String test = inputStreamToString(init.getInputStream());
-
-            CookieStore cookieJar = cookieManager.getCookieStore();
-            List<HttpCookie> cookies = cookieJar.getCookies();
-            for (HttpCookie cookie : cookies) {
-                Log.d(TAG, cookie.toString());
-            }
-
-            updateCookies(init);
+            init.connect();
 
             HttpURLConnection conn = (HttpURLConnection) new URL(LOGIN_PATH).openConnection();
-            setCookies(conn);
 
             conn.setDoOutput(true); // Request method is set to "POST" automatically
             conn.setRequestProperty(PARAM_REFERRER, HOME);
@@ -105,10 +94,11 @@ public class ConnectionManager {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                String data = inputStreamToString(conn.getInputStream());
+                InputStream is = conn.getInputStream();
+                String data = inputStreamToString(is);
+                is.close();
                 // Log in successfully
                 if (data.contains("refresh")) {
-                    updateCookies(conn);
                     return true;
                 }
                 else {
@@ -133,7 +123,6 @@ public class ConnectionManager {
     public void logOut() {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT_PATH).openConnection();
-            setCookies(conn);
 
             conn.setRequestProperty(PARAM_REFERRER, MAIN_MENU);
 
@@ -150,34 +139,6 @@ public class ConnectionManager {
         }
     }
 
-    /**
-     * Update the cookies from a connection.
-     * @param conn Connection holding the cookies to be updated.
-     */
-    private void updateCookies(HttpURLConnection conn) {
-        List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
-        for (String cookie : cookies) {
-            String first = cookie.split(";", 2)[0];
-            String[] pair = first.split("=", 2);
-            mCookies.put(pair[0], pair[1]);
-        }
-    }
-
-    /**
-     * Set the current cookies to a connection.
-     * @param conn Connection to be set cookies.
-     */
-    private void setCookies(HttpURLConnection conn) {
-        String cookies = "";
-        Iterator<Map.Entry<String, String>> it = mCookies.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> pair = it.next();
-            cookies += pair.getKey() + "=" + pair.getValue();
-            if (it.hasNext())
-                cookies += ";";
-        }
-        conn.addRequestProperty("Cookie", cookies);
-    }
 
 
     /**
@@ -198,22 +159,28 @@ public class ConnectionManager {
     public String getPage(String url, String referrer) {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            setCookies(conn);
             if (referrer != null) {
                 conn.setRequestProperty(PARAM_REFERRER, referrer);
             }
 
-            String data = inputStreamToString(conn.getInputStream());
+            InputStream is = conn.getInputStream();
+            String data = inputStreamToString(is);
+            is.close();
             int responseCode = conn.getResponseCode();
             if (responseCode != 200 || isUserLoginPage(data)) {
                 if (logIn()) {
-                    data = inputStreamToString(conn.getInputStream());
+                    conn = (HttpURLConnection) new URL(url).openConnection();
+                    if (referrer != null) {
+                        conn.setRequestProperty(PARAM_REFERRER, referrer);
+                    }
+                    is = conn.getInputStream();
+                    data = inputStreamToString(is);
+                    is.close();
                 }
                 else {
                     return null;
                 }
             }
-            updateCookies(conn);
             return data;
         }
         catch (IOException e) {
@@ -242,3 +209,33 @@ public class ConnectionManager {
     }
 
 }
+
+/**
+ * I don't need these two methods anymore but I still keep it just in case
+ * Update the cookies from a connection.
+ * @param conn Connection holding the cookies to be updated.
+ */
+    /*private void updateCookies(HttpURLConnection conn) {
+        List<String> cookies = conn.getHeaderFields().get("Set-Cookie");
+        for (String cookie : cookies) {
+            String first = cookie.split(";", 2)[0];
+            String[] pair = first.split("=", 2);
+            mCookies.put(pair[0], pair[1]);
+        }
+    }
+
+     *
+     * Set the current cookies to a connection.
+     * @param conn Connection to be set cookies.
+     *
+    private void setCookies(HttpURLConnection conn) {
+        String cookies = "";
+        Iterator<Map.Entry<String, String>> it = mCookies.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> pair = it.next();
+            cookies += pair.getKey() + "=" + pair.getValue();
+            if (it.hasNext())
+                cookies += ";";
+        }
+        conn.addRequestProperty("Cookie", cookies);
+    }*/
