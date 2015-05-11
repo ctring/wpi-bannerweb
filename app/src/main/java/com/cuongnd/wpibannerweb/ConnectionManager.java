@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,8 +33,15 @@ public class ConnectionManager {
         return connectionManager;
     }
 
-    private static final String HOME = "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_WWWLogin";
-    private static final String LOGIN_PATH = "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_ValLogin";
+    private static final String HOME =
+            "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_WWWLogin";
+    private static final String MAIN_MENU =
+            "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu";
+    private static final String LOGIN_PATH =
+            "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_ValLogin";
+    private static final String LOGOUT_PATH =
+            "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_Logout";
+
     private final String PARAM_SID = "sid";
     private final String PARAM_PIN = "PIN";
     private final String CHARSET = "UTF-8";
@@ -43,14 +52,16 @@ public class ConnectionManager {
 
     HashMap<String, String> mCookies;
 
+    private CookieManager cookieManager;
+
     private ConnectionManager() {
 
         // Set cookie manager VM-wide. This will not be effective so there is need of
         // manually managing cookie session later on.
-        CookieManager cookieManager = new CookieManager();
+        cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
 
-        mCookies = new HashMap<String, String>();
+        mCookies = new HashMap<>();
 
     }
 
@@ -71,6 +82,14 @@ public class ConnectionManager {
             // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
             // assume that cookies are not enabled
             HttpURLConnection init = (HttpURLConnection) new URL(HOME).openConnection();
+            String test = inputStreamToString(init.getInputStream());
+
+            CookieStore cookieJar = cookieManager.getCookieStore();
+            List<HttpCookie> cookies = cookieJar.getCookies();
+            for (HttpCookie cookie : cookies) {
+                Log.d(TAG, cookie.toString());
+            }
+
             updateCookies(init);
 
             HttpURLConnection conn = (HttpURLConnection) new URL(LOGIN_PATH).openConnection();
@@ -84,8 +103,8 @@ public class ConnectionManager {
             wr.write(String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
             wr.close();
 
-            int response = conn.getResponseCode();
-            if (response == 200) {
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
                 String data = inputStreamToString(conn.getInputStream());
                 // Log in successfully
                 if (data.contains("refresh")) {
@@ -96,7 +115,7 @@ public class ConnectionManager {
                     Log.d(TAG, "Log in failed.");
                 }
             } else {
-                Log.d(TAG, "Connection failed. Response code: " + response);
+                Log.d(TAG, "Connection failed. Response code: " + responseCode);
                 return false;
             }
 
@@ -106,6 +125,29 @@ public class ConnectionManager {
         }
 
         return false;
+    }
+
+    /**
+     * Log out of the BannerWeb
+     */
+    public void logOut() {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT_PATH).openConnection();
+            setCookies(conn);
+
+            conn.setRequestProperty(PARAM_REFERRER, MAIN_MENU);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                Log.d(TAG, "Log Out Successfully.");
+            } else {
+                Log.d(TAG, "Log Out failed. Response code: " + responseCode);
+            }
+
+        } catch (IOException e) {
+            // TODO: Handle exception carefully
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -126,11 +168,15 @@ public class ConnectionManager {
      * @param conn Connection to be set cookies.
      */
     private void setCookies(HttpURLConnection conn) {
-        Iterator it = mCookies.entrySet().iterator();
+        String cookies = "";
+        Iterator<Map.Entry<String, String>> it = mCookies.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-            conn.setRequestProperty("Cookie", pair.getKey() + "=" + pair.getValue());
+            Map.Entry<String, String> pair = it.next();
+            cookies += pair.getKey() + "=" + pair.getValue();
+            if (it.hasNext())
+                cookies += ";";
         }
+        conn.addRequestProperty("Cookie", cookies);
     }
 
 
@@ -158,6 +204,16 @@ public class ConnectionManager {
             }
 
             String data = inputStreamToString(conn.getInputStream());
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200 || isUserLoginPage(data)) {
+                if (logIn()) {
+                    data = inputStreamToString(conn.getInputStream());
+                }
+                else {
+                    return null;
+                }
+            }
+            updateCookies(conn);
             return data;
         }
         catch (IOException e) {
@@ -176,5 +232,13 @@ public class ConnectionManager {
         return str;
     }
 
+    /**
+     * Check if a page is the home
+     * @param data
+     * @return
+     */
+    private boolean isUserLoginPage(String data) {
+        return (data.contains("<TITLE>User Login</TITLE>")); // User Login page signature
+    }
 
 }
