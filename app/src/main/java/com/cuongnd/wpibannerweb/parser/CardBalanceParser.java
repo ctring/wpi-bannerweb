@@ -6,10 +6,11 @@ import android.view.View;
  * Created by Cuong Nguyen on 5/11/2015.
  */
 public class CardBalanceParser extends PageParser {
+    public static final String PAGE_NAME = "CardBalanceParser";
 
     @Override
     public String getName() {
-        return "CardBalanceParser";
+        return PAGE_NAME;
     }
 
     @Override
@@ -18,7 +19,17 @@ public class CardBalanceParser extends PageParser {
     }
 
     @Override
-    public View getView() {
-        return null;
+    public int getLayoutResId() {
+        return 0;
+    }
+
+    @Override
+    public String getUri() {
+        return "https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display";
+    }
+
+    @Override
+    public void updateView(View v) {
+
     }
 }

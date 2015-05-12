@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,12 +15,18 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.parser.AdvisorParser;
+import com.cuongnd.wpibannerweb.parser.CardBalanceParser;
+import com.cuongnd.wpibannerweb.parser.GradeParser;
+import com.cuongnd.wpibannerweb.parser.MailboxParser;
+
 /**
  * Created by Cuong Nguyen on 5/10/2015.
  */
 public class DashboardFragment extends Fragment {
 
     public static final String EXTRA_USERNAME = "username";
+    private static final String DIALOG_CONTENT = "content";
 
     private ConnectionManager connectionManager;
 
@@ -64,19 +71,37 @@ public class DashboardFragment extends Fragment {
 
         textWpiId = (TextView) v.findViewById(R.id.text_wpiid);
 
-        textTest = (TextView) v.findViewById(R.id.text_test);
-
         buttonBalance = (ImageButton) v.findViewById(R.id.button_balance);
         buttonBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetPageTask getTask = new GetPageTask();
-                getTask.execute("https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display");
+                showContentDialog(CardBalanceParser.PAGE_NAME);
             }
         });
+
         buttonMailbox = (ImageButton) v.findViewById(R.id.button_mailbox);
+        buttonMailbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContentDialog(MailboxParser.PAGE_NAME);
+            }
+        });
+
         buttonAdvisor = (ImageButton) v.findViewById(R.id.button_advisor);
+        buttonAdvisor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContentDialog(AdvisorParser.PAGE_NAME);
+            }
+        });
+
         buttonGrade = (ImageButton) v.findViewById(R.id.button_grade);
+        buttonGrade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContentDialog(GradeParser.PAGE_NAME);
+            }
+        });
 
         // TODO: make width equal height
         tableInfo = (TableLayout) v.findViewById(R.id.table_info);
@@ -84,24 +109,10 @@ public class DashboardFragment extends Fragment {
         return v;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class GetPageTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            return connectionManager.getPage(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(final String data) {
-            textTest.setText(data);
-        }
-
-        @Override
-        protected void onCancelled() {
-        }
+    private void showContentDialog(String pageName) {
+        FragmentManager fm = getActivity().getFragmentManager();
+        ContentFragment fragment = ContentFragment.newInstance(pageName);
+        fragment.show(fm, DIALOG_CONTENT);
     }
+
 }

@@ -1,9 +1,12 @@
 package com.cuongnd.wpibannerweb.parser;
 
 import android.view.View;
+import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
+import com.cuongnd.wpibannerweb.R;
 
+import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,11 +16,15 @@ import org.jsoup.nodes.Element;
  */
 public class AdvisorParser extends PageParser {
 
+    public static final String PAGE_NAME = "AdvisorParser";
+
     public static final String JSON_COUNT_ADVISOR = "count";
     public static final String JSON_ADVISOR = "advisor";
+    public static final String JSON_EMAIL = "email";
     public static final String JSON_DEPARTMENT = "department";
     public static final String JSON_LOCATION = "location";
     public static final String JSON_ADVISOR_2 = "advisor2";
+    public static final String JSON_EMAIL2 = "email2";
     public static final String JSON_DEPARTMENT_2 = "department2";
     public static final String JSON_LOCATION_2 = "location2";
 
@@ -28,12 +35,11 @@ public class AdvisorParser extends PageParser {
 
     @Override
     public String getName() {
-        return "AdvisorParser";
+        return PAGE_NAME;
     }
 
-    @Override
-    public View getView() {
-        return null;
+    public String getUri() {
+        return "https://bannerweb.wpi.edu/pls/prod/hwwksadv.P_Summary";
     }
 
     @Override
@@ -50,6 +56,36 @@ public class AdvisorParser extends PageParser {
         Element locationE = body.getElementsContainingOwnText(JSOUP_LOCATION).first();
         String location = locationE.nextSibling().toString().trim();
 
+        try {
+            mData.put(JSON_ADVISOR, name)
+                    .put(JSON_EMAIL, email)
+                    .put(JSON_DEPARTMENT, department)
+                    .put(JSON_LOCATION, location);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         return true;
+    }
+
+    @Override
+    public int getLayoutResId() {
+        return R.layout.fragment_advisor;
+    }
+
+    @Override
+    public void updateView(View v) {
+        try {
+            TextView text = (TextView) v.findViewById(R.id.text_advisor);
+            text.setText(mData.getString(JSON_ADVISOR));
+            text = (TextView) v.findViewById(R.id.text_email);
+            text.setText(mData.getString(JSON_EMAIL));
+            text = (TextView) v.findViewById(R.id.text_department);
+            text.setText(mData.getString(JSON_DEPARTMENT));
+            text = (TextView) v.findViewById(R.id.text_office);
+            text.setText(mData.getString(JSON_LOCATION));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

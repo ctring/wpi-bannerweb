@@ -14,4 +14,13 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+
+    <!-- Strings in Advisor Page -->
+    <string name="advisor">Primary Advisor</string>
+    <string name="advisor2">Advisor for 2nd Major</string>
+    <string name="email">Email</string>
+    <string name="department">Advisor Department</string>
+    <string name="office">Office Location</string>
+
+
 </resources>

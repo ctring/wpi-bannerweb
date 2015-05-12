@@ -1,5 +1,6 @@
 package com.cuongnd.wpibannerweb;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -156,7 +157,7 @@ public class ConnectionManager {
      * Get a page from a specifed url that requires a referrer.
      * @param url Url to get page from.
      * @param referrer Referrer to the page.
-     * @return The HTML string of the page. Return null if error occurs
+     * @return The HTML string of the page. Return null if error occurs.
      */
     public String getPage(String url, String referrer) {
         try {
