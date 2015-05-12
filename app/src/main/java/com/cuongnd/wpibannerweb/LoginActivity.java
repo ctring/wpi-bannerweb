@@ -200,7 +200,6 @@ public class LoginActivity extends Activity {
                         DashboardActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(DashboardFragment.EXTRA_USERNAME, mUsername);
                 startActivity(intent);
 
             } else {

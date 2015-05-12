@@ -1,6 +1,9 @@
 package com.cuongnd.wpibannerweb.parser;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import org.json.JSONObject;
 
@@ -16,9 +19,9 @@ public abstract class PageParser {
 
     public abstract boolean parse(String html);
 
-    public abstract int getLayoutResId();
+    public abstract View getView(LayoutInflater inflater, ViewGroup container);
 
-    public abstract void updateView(View v);
+    public abstract void updateView(Context context, View v);
 
     public abstract String getName();
 

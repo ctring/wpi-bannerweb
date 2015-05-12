@@ -1,6 +1,9 @@
 package com.cuongnd.wpibannerweb.parser;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
 
@@ -40,18 +43,18 @@ public class ParserManager {
         return false;
     }
 
-    public int getLayoutResId(String name) {
+    public View getView(String name, LayoutInflater inflater, ViewGroup container) {
         PageParser page = getPageParserByName(name);
         if (page != null) {
-            return page.getLayoutResId();
+            return page.getView(inflater, container);
         }
-        return 0;
+        return null;
     }
 
-    public void updateView(String name, View view) {
+    public void updateView(String name, Context context, View view) {
         PageParser page = getPageParserByName(name);
         if (page != null) {
-            page.updateView(view);
+            page.updateView(context, view);
         }
     }
 

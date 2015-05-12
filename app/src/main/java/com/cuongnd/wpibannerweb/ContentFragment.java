@@ -35,7 +35,7 @@ public class ContentFragment extends DialogFragment {
         mPageName = getArguments().getString(EXTRA_PAGE_NAME);
         mParserManager = ParserManager.getInstance();
 
-        return inflater.inflate(mParserManager.getLayoutResId(mPageName), container, false);
+        return mParserManager.getView(mPageName, inflater, container);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ContentFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                mParserManager.updateView(mPageName, getView());
+                mParserManager.updateView(mPageName, getActivity(), getView().getRootView());
             }
         }
     }

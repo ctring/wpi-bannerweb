@@ -22,5 +22,9 @@
     <string name="department">Advisor Department</string>
     <string name="office">Office Location</string>
 
+    <!-- String in Card Balance Page -->
+    <string name="account">Account</string>
+    <string name="balance">Balance</string>
+    <string name="lastused">Date Last Used</string>
 
 </resources>

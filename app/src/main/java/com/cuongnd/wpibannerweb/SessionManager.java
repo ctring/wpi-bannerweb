@@ -65,4 +65,8 @@ public class SessionManager {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(i);
     }
+
+    public String getUserName() {
+        return mPref.getString(PREF_SID, null);
+    }
 }

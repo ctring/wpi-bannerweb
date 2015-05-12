@@ -67,7 +67,8 @@ public class DashboardFragment extends Fragment {
         imageProfile = (ImageView) v.findViewById(R.id.image_profile);
 
         textName = (TextView) v.findViewById(R.id.text_name);
-        textName.setText(getArguments().getString(EXTRA_USERNAME));
+        textName.setText(SessionManager.getInstance(getActivity().getApplicationContext())
+                .getUserName());
 
         textWpiId = (TextView) v.findViewById(R.id.text_wpiid);
 

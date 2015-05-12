@@ -1,6 +1,9 @@
 package com.cuongnd.wpibannerweb.parser;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.cuongnd.wpibannerweb.R;
 
@@ -21,8 +24,8 @@ public class GradeParser extends PageParser {
     }
 
     @Override
-    public int getLayoutResId() {
-        return 0;
+    public View getView(LayoutInflater inflater, ViewGroup container) {
+        return null;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class GradeParser extends PageParser {
     }
 
     @Override
-    public void updateView(View v) {
+    public void updateView(Context context, View v) {
 
     }
 }

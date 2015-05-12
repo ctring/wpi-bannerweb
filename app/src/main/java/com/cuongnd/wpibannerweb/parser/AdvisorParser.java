@@ -1,6 +1,9 @@
 package com.cuongnd.wpibannerweb.parser;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
@@ -65,16 +68,17 @@ public class AdvisorParser extends PageParser {
             e.printStackTrace();
         }
 
+        // TODO: when to return false?
         return true;
     }
 
     @Override
-    public int getLayoutResId() {
-        return R.layout.fragment_advisor;
+    public View getView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_advisor, container, false);
     }
-
+    
     @Override
-    public void updateView(View v) {
+    public void updateView(Context context, View v) {
         try {
             TextView text = (TextView) v.findViewById(R.id.text_advisor);
             text.setText(mData.getString(JSON_ADVISOR));
