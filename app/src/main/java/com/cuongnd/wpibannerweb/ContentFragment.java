@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cuongnd.wpibannerweb.parser.ParserManager;
+import com.cuongnd.wpibannerweb.simpleparser.ParserManager;
 
 /**
  * Created by Cuong Nguyen on 5/11/2015.

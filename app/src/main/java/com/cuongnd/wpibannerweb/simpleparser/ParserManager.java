@@ -1,14 +1,11 @@
-package com.cuongnd.wpibannerweb.parser;
+package com.cuongnd.wpibannerweb.simpleparser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cuongnd.wpibannerweb.ConnectionManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.cuongnd.wpibannerweb.helper.ConnectionManager;
 
 /**
  * Created by Cuong Nguyen on 5/11/2015.
@@ -27,8 +24,9 @@ public class ParserManager {
     private final PageParser[] mParsers;
 
     private ParserManager() {
-        mParsers = new PageParser[]{new AdvisorParser(), new CardBalanceParser(),
-                new GradeParser(), new MailboxParser()};
+        mParsers = new PageParser[]{new AdvisorParser(),
+                new CardBalanceParser(),
+                new MailboxParser()};
     }
 
     public boolean refreshPage(String name) {

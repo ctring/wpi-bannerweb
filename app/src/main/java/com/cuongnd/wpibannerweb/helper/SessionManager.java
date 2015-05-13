@@ -1,9 +1,11 @@
-package com.cuongnd.wpibannerweb;
+package com.cuongnd.wpibannerweb.helper;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.cuongnd.wpibannerweb.LoginActivity;
 
 /**
  * Created by Cuong Nguyen on 5/10/2015.

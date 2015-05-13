@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.parser;
+package com.cuongnd.wpibannerweb.simpleparser;
 
 import android.content.Context;
 import android.view.LayoutInflater;

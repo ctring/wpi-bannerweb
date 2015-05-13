@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.cuongnd.wpibannerweb.helper.SessionManager;
+
 public abstract class SingleFragmentActivity extends Activity {
     protected abstract Fragment createFragment();
 

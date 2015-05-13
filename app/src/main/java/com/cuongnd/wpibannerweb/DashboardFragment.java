@@ -2,12 +2,8 @@ package com.cuongnd.wpibannerweb;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -15,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.cuongnd.wpibannerweb.parser.AdvisorParser;
-import com.cuongnd.wpibannerweb.parser.CardBalanceParser;
-import com.cuongnd.wpibannerweb.parser.GradeParser;
-import com.cuongnd.wpibannerweb.parser.MailboxParser;
+import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import com.cuongnd.wpibannerweb.helper.SessionManager;
+import com.cuongnd.wpibannerweb.simpleparser.AdvisorParser;
+import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
+import com.cuongnd.wpibannerweb.simpleparser.MailboxParser;
 
 /**
  * Created by Cuong Nguyen on 5/10/2015.
@@ -100,7 +97,7 @@ public class DashboardFragment extends Fragment {
         buttonGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContentDialog(GradeParser.PAGE_NAME);
+
             }
         });
 

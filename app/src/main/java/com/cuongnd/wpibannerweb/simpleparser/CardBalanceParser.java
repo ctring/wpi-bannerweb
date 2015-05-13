@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.parser;
+package com.cuongnd.wpibannerweb.simpleparser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,7 +18,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

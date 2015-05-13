@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.parser;
+package com.cuongnd.wpibannerweb.simpleparser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.cuongnd.wpibannerweb.ConnectionManager;
+import com.cuongnd.wpibannerweb.helper.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
 
 import org.json.JSONException;

@@ -1,6 +1,5 @@
-package com.cuongnd.wpibannerweb;
+package com.cuongnd.wpibannerweb.helper;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -9,14 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
