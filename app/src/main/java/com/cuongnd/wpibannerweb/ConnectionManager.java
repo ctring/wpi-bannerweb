@@ -82,18 +82,11 @@ public class ConnectionManager {
         try {
             // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
             // assume that cookies are not enabled
-            HttpURLConnection init = (HttpURLConnection) new URL(HOME).openConnection();
+            HttpURLConnection init = makeConnection(HOME, null, null);
             init.connect();
 
-            HttpURLConnection conn = (HttpURLConnection) new URL(LOGIN_PATH).openConnection();
-
-            conn.setDoOutput(true); // Request method is set to "POST" automatically
-            conn.setRequestProperty(PARAM_REFERRER, HOME);
-
-            BufferedWriter wr = new BufferedWriter(
-                    new OutputStreamWriter(conn.getOutputStream(), CHARSET));
-            wr.write(String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
-            wr.close();
+            HttpURLConnection conn = makeConnection(LOGIN_PATH, HOME,
+                    String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
@@ -160,11 +153,20 @@ public class ConnectionManager {
      * @return The HTML string of the page. Return null if error occurs.
      */
     public String getPage(String url, String referrer) {
+        return getPage(url, referrer, null);
+    }
+
+    /**
+     * Get a page from a specifed url that requires a referrer and data.
+     *
+     * @param url      Url to get page from.
+     * @param referrer Referrer to the page.
+     * @param postData Data for the post method
+     * @return The HTML string of the page. Return null if error occurs.
+     */
+    public String getPage(String url, String referrer, String postData) {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            if (referrer != null) {
-                conn.setRequestProperty(PARAM_REFERRER, referrer);
-            }
+            HttpURLConnection conn = makeConnection(url, referrer, postData);
 
             InputStream is = conn.getInputStream();
             String data = inputStreamToString(is);
@@ -172,10 +174,7 @@ public class ConnectionManager {
             int responseCode = conn.getResponseCode();
             if (responseCode != 200 || isUserLoginPage(data)) {
                 if (logIn()) {
-                    conn = (HttpURLConnection) new URL(url).openConnection();
-                    if (referrer != null) {
-                        conn.setRequestProperty(PARAM_REFERRER, referrer);
-                    }
+                    conn = makeConnection(url, referrer, postData);
                     is = conn.getInputStream();
                     data = inputStreamToString(is);
                     is.close();
@@ -190,6 +189,21 @@ public class ConnectionManager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private HttpURLConnection makeConnection(String url, String referrer, String data) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        if (referrer != null) {
+            conn.setRequestProperty(PARAM_REFERRER, referrer);
+        }
+        if (data != null) {
+            conn.setDoOutput(true); // Request method is set to "POST" automatically
+            BufferedWriter wr = new BufferedWriter(
+                    new OutputStreamWriter(conn.getOutputStream(), CHARSET));
+            wr.write(data);
+            wr.close();
+        }
+        return conn;
     }
 
     /**
