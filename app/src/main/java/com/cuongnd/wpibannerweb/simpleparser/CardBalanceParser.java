@@ -9,14 +9,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Table;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,41 +60,16 @@ public class CardBalanceParser extends PageParser {
         if (matcher.find()) timeStamp = matcher.group();
 
         Element table = body.getElementsByClass("datadisplaytable").first();
-        Elements rows = table.getElementsByTag("TR");
-        rows.remove(0);
-
-        class MealType {
-            public String name, balance, lastused;
-            public MealType(String name, String balance, String lastused) {
-                this.name = name; this.balance = balance; this.lastused = lastused;
-            }
-        };
-
-        ArrayList<MealType> types = new ArrayList<>();
-
-        for (Element row : rows) {
-            Elements cols = row.getElementsByTag("TD");
-            types.add(new MealType(cols.get(0).text(),
-                    cols.get(1).text(),
-                    cols.get(2).text()));
-        }
 
         try {
-            JSONArray mealTypes = new JSONArray();
-            for (MealType type : types) {
-                JSONArray mealType = new JSONArray();
-                mealType.put(type.name)
-                        .put(type.balance)
-                        .put(type.lastused);
-                mealTypes.put(mealType);
-            }
+            Table mealTable = new Table(table, true, false);
 
             mData.put(JSON_MEAL_PLAN, mealPlan)
                     .put(JSON_DATE_STAMP, dateStamp)
                     .put(JSON_TIME_STAMP, timeStamp)
-                    .put(JSON_MEAL_TYPES, mealTypes);
+                    .put(JSON_MEAL_TYPES, mealTable);
 
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
 
@@ -103,19 +79,20 @@ public class CardBalanceParser extends PageParser {
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
         View v = inflater.inflate(R.layout.fragment_cardbalance, container, false);
-        TableLayout table = (TableLayout) v.findViewById(R.id.table_cardbalance);
+        TableLayout tableView = (TableLayout) v.findViewById(R.id.table_cardbalance);
 
         int count = 0;
         try {
-            JSONArray meanTypes = mData.getJSONArray(JSON_MEAL_TYPES);
-            count = meanTypes.length();
+            Table table = (Table) mData.get(JSON_MEAL_TYPES);
+            ArrayList<ArrayList<String>> mealTypes = table.getTable();
+            count = mealTypes.size();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Context context = inflater.getContext();
         for (int i = 0; i < count; i++) {
-            addRow(context, table);
+            addRow(context, tableView);
         }
 
         return v;
@@ -128,24 +105,25 @@ public class CardBalanceParser extends PageParser {
 
     @Override
     public void updateView(Context context, View v) {
-        TableLayout table = (TableLayout)v
+        TableLayout tableView = (TableLayout) v
                 .findViewById(R.id.table_cardbalance);
         try {
-            JSONArray mealTypes = mData.getJSONArray(JSON_MEAL_TYPES);
-            int diff = mealTypes.length() - table.getChildCount();
+            Table table = (Table) mData.get(JSON_MEAL_TYPES);
+            ArrayList<ArrayList<String>> mealTypes = table.getTable();
+            int diff = mealTypes.size() - tableView.getChildCount();
             if (diff > 0) {
                 for (int i = 0; i < diff; i++)
-                    addRow(context, table);
+                    addRow(context, tableView);
             }
-            for (int i = 1; i < table.getChildCount(); i++) {
-                TableRow row = (TableRow) table.getChildAt(i);
-                JSONArray mealType = mealTypes.getJSONArray(i - 1);
+            for (int i = 1; i < tableView.getChildCount(); i++) {
+                TableRow row = (TableRow) tableView.getChildAt(i);
                 for (int j = 0; j < row.getChildCount(); j++) {
                     TextView cell = (TextView) row.getChildAt(j);
-                    cell.setText(mealType.getString(j));
+                    cell.setText(mealTypes.get(i - 1).get(j));
                 }
             }
         } catch (JSONException e) {
+            // TODO: replace all the printStackTrace with something else more useful
             e.printStackTrace();
         }
     }

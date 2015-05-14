@@ -1,24 +1,15 @@
 package com.cuongnd.wpibannerweb.helper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created by Cuong Nguyen on 5/13/2015.
  */
 public class Table {
-    public static final String JSON_COLUMN_HEADER = "column";
-    public static final String JSON_ROW_HEADER = "row";
-    public static final String JSON_TABLE = "table";
 
     private ArrayList<ArrayList<String>> mRows;
     private ArrayList<String> mColHeaders;
@@ -30,13 +21,12 @@ public class Table {
         mRowHeaders = new ArrayList<>();
     }
 
-    public Table(String html, boolean hasColHeader, boolean hasRowHeader) throws IOException {
+    public Table(Element doc, boolean hasColHeader, boolean hasRowHeader) throws IOException {
         this();
-        parse(html, hasColHeader, hasRowHeader);
+        parse(doc, hasColHeader, hasRowHeader);
     }
 
-    public void parse(String html, boolean hasColHeader, boolean hasRowHeader) throws IOException {
-        Document doc = Jsoup.parse(html);
+    public void parse(Element doc, boolean hasColHeader, boolean hasRowHeader) throws IOException {
         Elements eTables = doc.getElementsByTag("table");
         if (eTables.isEmpty()) {
             throw new NoTableException();
@@ -76,35 +66,12 @@ public class Table {
         return mRows;
     }
 
-    public JSONObject toJSON() {
-        JSONArray table = new JSONArray();
-        for (ArrayList<String> row : mRows) {
-            JSONArray newRow = new JSONArray();
-            for (String cell : row) {
-                newRow.put(cell);
-            }
-            table.put(newRow);
-        }
+    public ArrayList<String> getColHeaders() {
+        return mColHeaders;
+    }
 
-        JSONArray colHeaders = new JSONArray();
-        for (String header : mColHeaders) {
-            colHeaders.put(header);
-        }
-        JSONArray rowHeaders = new JSONArray();
-        for (String header : mRowHeaders) {
-            rowHeaders.put(header);
-        }
-
-        try {
-            JSONObject jo = new JSONObject();
-            jo.put(JSON_TABLE, table)
-                    .put(JSON_COLUMN_HEADER, colHeaders)
-                    .put(JSON_ROW_HEADER, rowHeaders);
-            return jo;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ArrayList<String> getRowHeaders() {
+        return mColHeaders;
     }
 
     public static class NoTableException extends IOException {
