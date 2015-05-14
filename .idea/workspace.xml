@@ -34,13 +34,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e1763f6f-9d53-4066-b76a-1617e7b9e2e0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/cuongnd/wpibannerweb/FinalGradeActivity.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/cuongnd/wpibannerweb/FinalGradeFragment.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/cuongnd/wpibannerweb/grade/FinalGradePage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/cuongnd/wpibannerweb/helper/Table.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_finalgrade.xml" />
-      <change type="DELETED" beforePath="D:\Projects\wpi-bannerweb\app\src\main\java\com\cuongnd\wpibannerweb\parser\GradeParser.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="WPI BannerWeb.iws" />
