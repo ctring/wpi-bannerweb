@@ -39,10 +39,10 @@ public class ConnectionManager {
     private static final String LOGOUT_PATH =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_Logout";
 
-    private final String PARAM_SID = "sid";
-    private final String PARAM_PIN = "PIN";
-    private final String CHARSET = "UTF-8";
-    private final String PARAM_REFERRER = "Referer";
+    private final static String PARAM_SID = "sid";
+    private final static String PARAM_PIN = "PIN";
+    private final static String CHARSET = "UTF-8";
+    private final static String PARAM_REFERRER = "Referer";
 
     private String mUsername;
     private String mPin;
