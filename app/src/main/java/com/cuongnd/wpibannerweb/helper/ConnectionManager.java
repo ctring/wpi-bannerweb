@@ -34,9 +34,9 @@ public class ConnectionManager {
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_WWWLogin";
     private static final String MAIN_MENU =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_GenMenu?name=bmenu.P_MainMnu";
-    private static final String LOGIN_PATH =
+    private static final String LOGIN =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_ValLogin";
-    private static final String LOGOUT_PATH =
+    private static final String LOGOUT =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_Logout";
 
     private final static String PARAM_SID = "sid";
@@ -60,7 +60,7 @@ public class ConnectionManager {
 
     }
 
-    public void setUsernameAndPin(String username, String pin) {
+    void setUsernameAndPin(String username, String pin) {
         mUsername = username;
         mPin = pin;
     }
@@ -79,7 +79,7 @@ public class ConnectionManager {
             HttpURLConnection init = makeConnection(HOME, null, null);
             init.connect();
 
-            HttpURLConnection conn = makeConnection(LOGIN_PATH, HOME,
+            HttpURLConnection conn = makeConnection(LOGIN, HOME,
                     String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
 
             int responseCode = conn.getResponseCode();
@@ -112,7 +112,7 @@ public class ConnectionManager {
      */
     public void logOut() {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT_PATH).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT).openConnection();
 
             conn.setRequestProperty(PARAM_REFERRER, MAIN_MENU);
 
