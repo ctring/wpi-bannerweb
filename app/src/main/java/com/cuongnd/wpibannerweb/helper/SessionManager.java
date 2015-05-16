@@ -12,6 +12,8 @@ import com.cuongnd.wpibannerweb.LoginActivity;
  */
 public class SessionManager {
     private static final String TAG = "SessionManager";
+
+    private static final String PREF = "LoginInfo";
     private static SessionManager sessionManager;
 
     public static SessionManager getInstance(Context context) {
@@ -29,7 +31,7 @@ public class SessionManager {
 
     private SessionManager(Context context) {
         mContext = context;
-        mPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         mConnectionManager = ConnectionManager.getInstance();
     }
 
