@@ -110,7 +110,7 @@ public class CardBalanceParser extends PageParser {
         try {
             Table table = (Table) mData.get(JSON_MEAL_TYPES);
             ArrayList<ArrayList<String>> mealTypes = table.getTable();
-            int diff = mealTypes.size() - 1 - tableView.getChildCount();
+            int diff = mealTypes.size() - tableView.getChildCount();
             if (diff > 0) {
                 for (int i = 0; i < diff; i++)
                     addRow(context, tableView);

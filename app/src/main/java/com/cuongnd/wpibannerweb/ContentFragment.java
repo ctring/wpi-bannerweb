@@ -58,7 +58,9 @@ public class ContentFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                mParserManager.updateView(mPageName, getActivity(), getView().getRootView());
+                View view = getView();
+                if (view != null)
+                    mParserManager.updateView(mPageName, getActivity(), view);
             }
         }
     }
