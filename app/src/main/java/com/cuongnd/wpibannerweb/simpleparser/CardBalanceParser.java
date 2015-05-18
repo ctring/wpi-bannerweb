@@ -62,7 +62,7 @@ public class CardBalanceParser extends PageParser {
         Element table = body.getElementsByClass("datadisplaytable").first();
 
         try {
-            Table mealTable = new Table(table, true, false);
+            Table mealTable = new Table(table);
 
             mData.put(JSON_MEAL_PLAN, mealPlan)
                     .put(JSON_DATE_STAMP, dateStamp)
@@ -85,7 +85,7 @@ public class CardBalanceParser extends PageParser {
         try {
             Table table = (Table) mData.get(JSON_MEAL_TYPES);
             ArrayList<ArrayList<String>> mealTypes = table.getTable();
-            count = mealTypes.size();
+            count = mealTypes.size() - 1;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -110,7 +110,7 @@ public class CardBalanceParser extends PageParser {
         try {
             Table table = (Table) mData.get(JSON_MEAL_TYPES);
             ArrayList<ArrayList<String>> mealTypes = table.getTable();
-            int diff = mealTypes.size() - tableView.getChildCount();
+            int diff = mealTypes.size() - 1 - tableView.getChildCount();
             if (diff > 0) {
                 for (int i = 0; i < diff; i++)
                     addRow(context, tableView);
@@ -119,7 +119,7 @@ public class CardBalanceParser extends PageParser {
                 TableRow row = (TableRow) tableView.getChildAt(i);
                 for (int j = 0; j < row.getChildCount(); j++) {
                     TextView cell = (TextView) row.getChildAt(j);
-                    cell.setText(mealTypes.get(i - 1).get(j));
+                    cell.setText(mealTypes.get(i).get(j));
                 }
             }
         } catch (JSONException e) {

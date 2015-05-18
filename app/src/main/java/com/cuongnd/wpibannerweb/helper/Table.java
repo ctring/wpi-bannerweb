@@ -12,21 +12,17 @@ import java.util.ArrayList;
 public class Table {
 
     private ArrayList<ArrayList<String>> mRows;
-    private ArrayList<String> mColHeaders;
-    private ArrayList<String> mRowHeaders;
 
     public Table() {
         mRows = new ArrayList<>();
-        mColHeaders = new ArrayList<>();
-        mRowHeaders = new ArrayList<>();
     }
 
-    public Table(Element doc, boolean hasColHeader, boolean hasRowHeader) throws IOException {
+    public Table(Element doc) throws IOException {
         this();
-        parse(doc, hasColHeader, hasRowHeader);
+        parse(doc);
     }
 
-    public void parse(Element doc, boolean hasColHeader, boolean hasRowHeader) throws IOException {
+    public void parse(Element doc) throws IOException {
         Elements eTables = doc.getElementsByTag("table");
         if (eTables.isEmpty()) {
             throw new NoTableException();
@@ -34,25 +30,9 @@ public class Table {
         Element eTable = eTables.first();
         Elements rows = eTable.getElementsByTag("TR");
 
-        // Assume that the header is always in the first row
-        if (hasColHeader) {
-            Elements headers = rows.first().getElementsByTag("TH");
-            mColHeaders.clear();
-            for (Element header : headers) {
-                mColHeaders.add(header.text());
-            }
-            rows.remove(0);
-        }
-
-        mRowHeaders.clear();
         mRows.clear();
         for (Element row : rows) {
-            // Assume that the header is always in the first column
-            if (hasRowHeader) {
-                Element header = row.getElementsByTag("TH").first();
-                mRowHeaders.add(header.text());
-            }
-            Elements cells = row.getElementsByTag("TD");
+            Elements cells = row.select("TD, TH");
             ArrayList<String> newRow = new ArrayList<>();
             for (Element cell : cells) {
                 newRow.add(cell.text());
@@ -64,14 +44,6 @@ public class Table {
 
     public ArrayList<ArrayList<String>> getTable() {
         return mRows;
-    }
-
-    public ArrayList<String> getColHeaders() {
-        return mColHeaders;
-    }
-
-    public ArrayList<String> getRowHeaders() {
-        return mColHeaders;
     }
 
     public static class NoTableException extends IOException {
