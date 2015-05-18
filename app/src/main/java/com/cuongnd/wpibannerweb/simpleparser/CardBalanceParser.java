@@ -78,23 +78,7 @@ public class CardBalanceParser extends PageParser {
 
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
-        View v = inflater.inflate(R.layout.fragment_cardbalance, container, false);
-        TableLayout tableView = (TableLayout) v.findViewById(R.id.table_cardbalance);
-
-        int count = 0;
-        try {
-            Table table = (Table) mData.get(JSON_MEAL_TYPES);
-            count = table.size() - 1;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Context context = inflater.getContext();
-        for (int i = 0; i < count; i++) {
-            addRow(context, tableView);
-        }
-
-        return v;
+        return inflater.inflate(R.layout.fragment_cardbalance, container, false);
     }
 
     @Override
