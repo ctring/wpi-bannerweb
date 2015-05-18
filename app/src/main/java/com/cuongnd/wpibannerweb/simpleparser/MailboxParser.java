@@ -35,7 +35,7 @@ public class MailboxParser extends PageParser {
     }
 
     @Override
-    public boolean parse(String html) {
+    boolean parse(String html) {
         Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
         Element body = doc.body();
 

@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import com.cuongnd.wpibannerweb.helper.ConnectionManager;
 
+import org.json.JSONObject;
+
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */

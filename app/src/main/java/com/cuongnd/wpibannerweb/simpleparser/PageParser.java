@@ -13,11 +13,15 @@ import org.json.JSONObject;
 public abstract class PageParser {
     protected JSONObject mData;
 
-    protected PageParser() {
+    PageParser() {
         mData = new JSONObject();
     }
 
-    public abstract boolean parse(String html);
+    PageParser(JSONObject data) {
+        mData = data;
+    }
+
+    abstract boolean parse(String html);
 
     public abstract View getView(LayoutInflater inflater, ViewGroup container);
 

@@ -46,7 +46,7 @@ public class AdvisorParser extends PageParser {
     }
 
     @Override
-    public boolean parse(String html) {
+    boolean parse(String html) {
         Document doc = Jsoup.parse(html, ConnectionManager.BASE_URI);
         Element body = doc.body();
 
