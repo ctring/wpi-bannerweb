@@ -60,7 +60,7 @@ public class ConnectionManager {
 
     }
 
-    void setUsernameAndPin(String username, String pin) {
+    public void setUsernameAndPin(String username, String pin) {
         mUsername = username;
         mPin = pin;
     }
@@ -101,7 +101,7 @@ public class ConnectionManager {
 
         } catch (IOException e) {
             // TODO: Handle exception carefully
-            e.printStackTrace();
+            Log.e(TAG, "Exception", e);
         }
 
         return false;
@@ -125,7 +125,7 @@ public class ConnectionManager {
 
         } catch (IOException e) {
             // TODO: Handle exception carefully
-            e.printStackTrace();
+            Log.e(TAG, "Exception", e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ConnectionManager {
             return data;
         }
         catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Exception", e);
         }
         return null;
     }

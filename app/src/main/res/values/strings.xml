@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">WPI BannerWeb</string>
 
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Log in</string>
+    <string name="title_activity_final_grade">Final Grade</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
@@ -26,5 +27,14 @@
     <string name="account">Account</string>
     <string name="balance">Balance</string>
     <string name="lastused">Date Last Used</string>
+
+    <!-- String in Final Grade Page -->
+    <string name="course">Course</string>
+    <string name="finalgrade">Final Grade</string>
+    <string name="currentterm">Current Term</string>
+    <string name="cumulative">Cumulative</string>
+    <string name="transfer">Transfer</string>
+    <string name="overall">Overall</string>
+    <string name="gpa">GPA</string>
 
 </resources>

@@ -1,9 +1,11 @@
 package com.cuongnd.wpibannerweb.grade;
 
-import android.content.Context;
-
 import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import com.cuongnd.wpibannerweb.helper.Helper;
+import com.cuongnd.wpibannerweb.helper.Table;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,8 +17,7 @@ import java.util.ArrayList;
  * Created by Cuong Nguyen on 5/13/2015.
  */
 public class FinalGradePage {
-
-    private static final String PREF = "Term";
+    private static final String TAG = "FinalGradePage";
 
     private static final String STUDENT_RECORDS =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_GenMenu?name=bmenu.P_AdminMnu";
@@ -25,13 +26,10 @@ public class FinalGradePage {
     private static final String VIEW_GRADE =
             "https://bannerweb.wpi.edu/pls/prod/bwskogrd.P_ViewGrde";
 
-    Context mContext;
+    public static final String JSON_COURSE = "course";
+    public static final String JSON_SUMMARY = "summary";
 
-    public FinalGradePage(Context context) {
-        mContext = context;
-    }
-
-    public ArrayList<TermValue> getTerms() {
+    public static ArrayList<TermValue> getTerms() {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, STUDENT_RECORDS);
 
@@ -48,6 +46,30 @@ public class FinalGradePage {
         return terms;
     }
 
+    public static JSONObject load(String termid) {
+        ConnectionManager cm = ConnectionManager.getInstance();
+        String html = cm.getPage(VIEW_GRADE, VIEW_TERM, "term_in=" + termid);
+
+        if (html == null) return null;
+
+        Document doc = Jsoup.parse(html);
+        Element tableCourse = doc.select("table:contains(Undergraduate Course work)").first();
+        Element tableSummary = doc.select("table:contains(Undergraduate Summary").first();
+
+        Table course = new Table(tableCourse);
+        Table summary = new Table(tableSummary);
+
+        JSONObject data = new JSONObject();
+        try {
+            data.put(JSON_COURSE, course);
+            data.put(JSON_SUMMARY, summary);
+        } catch (JSONException e) {
+            Helper.logError(TAG, e);
+        }
+
+        return data;
+    }
+
     public static class TermValue {
         private String mValue;
         private String mText;
@@ -61,7 +83,7 @@ public class FinalGradePage {
             return mValue;
         }
 
-        public String getText() {
+        public String toString() {
             return mText;
         }
     }
