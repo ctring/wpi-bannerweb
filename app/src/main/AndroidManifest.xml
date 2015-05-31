@@ -23,7 +23,8 @@
         </activity>
         <activity android:name=".FinalGradeActivity"
                   android:label="@string/title_activity_final_grade" />
-
+        <activity android:name=".ClassesActivity"
+                  android:label="@string/title_activity_classes" />
     </application>
 
 </manifest>

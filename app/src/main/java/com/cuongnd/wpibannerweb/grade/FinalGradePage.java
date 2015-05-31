@@ -1,7 +1,7 @@
 package com.cuongnd.wpibannerweb.grade;
 
 import com.cuongnd.wpibannerweb.helper.ConnectionManager;
-import com.cuongnd.wpibannerweb.helper.Helper;
+import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
 
 import org.json.JSONException;
@@ -28,19 +28,20 @@ public class FinalGradePage {
 
     public static final String JSON_COURSE = "course";
     public static final String JSON_SUMMARY = "summary";
+    public static final String JSON_TERM = "term";
 
-    public static ArrayList<TermValue> getTerms() {
+    public static ArrayList<Utils.TermValue> getTerms() {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, STUDENT_RECORDS);
 
-        ArrayList<TermValue> terms = new ArrayList<>();
+        ArrayList<Utils.TermValue> terms = new ArrayList<>();
         Document doc = Jsoup.parse(html);
         Element select = doc.getElementById("term_id");
         Elements options = select.getElementsByTag("option");
         for (Element option : options) {
             String value = option.attr("value");
             String text = option.text();
-            TermValue term = new TermValue(value, text);
+            Utils.TermValue term = new Utils.TermValue(value, text);
             terms.add(term);
         }
         return terms;
@@ -59,32 +60,18 @@ public class FinalGradePage {
         Table course = new Table(tableCourse);
         Table summary = new Table(tableSummary);
 
-        JSONObject data = new JSONObject();
         try {
+            JSONObject data = new JSONObject();
+            data.put(JSON_TERM, termid);
             data.put(JSON_COURSE, course);
             data.put(JSON_SUMMARY, summary);
+            return data;
         } catch (JSONException e) {
-            Helper.logError(TAG, e);
+            Utils.logError(TAG, e);
         }
 
-        return data;
+        return null;
     }
 
-    public static class TermValue {
-        private String mValue;
-        private String mText;
 
-        public TermValue(String value, String text) {
-            mValue = value;
-            mText = text;
-        }
-
-        public String getValue() {
-            return mValue;
-        }
-
-        public String toString() {
-            return mText;
-        }
-    }
 }

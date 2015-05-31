@@ -9,7 +9,7 @@ import android.widget.TextView;
 /**
  * Created by Cuong Nguyen on 5/18/2015.
  */
-public class Helper {
+public class Utils {
     public static void logError(String TAG, Exception e) {
         Log.e(TAG, "exception", e);
     }
@@ -23,6 +23,24 @@ public class Helper {
             newRow.addView(newCell);
         }
         table.addView(newRow);
+    }
+
+    public static class TermValue {
+        private String mValue;
+        private String mText;
+
+        public TermValue(String value, String text) {
+            mValue = value;
+            mText = text;
+        }
+
+        public String getValue() {
+            return mValue;
+        }
+
+        public String toString() {
+            return mText;
+        }
     }
 
 }

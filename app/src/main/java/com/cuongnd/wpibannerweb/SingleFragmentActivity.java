@@ -31,22 +31,4 @@ public abstract class SingleFragmentActivity extends Activity {
                 .commit();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.dashboard_activity_actions, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_log_out:
-                SessionManager.getInstance(getApplicationContext()).deactivate();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

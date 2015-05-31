@@ -15,7 +15,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.grade.FinalGradePage;
-import com.cuongnd.wpibannerweb.helper.Helper;
+import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
 
 import org.json.JSONException;
@@ -60,8 +60,8 @@ public class FinalGradeFragment extends Fragment {
         mButtonGetGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FinalGradePage.TermValue term =
-                        (FinalGradePage.TermValue) mSpinnerTerm.getSelectedItem();
+                Utils.TermValue term =
+                        (Utils.TermValue) mSpinnerTerm.getSelectedItem();
                 new GetGradeTask().execute(term.getValue());
             }
         });
@@ -71,15 +71,15 @@ public class FinalGradeFragment extends Fragment {
         return v;
     }
 
-    private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<FinalGradePage.TermValue>> {
+    private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
         @Override
-        protected ArrayList<FinalGradePage.TermValue> doInBackground(Void... params) {
+        protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
             return FinalGradePage.getTerms();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<FinalGradePage.TermValue> termValues) {
-            ArrayAdapter<FinalGradePage.TermValue> adapter =
+        protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
+            ArrayAdapter<Utils.TermValue> adapter =
                     new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_spinner_item, termValues);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -104,7 +104,7 @@ public class FinalGradeFragment extends Fragment {
                 for (int i = 1; i < course.size(); i++) {
                     String courseTitle = String.format("%s (%s %s)",
                             course.get(i, 4), course.get(i, 1), course.get(i, 2));
-                    Helper.addRow(mTableCourse, courseTitle, course.get(i, 6));
+                    Utils.addRow(mTableCourse, courseTitle, course.get(i, 6));
                 }
 
                 mTextCurrentTerm.setText(summary.get(1, 5));
@@ -113,7 +113,7 @@ public class FinalGradeFragment extends Fragment {
                 mTextOverall.setText(summary.get(4, 5));
 
             } catch (JSONException e) {
-                Helper.logError(TAG, e);
+                Utils.logError(TAG, e);
             }
         }
 

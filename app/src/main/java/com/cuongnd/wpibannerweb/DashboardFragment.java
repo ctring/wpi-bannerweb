@@ -92,6 +92,16 @@ public class DashboardFragment extends Fragment {
             }
         });
 
+        ImageButton buttonClasses = (ImageButton) v.findViewById(R.id.button_classes);
+        buttonClasses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ClassesActivity.class);
+                startActivity(i);
+            }
+        });
+
+
         // TODO: make width equal height
         TableLayout tableInfo = (TableLayout) v.findViewById(R.id.table_info);
 

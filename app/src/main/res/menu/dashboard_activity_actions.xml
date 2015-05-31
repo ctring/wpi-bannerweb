@@ -5,5 +5,5 @@
         android:id="@+id/action_log_out"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:title="@string/action_log_out"
-        app:showAsAction="always"/>
+        android:showAsAction="always"/>
 </menu>

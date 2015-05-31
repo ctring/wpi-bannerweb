@@ -51,7 +51,7 @@
 
             <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="300dp"
                 android:id="@+id/table_info">
 
                 <TableRow
@@ -101,13 +101,22 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginTop="12dp"/>
                 </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageButton
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_span="2"
+                        android:layout_weight="1"
+                        android:layout_marginTop="12dp"
+                        android:id="@+id/button_classes"/>
+                </TableRow>
             </TableLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Test View"
-                android:id="@+id/text_test"/>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
