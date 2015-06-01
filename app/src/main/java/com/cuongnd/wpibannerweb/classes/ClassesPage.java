@@ -12,7 +12,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by Cuong Nguyen on 5/28/2015.
@@ -54,46 +58,88 @@ public class ClassesPage {
         return terms;
     }
 
-    public static JSONObject load(String termid) {
+    public static ArrayList<WPIClass> getClasses(String termid) {
+        return loadFromHtml(termid);
+    }
+
+    public static ArrayList<WPIClass> loadFromHtml(String termid) {
+        ArrayList<WPIClass> classes = new ArrayList<>();
 
         selectTerm(termid);
-
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_CLASSES, REGISTRATION);
 
-        if (html == null) return null;
+        if (html == null) return classes;
 
         Document doc = Jsoup.parse(html);
 
         // TODO: Notify properly when the select term page is up instead of the classes page
-        if (doc.title().contains("Select Term")) return null;
+        if (doc.title().contains("Select Term")) {
+            return classes;
+        }
 
         Elements tables = doc.getElementsByClass("datadisplaytable");
 
-        try {
+        for (int i = 0; i < tables.size(); i+= 2) {
+            Table info = new Table(tables.get(i));
+            Table time = new Table(tables.get(i + 1));
 
-            JSONArray classes = new JSONArray();
-            for (int i = 0; i < tables.size(); i+= 2) {
-                Element info = tables.get(i);
-                Element time = tables.get(i + 1);
+            String fullname = tables.get(i).getElementsByTag("caption").first().text();
+            String[] parts = fullname.split(" - ");
+            String name = parts[0];
+            String code = parts[1];
+            String section = parts[2];
+            String CRN = info.get(1, 1);
+            String instructor = info.get(3, 1);
 
-                JSONObject aclass = new JSONObject();
-                aclass.put(JSON_CLASS_NAME, info.getElementsByTag("caption").first().text());
-                aclass.put(JSON_CLASS_INFO, new Table(info));
-                aclass.put(JSON_CLASS_TIME, new Table(time));
-
-                classes.put(aclass);
-            }
-
-            JSONObject data = new JSONObject();
-            data.put(JSON_TERM, termid);
-            data.put(JSON_CLASSES, classes);
-            return data;
-        } catch (JSONException e) {
-            Utils.logError(TAG, e);
+            WPIClass wpiclass = new WPIClass(name, code, section, CRN, instructor,
+                    parseSchedule(time));
+            classes.add(wpiclass);
         }
 
-        return null;
+        return classes;
+    }
+
+    private static ArrayList<WPIClass.Schedule> parseSchedule(Table time) {
+        SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.US);
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+        ArrayList<WPIClass.Schedule> schedules = new ArrayList<>();
+
+        try {
+            for (int i = 1; i < time.size(); i++) {
+                String[] timeRange = time.get(i, 1).split(" - ");
+                Calendar startTime = Calendar.getInstance();
+                startTime.setTime(formatTime.parse(timeRange[0]));
+                Calendar endTime = Calendar.getInstance();
+                endTime.setTime(formatTime.parse(timeRange[1]));
+
+                String[] dateRange = time.get(i, 4).split(" - ");
+                Calendar startDate = Calendar.getInstance();
+                startDate.setTime(formatDate.parse(dateRange[0]));
+                Calendar endDate = Calendar.getInstance();
+                endDate.setTime(formatDate.parse(dateRange[1]));
+
+                int[] days = Utils.fromWpiDays(time.get(i, 2));
+                String location = time.get(i, 3);
+                String type = time.get(i, 5);
+                String instructor = time.get(i, 6);
+
+                WPIClass.Schedule schedule = new WPIClass.Schedule();
+                schedule.setStartTime(startTime)
+                        .setEndTime(endTime)
+                        .setDays(days)
+                        .setLocation(location)
+                        .setStartDate(startDate)
+                        .setEndDate(endDate)
+                        .setType(type)
+                        .setInstructor(instructor);
+
+                schedules.add(schedule);
+            }
+        } catch (ParseException e) {
+            Utils.logError(TAG, e);
+        }
+        return schedules;
     }
 
     private static void selectTerm(String termid) {

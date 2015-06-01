@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb;
+package com.cuongnd.wpibannerweb.classes;
 
 import android.app.ListFragment;
 import android.content.Intent;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.cuongnd.wpibannerweb.classes.ClassesPage;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import java.util.ArrayList;

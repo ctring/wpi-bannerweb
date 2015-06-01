@@ -1,6 +1,8 @@
-package com.cuongnd.wpibannerweb;
+package com.cuongnd.wpibannerweb.classes;
 
 import android.app.Fragment;
+
+import com.cuongnd.wpibannerweb.SingleFragmentActivity;
 
 /**
  * Created by Cuong Nguyen on 5/29/2015.

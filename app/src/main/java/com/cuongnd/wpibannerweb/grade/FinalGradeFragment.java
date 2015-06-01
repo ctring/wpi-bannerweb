@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb;
+package com.cuongnd.wpibannerweb.grade;
 
 import android.app.Fragment;
 import android.os.AsyncTask;
@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.grade.FinalGradePage;
 import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
@@ -116,8 +117,6 @@ public class FinalGradeFragment extends Fragment {
                 Utils.logError(TAG, e);
             }
         }
-
-
     }
 
 }

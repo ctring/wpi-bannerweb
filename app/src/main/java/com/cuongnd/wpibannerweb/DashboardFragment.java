@@ -12,9 +12,13 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.classes.ClassesActivity;
+import com.cuongnd.wpibannerweb.classes.SelectTermActivity;
+import com.cuongnd.wpibannerweb.grade.FinalGradeActivity;
 import com.cuongnd.wpibannerweb.helper.SessionManager;
 import com.cuongnd.wpibannerweb.simpleparser.AdvisorParser;
 import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
+import com.cuongnd.wpibannerweb.simpleparser.ContentFragment;
 import com.cuongnd.wpibannerweb.simpleparser.MailboxParser;
 
 /**
@@ -96,7 +100,7 @@ public class DashboardFragment extends Fragment {
         buttonClasses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ClassesActivity.class);
+                Intent i = new Intent(getActivity(), SelectTermActivity.class);
                 startActivity(i);
             }
         });
