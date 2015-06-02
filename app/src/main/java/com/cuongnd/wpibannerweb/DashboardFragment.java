@@ -12,9 +12,8 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.cuongnd.wpibannerweb.classes.ClassesActivity;
-import com.cuongnd.wpibannerweb.classes.SelectTermActivity;
-import com.cuongnd.wpibannerweb.grade.FinalGradeActivity;
+import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
+import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
 import com.cuongnd.wpibannerweb.helper.SessionManager;
 import com.cuongnd.wpibannerweb.simpleparser.AdvisorParser;
 import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
@@ -91,7 +90,7 @@ public class DashboardFragment extends Fragment {
         buttonGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), FinalGradeActivity.class);
+                Intent i = new Intent(getActivity(), GradeSelectTermActivity.class);
                 startActivity(i);
             }
         });
@@ -100,7 +99,7 @@ public class DashboardFragment extends Fragment {
         buttonClasses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), SelectTermActivity.class);
+                Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
                 startActivity(i);
             }
         });
