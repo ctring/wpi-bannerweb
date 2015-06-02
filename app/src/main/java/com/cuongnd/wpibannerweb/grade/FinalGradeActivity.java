@@ -10,6 +10,7 @@ import com.cuongnd.wpibannerweb.SingleFragmentActivity;
 public class FinalGradeActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
-        return new FinalGradeFragment();
+        String termId = getIntent().getStringExtra(FinalGradeFragment.EXTRA_TERM_ID);
+        return FinalGradeFragment.newInstance(termId);
     }
 }

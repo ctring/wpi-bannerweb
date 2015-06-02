@@ -31,7 +31,18 @@ public class FinalGradeFragment extends Fragment {
 
     private static final String TAG = "FinalGradeFragment";
 
-    private Spinner mSpinnerTerm;
+    public static final String EXTRA_TERM_ID = "termId";
+
+    public static FinalGradeFragment newInstance(String termId) {
+        Bundle args = new Bundle();
+        args.putString(EXTRA_TERM_ID, termId);
+
+        FinalGradeFragment fragment = new FinalGradeFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
     private ScrollView mScrollGrade;
     private TableLayout mTableCourse;
     private TextView mTextCurrentTerm;
@@ -49,7 +60,6 @@ public class FinalGradeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_finalgrade, container, false);
 
-        mSpinnerTerm = (Spinner) v.findViewById(R.id.spinner_term);
         mScrollGrade = (ScrollView) v.findViewById(R.id.scroll_grade);
         mTableCourse = (TableLayout) v.findViewById(R.id.table_course);
         mTextCurrentTerm = (TextView) v.findViewById(R.id.text_current_term);
@@ -57,35 +67,10 @@ public class FinalGradeFragment extends Fragment {
         mTextTransfer = (TextView) v.findViewById(R.id.text_transfer);
         mTextOverall = (TextView) v.findViewById(R.id.text_overall);
 
-        Button mButtonGetGrade = (Button) v.findViewById(R.id.button_getGrade);
-        mButtonGetGrade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.TermValue term =
-                        (Utils.TermValue) mSpinnerTerm.getSelectedItem();
-                new GetGradeTask().execute(term.getValue());
-            }
-        });
-
-        new GetTermsTask().execute();
+        String termId = getArguments().getString(EXTRA_TERM_ID);
+        new GetGradeTask().execute(termId);
 
         return v;
-    }
-
-    private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
-        @Override
-        protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
-            return FinalGradePage.getTerms();
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
-            ArrayAdapter<Utils.TermValue> adapter =
-                    new ArrayAdapter<>(getActivity(),
-                            android.R.layout.simple_spinner_item, termValues);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinnerTerm.setAdapter(adapter);
-        }
     }
 
     private class GetGradeTask extends AsyncTask<String, Void, JSONObject> {
