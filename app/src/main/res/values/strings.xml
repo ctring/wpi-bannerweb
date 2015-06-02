@@ -4,6 +4,7 @@
     <string name="title_activity_login">Log in</string>
     <string name="title_activity_final_grade">Final Grade</string>
     <string name="title_activity_classes">Registered Classes</string>
+    <string name="title_activity_select_term">Select Term</string>
 
     <!-- Strings related to login -->
     <string name="prompt_username">Username</string>
