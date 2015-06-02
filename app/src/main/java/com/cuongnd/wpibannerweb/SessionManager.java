@@ -53,7 +53,8 @@ public class SessionManager {
         new Thread() {
             @Override
             public void run() {
-                mPref.edit().clear().apply();
+                //mPref.edit().clear().apply();
+                WPIBannerWebApplication.getInstance().clearApplicationData();
                 mConnectionManager.logOut();
             }
         }.start();

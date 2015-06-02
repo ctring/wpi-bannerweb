@@ -27,6 +27,9 @@ public class Utils {
         table.addView(newRow);
     }
 
+    /**
+     * Data structure for holding name and id of a term
+     */
     public static class TermValue {
         private String mValue;
         private String mText;
@@ -45,6 +48,13 @@ public class Utils {
         }
     }
 
+    /**
+     * Convert a string of days of week in WPI convention to an array of numbers representing the
+     * corresponding days of week.
+     * @param days The string of days of week in WPI convention.
+     * @return An array of numbers representing the corresponding days of week. The numbers in this
+     * array follow the constants for days of week in the Calendar class.
+     */
     public static int[] fromWpiDays(String days) {
         int[] ret = new int[days.length()];
         for (int i = 0; i < days.length(); i++) {
@@ -59,6 +69,11 @@ public class Utils {
         return ret;
     }
 
+    /**
+     * Convert an array of days of week into a string of days of week in WPI convention.
+     * @param days An array contains the days of week.
+     * @return A string of days of week in WPI convention.
+     */
     public static String toWpiDays(int[] days) {
         char[] wpiDays = {'?', '?', 'M', 'T', 'W', 'R', 'F'};
         String ret = "";

@@ -206,8 +206,8 @@ public class LoginActivity extends Activity {
                 // TODO: check for reason
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
+                showProgress(false);
             }
-            showProgress(false);
         }
 
         @Override

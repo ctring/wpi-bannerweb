@@ -1,8 +1,11 @@
 package com.cuongnd.wpibannerweb.helper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // TODO: write documentation
@@ -12,6 +15,17 @@ import java.util.ArrayList;
 public class Table {
 
     private String[][] mData;
+
+    public Table(JSONArray data) throws JSONException {
+        mData = new String[data.length()][];
+        for (int i = 0; i < data.length(); i++) {
+            JSONArray row = data.getJSONArray(i);
+            mData[i] = new String[row.length()];
+            for (int j = 0; j < row.length(); j++) {
+                mData[i][j] = row.getString(j);
+            }
+        }
+    }
 
     public Table(Element doc) {
         parse(doc);
@@ -39,7 +53,17 @@ public class Table {
         return mData.length;
     }
 
-    public int lengthRow(int row) {
-        return mData[row].length;
+    public JSONArray toJSONArray() {
+        JSONArray jsonArray = new JSONArray();
+        if (mData != null)
+            for (int i = 0; i < mData.length; i++) {
+                JSONArray row = new JSONArray();
+                for (int j = 0; j < mData[i].length; j++) {
+                    row.put(mData[i][j]);
+                }
+                jsonArray.put(row);
+            }
+        return jsonArray;
     }
+
 }

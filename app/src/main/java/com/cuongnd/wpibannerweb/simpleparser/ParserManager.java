@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import com.cuongnd.wpibannerweb.ConnectionManager;
+import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
 import org.json.JSONObject;
 
@@ -16,19 +17,32 @@ public class ParserManager {
 
     private static ParserManager manager;
 
-    public static ParserManager getInstance() {
+    public static ParserManager getInstance(Context context) {
         if (manager == null) {
-            manager = new ParserManager();
+            manager = new ParserManager(context);
         }
         return manager;
     }
 
     private final PageParser[] mParsers;
+    private Context mContext;
 
-    private ParserManager() {
-        mParsers = new PageParser[]{new AdvisorParser(),
-                new CardBalanceParser(),
-                new MailboxParser()};
+    private ParserManager(Context context) {
+        mContext = context;
+
+        AdvisorParser advisorParser = new AdvisorParser();
+        advisorParser.setData(JSONSerializer.loadJSONFromFile(context,
+                AdvisorParser.PAGE_NAME + ".json"));
+
+        CardBalanceParser cardBalanceParser = new CardBalanceParser();
+        cardBalanceParser.setData(JSONSerializer.loadJSONFromFile(context,
+                CardBalanceParser.PAGE_NAME + ".json"));
+
+        MailboxParser mailboxParser = new MailboxParser();
+        mailboxParser.setData(JSONSerializer.loadJSONFromFile(context,
+                MailboxParser.PAGE_NAME + ".json"));
+
+        mParsers = new PageParser[]{advisorParser, cardBalanceParser, mailboxParser};
     }
 
     public boolean refreshPage(String name) {
@@ -38,6 +52,7 @@ public class ParserManager {
             if (html == null)
                 return false;
             page.parse(html);
+            JSONSerializer.saveJSONToFile(mContext, page.getName() + ".json", page.getData());
             return true;
         }
         return false;

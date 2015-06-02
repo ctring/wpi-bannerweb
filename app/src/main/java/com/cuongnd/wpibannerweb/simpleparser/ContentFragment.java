@@ -27,6 +27,7 @@ public class ContentFragment extends DialogFragment {
     private String mPageName;
     private ParserManager mParserManager;
     private GetContentTask mGetContentTask;
+    private View mView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,14 +39,15 @@ public class ContentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mPageName = getArguments().getString(EXTRA_PAGE_NAME);
-        mParserManager = ParserManager.getInstance();
-
-        return mParserManager.getView(mPageName, inflater, container);
+        mParserManager = ParserManager.getInstance(getActivity());
+        mView = mParserManager.getView(mPageName, inflater, container);
+        return mView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        updateView();
         refresh();
     }
 
@@ -70,6 +72,11 @@ public class ContentFragment extends DialogFragment {
         super.onDestroyView();
     }
 
+    private void updateView() {
+        if (mView != null)
+            mParserManager.updateView(mPageName, getActivity(), mView);
+    }
+
     private class GetContentTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
@@ -80,9 +87,7 @@ public class ContentFragment extends DialogFragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (!this.isCancelled() && success) {
-                View view = getView();
-                if (view != null)
-                    mParserManager.updateView(mPageName, getActivity(), view);
+                updateView();
             }
         }
     }

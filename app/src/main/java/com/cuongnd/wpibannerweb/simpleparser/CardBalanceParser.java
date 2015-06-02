@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Table;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class CardBalanceParser extends PageParser {
     }
 
     @Override
-    boolean parse(String html) {
+    public boolean parse(String html) {
         Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
         Element body = doc.body();
 
@@ -67,7 +68,7 @@ public class CardBalanceParser extends PageParser {
             mData.put(JSON_MEAL_PLAN, mealPlan)
                     .put(JSON_DATE_STAMP, dateStamp)
                     .put(JSON_TIME_STAMP, timeStamp)
-                    .put(JSON_MEAL_TYPES, mealTable);
+                    .put(JSON_MEAL_TYPES, mealTable.toJSONArray());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -88,10 +89,12 @@ public class CardBalanceParser extends PageParser {
 
     @Override
     public void updateView(Context context, View v) {
-        TableLayout tableView = (TableLayout) v
-                .findViewById(R.id.table_cardbalance);
+        if (mData == null)
+            return;
         try {
-            Table table = (Table) mData.get(JSON_MEAL_TYPES);
+            TableLayout tableView = (TableLayout) v
+                    .findViewById(R.id.table_cardbalance);
+            Table table = new Table(mData.getJSONArray(JSON_MEAL_TYPES));
 
             int diff = table.size() - tableView.getChildCount();
             if (diff > 0) {
@@ -105,9 +108,8 @@ public class CardBalanceParser extends PageParser {
                     cell.setText(table.get(i, j));
                 }
             }
-        } catch (JSONException e) {
-            // TODO: replace all the printStackTrace with something else more useful
-            e.printStackTrace();
+        } catch (NullPointerException | JSONException e) {
+            Utils.logError(PAGE_NAME, e);
         }
     }
 

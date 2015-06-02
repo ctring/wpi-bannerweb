@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.jsoup.Jsoup;
@@ -46,7 +47,7 @@ public class AdvisorParser extends PageParser {
     }
 
     @Override
-    boolean parse(String html) {
+    public boolean parse(String html) {
         Document doc = Jsoup.parse(html, ConnectionManager.BASE_URI);
         Element body = doc.body();
 
@@ -79,6 +80,8 @@ public class AdvisorParser extends PageParser {
     
     @Override
     public void updateView(Context context, View v) {
+        if (mData == null)
+            return;
         try {
             TextView text = (TextView) v.findViewById(R.id.text_advisor);
             text.setText(mData.getString(JSON_ADVISOR));
@@ -88,8 +91,8 @@ public class AdvisorParser extends PageParser {
             text.setText(mData.getString(JSON_DEPARTMENT));
             text = (TextView) v.findViewById(R.id.text_office);
             text.setText(mData.getString(JSON_LOCATION));
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (NullPointerException | JSONException e) {
+            Utils.logError(PAGE_NAME, e);
         }
     }
 }

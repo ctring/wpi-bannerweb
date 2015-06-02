@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.jsoup.Jsoup;
@@ -35,7 +36,7 @@ public class MailboxParser extends PageParser {
     }
 
     @Override
-    boolean parse(String html) {
+    public boolean parse(String html) {
         Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
         Element body = doc.body();
 
@@ -86,6 +87,8 @@ public class MailboxParser extends PageParser {
 
     @Override
     public void updateView(Context context, View v) {
+        if (mData == null)
+            return;
         try {
             TextView text = (TextView) v.findViewById(R.id.text_box);
             text.setText("Your have been assigned box #: " + mData.getString(JSON_BOX));
@@ -102,8 +105,8 @@ public class MailboxParser extends PageParser {
             text.setText(String.format("Rotate the knob %s to open",
                     mData.getString(JSON_DIR4)));
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (NullPointerException | JSONException e) {
+            Utils.logError(PAGE_NAME, e);
         }
     }
 }

@@ -17,11 +17,7 @@ public abstract class PageParser {
         mData = new JSONObject();
     }
 
-    PageParser(JSONObject data) {
-        mData = data;
-    }
-
-    abstract boolean parse(String html);
+    public abstract boolean parse(String html);
 
     public abstract View getView(LayoutInflater inflater, ViewGroup container);
 
@@ -31,7 +27,11 @@ public abstract class PageParser {
 
     public abstract String getUri();
 
-    public JSONObject toJSON() {
+    public void setData(JSONObject data) {
+        mData = data;
+    }
+
+    public JSONObject getData() {
         return mData;
     }
 

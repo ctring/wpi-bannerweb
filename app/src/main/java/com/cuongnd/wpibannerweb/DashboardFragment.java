@@ -19,6 +19,7 @@ import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
 import com.cuongnd.wpibannerweb.simpleparser.ContentFragment;
 import com.cuongnd.wpibannerweb.simpleparser.MailboxParser;
 
+
 /**
  * Created by Cuong Nguyen on 5/10/2015.
  */
@@ -102,7 +103,6 @@ public class DashboardFragment extends Fragment {
                 startActivity(i);
             }
         });
-
 
         // TODO: make width equal height
         TableLayout tableInfo = (TableLayout) v.findViewById(R.id.table_info);
