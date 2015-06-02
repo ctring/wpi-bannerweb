@@ -17,10 +17,12 @@ import java.util.ArrayList;
  */
 public class GradeSelectTermFragment extends ListFragment {
 
+    private GetTermsTask mGetTermsTask;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new GetTermsTask().execute();
+        mGetTermsTask = new GetTermsTask();
+        mGetTermsTask.execute();
     }
 
     @Override
@@ -31,14 +33,27 @@ public class GradeSelectTermFragment extends ListFragment {
         startActivity(i);
     }
 
+    @Override
+    public void onStop() {
+        if (mGetTermsTask != null) {
+            mGetTermsTask.cancel(false);
+            mGetTermsTask = null;
+        }
+        super.onStop();
+    }
+
     private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
+            if (isCancelled())
+                return null;
             return FinalGradePage.getTerms();
         }
 
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
+            if (isCancelled())
+                return;
             ArrayAdapter<Utils.TermValue> adapter =
                     new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_list_item_1, termValues);

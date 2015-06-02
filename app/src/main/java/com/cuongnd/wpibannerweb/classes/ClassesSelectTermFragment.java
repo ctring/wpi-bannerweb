@@ -15,12 +15,15 @@ import java.util.ArrayList;
 /**
  * Created by Cuong Nguyen on 5/29/2015.
  */
-public class SelectTermFragment extends ListFragment {
+public class ClassesSelectTermFragment extends ListFragment {
+
+    private GetTermsTask mGetTermsTask;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new GetTermsTask().execute();
+        mGetTermsTask = new GetTermsTask();
+        mGetTermsTask.execute();
     }
 
     @Override
@@ -29,6 +32,15 @@ public class SelectTermFragment extends ListFragment {
         Intent i = new Intent(getActivity(), ClassesActivity.class);
         i.putExtra(ClassesFragment.EXTRA_TERM_ID, selectedTerm.getValue());
         startActivity(i);
+    }
+
+    @Override
+    public void onStop() {
+        if (mGetTermsTask != null) {
+            mGetTermsTask.cancel(false);
+            mGetTermsTask = null;
+        }
+        super.onStop();
     }
 
     private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
@@ -42,7 +54,7 @@ public class SelectTermFragment extends ListFragment {
             ArrayAdapter<Utils.TermValue> adapter =
                     new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_list_item_1, termValues);
-            SelectTermFragment.this.setListAdapter(adapter);
+            ClassesSelectTermFragment.this.setListAdapter(adapter);
         }
     }
 }

@@ -43,6 +43,8 @@ public class FinalGradeFragment extends Fragment {
         return fragment;
     }
 
+    private GetGradeTask mGetGradeTask;
+
     private ScrollView mScrollGrade;
     private TableLayout mTableCourse;
     private TextView mTextCurrentTerm;
@@ -68,9 +70,19 @@ public class FinalGradeFragment extends Fragment {
         mTextOverall = (TextView) v.findViewById(R.id.text_overall);
 
         String termId = getArguments().getString(EXTRA_TERM_ID);
-        new GetGradeTask().execute(termId);
+        mGetGradeTask = new GetGradeTask();
+        mGetGradeTask.execute(termId);
 
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mGetGradeTask != null) {
+            mGetGradeTask.cancel(false);
+            mGetGradeTask = null;
+        }
+        super.onDestroy();
     }
 
     private class GetGradeTask extends AsyncTask<String, Void, JSONObject> {

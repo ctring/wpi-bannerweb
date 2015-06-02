@@ -29,9 +29,9 @@ import java.util.List;
 public class ClassesFragment extends Fragment implements WeekView.MonthChangeListener {
     public static final String EXTRA_TERM_ID = "TermId";
 
-    public static ClassesFragment newInstance(String termid) {
+    public static ClassesFragment newInstance(String termId) {
         Bundle args = new Bundle();
-        args.putString(EXTRA_TERM_ID, termid);
+        args.putString(EXTRA_TERM_ID, termId);
 
         ClassesFragment fragment = new ClassesFragment();
         fragment.setArguments(args);
@@ -39,6 +39,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         return fragment;
     }
 
+    private GetClassesTask mGetClassesTask;
     private ArrayList<WPIClass> mClasses;
     private ViewSwitcher mSwitcher;
     private WeekView mWeekView;
@@ -68,7 +69,9 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         mWeekView.setMonthChangeListener(this);
 
         String termId = getArguments().getString(EXTRA_TERM_ID);
-        new GetClassesTask().execute(termId);
+
+        mGetClassesTask = new GetClassesTask();
+        mGetClassesTask.execute(termId);
 
         return v;
     }

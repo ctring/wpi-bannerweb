@@ -7,9 +7,9 @@ import com.cuongnd.wpibannerweb.SingleFragmentActivity;
 /**
  * Created by Cuong Nguyen on 6/1/2015.
  */
-public class SelectTermActivity extends SingleFragmentActivity {
+public class ClassesSelectTermActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
-        return new SelectTermFragment();
+        return new ClassesSelectTermFragment();
     }
 }

@@ -26,6 +26,13 @@ public class ContentFragment extends DialogFragment {
 
     private String mPageName;
     private ParserManager mParserManager;
+    private GetContentTask mGetContentTask;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
@@ -43,23 +50,42 @@ public class ContentFragment extends DialogFragment {
     }
 
     private void refresh() {
-        new GetContentTask().execute();
+        mGetContentTask = new GetContentTask();
+        mGetContentTask.execute();
+    }
+
+    @Override
+    public void onStop() {
+        if (mGetContentTask != null) {
+            mGetContentTask.cancel(false);
+            mGetContentTask = null;
+        }
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance())
+            getDialog().setDismissMessage(null);
+        super.onDestroyView();
     }
 
     private class GetContentTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mParserManager.refreshPage(mPageName);
+            return !isCancelled() && mParserManager.refreshPage(mPageName);
         }
 
         @Override
         protected void onPostExecute(Boolean success) {
-            if (success) {
+            if (!this.isCancelled() && success) {
                 View view = getView();
                 if (view != null)
                     mParserManager.updateView(mPageName, getActivity(), view);
             }
         }
     }
+
+
 }
