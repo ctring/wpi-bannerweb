@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
-import com.cuongnd.wpibannerweb.helper.SessionManager;
 import com.cuongnd.wpibannerweb.simpleparser.AdvisorParser;
 import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
 import com.cuongnd.wpibannerweb.simpleparser.ContentFragment;

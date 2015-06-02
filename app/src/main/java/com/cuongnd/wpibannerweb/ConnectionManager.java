@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.helper;
+package com.cuongnd.wpibannerweb;
 
 import android.util.Log;
 

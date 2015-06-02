@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
-import com.cuongnd.wpibannerweb.helper.SessionManager;
 
 public abstract class SingleFragmentActivity extends Activity {
     protected abstract Fragment createFragment();

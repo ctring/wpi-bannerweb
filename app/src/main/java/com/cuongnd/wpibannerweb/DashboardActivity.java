@@ -2,12 +2,9 @@ package com.cuongnd.wpibannerweb;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import com.cuongnd.wpibannerweb.helper.SessionManager;
 
 /**
  * Created by Cuong Nguyen on 5/10/2015.
