@@ -28,7 +28,6 @@ public class WPIBannerWebApplication extends Application {
 
         if(appDir.exists()) {
             String[] children = appDir.list();
-
             for(String s : children) {
                 if(!s.equals("lib")) {
                     deleteDir(new File(appDir, s));
