@@ -9,6 +9,9 @@ import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,9 +26,19 @@ public class JSONSerializer {
     private static final String TAG = "JSONSerializer";
 
     public static JSONObject loadJSONFromFile(Context context, String fileName) {
+        return loadJSONFromFile(context, null, fileName);
+    }
+
+    public static JSONObject loadJSONFromFile(Context context, File dir, String fileName) {
         BufferedReader reader = null;
         try {
-            InputStream in = context.openFileInput(fileName);
+            InputStream in;
+            if (dir == null) {
+                in = context.openFileInput(fileName);
+            }
+            else {
+                in = new FileInputStream(new File(dir, fileName));
+            }
             reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder jsonString = new StringBuilder();
             String line = null;
@@ -47,9 +60,19 @@ public class JSONSerializer {
     }
 
     public static void saveJSONToFile(Context context, String fileName, JSONObject jsonObject) {
+        saveJSONToFile(context, null, fileName, jsonObject);
+    }
+
+    public static void saveJSONToFile(Context context, File dir, String fileName,
+                                      JSONObject jsonObject) {
         Writer writer = null;
         try {
-            OutputStream out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            OutputStream out;
+            if (dir == null) {
+                out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+            } else {
+                out = new FileOutputStream(new File(dir, fileName));
+            }
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(jsonObject.toString());
         } catch (IOException e) {
