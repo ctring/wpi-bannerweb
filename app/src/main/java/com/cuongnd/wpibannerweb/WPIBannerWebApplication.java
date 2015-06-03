@@ -23,8 +23,8 @@ public class WPIBannerWebApplication extends Application {
 
     public void clearApplicationData() {
 
-        File cache = getCacheDir();
-        File appDir = new File(cache.getParent());
+        File files = getFilesDir();
+        File appDir = new File(files.getParent());
 
         if(appDir.exists()) {
             String[] children = appDir.list();
@@ -37,7 +37,8 @@ public class WPIBannerWebApplication extends Application {
     }
 
     public static boolean deleteDir(File dir) {
-        if(dir != null && dir.isDirectory()) {
+        if (dir == null) return false;
+        if (dir.isDirectory()) {
             String[] children = dir.list();
 
             for(String child : children) {
