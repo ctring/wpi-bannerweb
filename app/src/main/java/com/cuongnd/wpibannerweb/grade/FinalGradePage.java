@@ -1,6 +1,6 @@
 package com.cuongnd.wpibannerweb.grade;
 
-import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
 
@@ -63,8 +63,8 @@ public class FinalGradePage {
         try {
             JSONObject data = new JSONObject();
             data.put(JSON_TERM, termid);
-            data.put(JSON_COURSE, course);
-            data.put(JSON_SUMMARY, summary);
+            data.put(JSON_COURSE, course.toJSONArray());
+            data.put(JSON_SUMMARY, summary.toJSONArray());
             return data;
         } catch (JSONException e) {
             Utils.logError(TAG, e);

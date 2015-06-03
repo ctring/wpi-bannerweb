@@ -95,8 +95,8 @@ public class FinalGradeFragment extends Fragment {
         protected void onPostExecute(JSONObject result) {
             mScrollGrade.setVisibility(View.VISIBLE);
             try {
-                Table course = (Table) result.get(FinalGradePage.JSON_COURSE);
-                Table summary = (Table) result.get(FinalGradePage.JSON_SUMMARY);
+                Table course = new Table(result.getJSONArray(FinalGradePage.JSON_COURSE));
+                Table summary = new Table(result.getJSONArray(FinalGradePage.JSON_SUMMARY));
 
                 mTableCourse.removeAllViews();
                 for (int i = 1; i < course.size(); i++) {
