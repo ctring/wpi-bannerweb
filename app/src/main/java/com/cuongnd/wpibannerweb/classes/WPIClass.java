@@ -2,15 +2,29 @@ package com.cuongnd.wpibannerweb.classes;
 
 import com.cuongnd.wpibannerweb.helper.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
  * Created by Cuong Nguyen on 6/1/2015.
  */
 public class WPIClass {
+
+    public static final String JSON_NAME = "name";
+    public static final String JSON_CODE = "code";
+    public static final String JSON_SECTION = "section";
+    public static final String JSON_INSTRUCTOR = "instructor";
+    public static final String JSON_CRN = "crn";
+    public static final String JSON_SCHEDULES = "schedules";
+
     private String mName;
     private String mCode;
     private String mSection;
@@ -35,6 +49,37 @@ public class WPIClass {
             schedule += s.toString() + "\n";
         }
         return info + schedule;
+    }
+
+    public static WPIClass fromJSON(JSONObject jsonObject) throws JSONException {
+        String name = jsonObject.getString(JSON_NAME);
+        String code = jsonObject.getString(JSON_CODE);
+        String section = jsonObject.getString(JSON_SECTION);
+        String instructor = jsonObject.getString(JSON_INSTRUCTOR);
+        String crn = jsonObject.getString(JSON_CRN);
+        ArrayList<Schedule> schedules = new ArrayList<>();
+        JSONArray jsonSchedules = jsonObject.getJSONArray(JSON_SCHEDULES);
+        for (int i = 0; i < jsonSchedules.length(); i++) {
+            schedules.add(Schedule.fromJSON(jsonSchedules.getJSONObject(i)));
+        }
+
+        return new WPIClass(name, code, section, crn, instructor, schedules);
+    }
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray schedules = new JSONArray();
+        for (Schedule s : mSchedules) {
+            schedules.put(s.toJSON());
+        }
+        jsonObject.put(JSON_NAME, mName)
+                .put(JSON_CODE, mCode)
+                .put(JSON_CRN, mCRN)
+                .put(JSON_INSTRUCTOR, mInstructor)
+                .put(JSON_SECTION, mSection)
+                .put(JSON_SCHEDULES, schedules);
+
+        return jsonObject;
     }
 
     public String getName() {
@@ -62,6 +107,15 @@ public class WPIClass {
     }
 
     public static class Schedule {
+        public static final String JSON_START_TIME = "startTime";
+        public static final String JSON_END_TIME = "endTime";
+        public static final String JSON_START_DATE = "startDate";
+        public static final String JSON_END_DATE = "endDate";
+        public static final String JSON_DAYS = "days";
+        public static final String JSON_INSTRUCTOR = "instructor";
+        public static final String JSON_TYPE = "type";
+        public static final String JSON_LOCATION = "location";
+
         private Calendar mStartTime;
         private Calendar mEndTime;
         private Calendar mStartDate;
@@ -82,6 +136,54 @@ public class WPIClass {
                     formatDate.format(mStartDate.getTime()),
                     formatDate.format(mEndDate.getTime()),
                     mType, mInstructor);
+        }
+
+        public static Schedule fromJSON(JSONObject jsonObject) throws JSONException {
+            Schedule schedule = new Schedule();
+
+            Calendar startTime = Calendar.getInstance();
+            startTime.setTimeInMillis(jsonObject.getLong(JSON_START_TIME));
+
+            Calendar endTime = Calendar.getInstance();
+            endTime.setTimeInMillis(jsonObject.getLong(JSON_END_TIME));
+
+            Calendar startDate = Calendar.getInstance();
+            startDate.setTimeInMillis(jsonObject.getLong(JSON_START_DATE));
+
+            Calendar endDate = Calendar.getInstance();
+            endDate.setTimeInMillis(jsonObject.getLong(JSON_END_DATE));
+
+            int[] days = Utils.fromWpiDays(jsonObject.getString(JSON_DAYS));
+
+            String instructor = jsonObject.getString(JSON_INSTRUCTOR);
+
+            String type = jsonObject.getString(JSON_TYPE);
+
+            String location = jsonObject.getString(JSON_LOCATION);
+
+            schedule.setStartTime(startTime)
+                    .setEndTime(endTime)
+                    .setDays(days)
+                    .setLocation(location)
+                    .setStartDate(startDate)
+                    .setEndDate(endDate)
+                    .setType(type)
+                    .setInstructor(instructor);
+            return schedule;
+        }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(JSON_START_TIME, mStartTime.getTimeInMillis())
+                    .put(JSON_END_TIME, mEndTime.getTimeInMillis())
+                    .put(JSON_START_DATE, mStartDate.getTimeInMillis())
+                    .put(JSON_END_DATE, mEndDate.getTimeInMillis())
+                    .put(JSON_DAYS, Utils.toWpiDays(mDays))
+                    .put(JSON_INSTRUCTOR, mInstructor)
+                    .put(JSON_TYPE, mType)
+                    .put(JSON_LOCATION, mLocation);
+
+            return jsonObject;
         }
 
         public Schedule setStartTime(Calendar startTime) {

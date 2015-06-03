@@ -5,13 +5,13 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -40,15 +40,22 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     }
 
     private GetClassesTask mGetClassesTask;
-    private ArrayList<WPIClass> mClasses;
+    private ClassesPage mClassesPage;
+    private boolean mFirstTime;
+
     private ViewSwitcher mSwitcher;
     private WeekView mWeekView;
     private TextView mTextClasses;
+    private CheckBox mCheckRemind;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mClasses = new ArrayList<>();
+        setRetainInstance(true);
+
+        String termId = getArguments().getString(EXTRA_TERM_ID);
+        mClassesPage = new ClassesPage(getActivity(), termId);
+        mFirstTime = true;
     }
 
     @Override
@@ -68,12 +75,17 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         mWeekView = (WeekView) v.findViewById(R.id.weekView);
         mWeekView.setMonthChangeListener(this);
 
-        String termId = getArguments().getString(EXTRA_TERM_ID);
-
-        mGetClassesTask = new GetClassesTask();
-        mGetClassesTask.execute(termId);
-
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateView();
+        if (mFirstTime) {
+            updateData();
+            mFirstTime = false;
+        }
     }
 
     @Override
@@ -94,10 +106,21 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     }
 
     @Override
-    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-        List<WeekViewEvent> events = new ArrayList<>();
+    public void onStop() {
+        if (mGetClassesTask != null) {
+            mGetClassesTask.cancel(false);
+        }
+        super.onStop();
+    }
 
-        for (WPIClass c : mClasses) {
+    @Override
+    public List<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
+        ArrayList<WPIClass> classes = mClassesPage.getClasses();
+        List<WeekViewEvent> events = new ArrayList<>();
+        if (classes == null)
+            return events;
+
+        for (WPIClass c : classes) {
             String name = c.getCode() + c.getSection();
             ArrayList<WPIClass.Schedule> schedules = c.getSchedules();
             for (WPIClass.Schedule s : schedules) {
@@ -154,21 +177,41 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         return events;
     }
 
-    // TODO: handle AsyncTask on screen orientation change
-    private class GetClassesTask extends AsyncTask<String, Void, ArrayList<WPIClass>> {
+    private void updateData() {
+        if (mGetClassesTask == null) {
+            mGetClassesTask = new GetClassesTask();
+            mGetClassesTask.execute();
+        }
+    }
+
+    private void updateView() {
+        ArrayList<WPIClass> classes = mClassesPage.getClasses();
+        if (classes == null)
+            return;
+
+        String text = "";
+        for (WPIClass c : classes)
+            text += c.toString() + "\n";
+        mTextClasses.setText(text);
+    }
+
+    private class GetClassesTask extends AsyncTask<Void, Void, Boolean> {
         @Override
-        protected ArrayList<WPIClass> doInBackground(String... params) {
-            return ClassesPage.getClasses(params[0]);
+        protected Boolean doInBackground(Void... params) {
+            return !isCancelled() && mClassesPage.refresh();
         }
 
         @Override
-        protected void onPostExecute(ArrayList<WPIClass> wpiClasses) {
-            mClasses = wpiClasses;
-            String text = "";
-            for (WPIClass c : mClasses)
-                text += c.toString() + "\n";
-            mTextClasses.setText(text);
+        protected void onPostExecute(Boolean success) {
+            mGetClassesTask = null;
+            if (!success) return;
 
+            updateView();
+        }
+
+        @Override
+        protected void onCancelled() {
+            mGetClassesTask = null;
         }
     }
 }

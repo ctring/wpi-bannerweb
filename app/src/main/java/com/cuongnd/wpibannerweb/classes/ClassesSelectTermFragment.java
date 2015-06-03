@@ -46,7 +46,7 @@ public class ClassesSelectTermFragment extends ListFragment {
     private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
-            return ClassesPage.getTerms();
+            return ClassesPage.getTerms(getActivity());
         }
 
         @Override

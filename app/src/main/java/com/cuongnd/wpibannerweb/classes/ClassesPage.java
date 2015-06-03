@@ -1,6 +1,9 @@
 package com.cuongnd.wpibannerweb.classes;
 
-import com.cuongnd.wpibannerweb.helper.ConnectionManager;
+import android.content.Context;
+
+import com.cuongnd.wpibannerweb.ConnectionManager;
+import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
 
@@ -12,6 +15,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,22 +29,40 @@ import java.util.Locale;
 public class ClassesPage {
     private static final String TAG = "ClassesPage";
 
+    private static final String JSON_CLASSES = "classes";
+    private static final String JSON_REMIND = "remind";
+
     private static final String REGISTRATION =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_GenMenu?name=bmenu.P_RegMnu";
-    private static final String VIEW_TERM =
-            "https://bannerweb.wpi.edu/pls/prod/bwskflib.P_SelDefTerm";
     private static final String SELECT_TERM =
             "https://bannerweb.wpi.edu/pls/prod/bwcklibs.P_StoreTerm";
+    private static final String VIEW_TERM =
+            "https://bannerweb.wpi.edu/pls/prod/bwskflib.P_SelDefTerm";
     private static final String VIEW_CLASSES =
             "https://bannerweb.wpi.edu/pls/prod/bwskfshd.P_CrseSchdDetl";
 
-    public static final String JSON_TERM = "term";
-    public static final String JSON_CLASSES = "classes";
-    public static final String JSON_CLASS_NAME = "classname";
-    public static final String JSON_CLASS_INFO = "classinfo";
-    public static final String JSON_CLASS_TIME = "classtime";
+    private static final String CLASSES_PAGE_FOLDER = "classes_page";
 
-    public static ArrayList<Utils.TermValue> getTerms() {
+    public static String getFileName(String termId) {
+        return termId + ".json";
+    }
+
+    private Context mContext;
+    private String mTermId;
+    private volatile ArrayList<WPIClass> mClasses;
+    private volatile boolean mRemind;
+
+    private File mClassesPageDir;
+
+    public ClassesPage(Context context, String termId) {
+        mContext = context;
+        mTermId = termId;
+        mClassesPageDir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
+
+        loadFromLocal(); // Always call this after mClassesPageDir is initiated
+    }
+
+    public static ArrayList<Utils.TermValue> getTerms(Context context) {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, REGISTRATION);
 
@@ -55,27 +78,93 @@ public class ClassesPage {
                 terms.add(term);
             }
         }
+
+        syncOfflineData(context, terms);
+
         return terms;
     }
 
-    public static ArrayList<WPIClass> getClasses(String termid) {
-        return loadFromHtml(termid);
+    private static void syncOfflineData(Context context, ArrayList<Utils.TermValue> terms) {
+        File dir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
+        File[] files = dir.listFiles();
+        for (File f : files) {
+            boolean exist = false;
+            for (Utils.TermValue t : terms) {
+                if (f.getName().equals(t.getValue() + ".json")) {
+                    exist = true;
+                    JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
+                    try {
+                        t.setMark(obj.getBoolean(JSON_REMIND));
+                    } catch (JSONException e) {
+                        Utils.logError(TAG, e);
+                    }
+                    break;
+                }
+            }
+            if (!exist)
+                f.delete();
+        }
     }
 
-    public static ArrayList<WPIClass> loadFromHtml(String termid) {
+    public ArrayList<WPIClass> getClasses() {
+        return mClasses;
+    }
+
+    public boolean isReminded() {
+        return mRemind;
+    }
+
+    public void setRemind(boolean remind) {
+        mRemind = remind;
+    }
+
+    private void loadFromLocal() {
+        mRemind = false;
+        ArrayList<WPIClass> classes = new ArrayList<>();
+        try {
+            JSONObject jsonObject = JSONSerializer
+                    .loadJSONFromFile(mContext, mClassesPageDir,getFileName(mTermId));
+            JSONArray jsonArray = jsonObject.getJSONArray(JSON_CLASSES);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                WPIClass c = WPIClass.fromJSON(jsonArray.getJSONObject(i));
+                classes.add(c);
+            }
+            mRemind = jsonObject.getBoolean(JSON_REMIND);
+        } catch (JSONException e) {
+            Utils.logError(TAG, e);
+        }
+        mClasses = classes;
+    }
+
+    private void saveToLocal() {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        try {
+            for (WPIClass c : mClasses) {
+                jsonArray.put(c.toJSON());
+            }
+            jsonObject.put(JSON_CLASSES, jsonArray);
+            jsonObject.put(JSON_REMIND, mRemind);
+            JSONSerializer
+                    .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTermId), jsonObject);
+        } catch (JSONException e) {
+            Utils.logError(TAG, e);
+        }
+    }
+
+    public boolean refresh() {
         ArrayList<WPIClass> classes = new ArrayList<>();
 
-        selectTerm(termid);
+        selectTerm();
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_CLASSES, REGISTRATION);
 
-        if (html == null) return classes;
+        if (html == null) return false;
 
         Document doc = Jsoup.parse(html);
 
-        // TODO: Notify properly when the select term page is up instead of the classes page
         if (doc.title().contains("Select Term")) {
-            return classes;
+            return false;
         }
 
         Elements tables = doc.getElementsByClass("datadisplaytable");
@@ -97,10 +186,18 @@ public class ClassesPage {
             classes.add(wpiclass);
         }
 
-        return classes;
+        mClasses = classes;
+
+        saveToLocal();
+        return true;
     }
 
-    private static ArrayList<WPIClass.Schedule> parseSchedule(Table time) {
+    private void selectTerm() {
+        ConnectionManager cm = ConnectionManager.getInstance();
+        cm.getPage(SELECT_TERM, VIEW_TERM, "term_in=" + mTermId);
+    }
+
+    private ArrayList<WPIClass.Schedule> parseSchedule(Table time) {
         SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.US);
         SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         ArrayList<WPIClass.Schedule> schedules = new ArrayList<>();
@@ -140,11 +237,6 @@ public class ClassesPage {
             Utils.logError(TAG, e);
         }
         return schedules;
-    }
-
-    private static void selectTerm(String termid) {
-        ConnectionManager cm = ConnectionManager.getInstance();
-        cm.getPage(SELECT_TERM, VIEW_TERM, "term_in=" + termid);
     }
 
 }
