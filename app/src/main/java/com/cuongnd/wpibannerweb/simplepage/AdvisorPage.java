@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.simpleparser;
+package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,7 +18,7 @@ import org.jsoup.nodes.Element;
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */
-public class AdvisorParser extends PageParser {
+public class AdvisorPage extends SimplePage {
 
     public static final String PAGE_NAME = "AdvisorParser";
 

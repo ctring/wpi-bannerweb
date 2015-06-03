@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.simpleparser;
+package com.cuongnd.wpibannerweb.simplepage;
 
 import android.app.DialogFragment;
 import android.os.AsyncTask;
@@ -25,7 +25,7 @@ public class ContentFragment extends DialogFragment {
     }
 
     private String mPageName;
-    private ParserManager mParserManager;
+    private SimplePageManager mSimplePageManager;
     private GetContentTask mGetContentTask;
     private View mView;
 
@@ -39,8 +39,8 @@ public class ContentFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mPageName = getArguments().getString(EXTRA_PAGE_NAME);
-        mParserManager = ParserManager.getInstance(getActivity());
-        mView = mParserManager.getView(mPageName, inflater, container);
+        mSimplePageManager = SimplePageManager.getInstance(getActivity());
+        mView = mSimplePageManager.getView(mPageName, inflater, container);
         return mView;
     }
 
@@ -74,14 +74,14 @@ public class ContentFragment extends DialogFragment {
 
     private void updateView() {
         if (mView != null)
-            mParserManager.updateView(mPageName, getActivity(), mView);
+            mSimplePageManager.updateView(mPageName, getActivity(), mView);
     }
 
     private class GetContentTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return !isCancelled() && mParserManager.refreshPage(mPageName);
+            return !isCancelled() && mSimplePageManager.refreshPage(mPageName);
         }
 
         @Override

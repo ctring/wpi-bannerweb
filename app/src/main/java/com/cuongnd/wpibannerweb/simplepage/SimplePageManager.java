@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.simpleparser;
+package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,45 +8,43 @@ import android.view.ViewGroup;
 import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
-import org.json.JSONObject;
-
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */
-public class ParserManager {
+public class SimplePageManager {
 
-    private static ParserManager manager;
+    private static SimplePageManager manager;
 
-    public static ParserManager getInstance(Context context) {
+    public static SimplePageManager getInstance(Context context) {
         if (manager == null) {
-            manager = new ParserManager(context);
+            manager = new SimplePageManager(context);
         }
         return manager;
     }
 
-    private final PageParser[] mParsers;
+    private final SimplePage[] mParsers;
     private Context mContext;
 
-    private ParserManager(Context context) {
+    private SimplePageManager(Context context) {
         mContext = context;
 
-        AdvisorParser advisorParser = new AdvisorParser();
-        advisorParser.setData(JSONSerializer.loadJSONFromFile(context,
-                AdvisorParser.PAGE_NAME + ".json"));
+        AdvisorPage advisorPage = new AdvisorPage();
+        advisorPage.setData(JSONSerializer.loadJSONFromFile(context,
+                AdvisorPage.PAGE_NAME + ".json"));
 
-        CardBalanceParser cardBalanceParser = new CardBalanceParser();
-        cardBalanceParser.setData(JSONSerializer.loadJSONFromFile(context,
-                CardBalanceParser.PAGE_NAME + ".json"));
+        CardBalancePage cardBalancePage = new CardBalancePage();
+        cardBalancePage.setData(JSONSerializer.loadJSONFromFile(context,
+                CardBalancePage.PAGE_NAME + ".json"));
 
-        MailboxParser mailboxParser = new MailboxParser();
-        mailboxParser.setData(JSONSerializer.loadJSONFromFile(context,
-                MailboxParser.PAGE_NAME + ".json"));
+        MailboxPage mailboxPage = new MailboxPage();
+        mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
+                MailboxPage.PAGE_NAME + ".json"));
 
-        mParsers = new PageParser[]{advisorParser, cardBalanceParser, mailboxParser};
+        mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage};
     }
 
     public boolean refreshPage(String name) {
-        PageParser page = getPageParserByName(name);
+        SimplePage page = getPageParserByName(name);
         if (page != null) {
             String html = ConnectionManager.getInstance().getPage(page.getUri());
             if (html == null)
@@ -59,7 +57,7 @@ public class ParserManager {
     }
 
     public View getView(String name, LayoutInflater inflater, ViewGroup container) {
-        PageParser page = getPageParserByName(name);
+        SimplePage page = getPageParserByName(name);
         if (page != null) {
             return page.getView(inflater, container);
         }
@@ -67,14 +65,14 @@ public class ParserManager {
     }
 
     public void updateView(String name, Context context, View view) {
-        PageParser page = getPageParserByName(name);
+        SimplePage page = getPageParserByName(name);
         if (page != null) {
             page.updateView(context, view);
         }
     }
 
-    private PageParser getPageParserByName(String name) {
-        for (PageParser page : mParsers) {
+    private SimplePage getPageParserByName(String name) {
+        for (SimplePage page : mParsers) {
             if (page.getName().equals(name))
                 return page;
         }

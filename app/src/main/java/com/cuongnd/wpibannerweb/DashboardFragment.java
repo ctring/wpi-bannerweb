@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
-import com.cuongnd.wpibannerweb.simpleparser.AdvisorParser;
-import com.cuongnd.wpibannerweb.simpleparser.CardBalanceParser;
-import com.cuongnd.wpibannerweb.simpleparser.ContentFragment;
-import com.cuongnd.wpibannerweb.simpleparser.MailboxParser;
+import com.cuongnd.wpibannerweb.simplepage.AdvisorPage;
+import com.cuongnd.wpibannerweb.simplepage.CardBalancePage;
+import com.cuongnd.wpibannerweb.simplepage.ContentFragment;
+import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
 
 
 /**
@@ -66,7 +66,7 @@ public class DashboardFragment extends Fragment {
         buttonBalance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContentDialog(CardBalanceParser.PAGE_NAME);
+                showContentDialog(CardBalancePage.PAGE_NAME);
             }
         });
 
@@ -74,7 +74,7 @@ public class DashboardFragment extends Fragment {
         buttonMailbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContentDialog(MailboxParser.PAGE_NAME);
+                showContentDialog(MailboxPage.PAGE_NAME);
             }
         });
 
@@ -82,7 +82,7 @@ public class DashboardFragment extends Fragment {
         buttonAdvisor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContentDialog(AdvisorParser.PAGE_NAME);
+                showContentDialog(AdvisorPage.PAGE_NAME);
             }
         });
 

@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.simpleparser;
+package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,21 +12,18 @@ import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Table;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */
-public class CardBalanceParser extends PageParser {
+public class CardBalancePage extends SimplePage {
     public static final String PAGE_NAME = "CardBalanceParser";
 
     public static final String JSON_MEAL_PLAN = "mealplan";

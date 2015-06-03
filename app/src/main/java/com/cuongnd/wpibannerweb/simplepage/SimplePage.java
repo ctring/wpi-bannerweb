@@ -1,4 +1,4 @@
-package com.cuongnd.wpibannerweb.simpleparser;
+package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,10 @@ import org.json.JSONObject;
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */
-public abstract class PageParser {
+public abstract class SimplePage {
     protected JSONObject mData;
 
-    PageParser() {
+    SimplePage() {
         mData = new JSONObject();
     }
 
