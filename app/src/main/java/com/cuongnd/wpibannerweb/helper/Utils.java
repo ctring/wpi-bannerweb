@@ -33,10 +33,12 @@ public class Utils {
     public static class TermValue {
         private String mValue;
         private String mText;
+        private boolean mMark;
 
         public TermValue(String value, String text) {
             mValue = value;
             mText = text;
+            mMark = false;
         }
 
         public String getValue() {
@@ -45,6 +47,12 @@ public class Utils {
 
         public String toString() {
             return mText;
+        }
+
+        public boolean isMark() { return mMark;}
+
+        public void setMark(boolean mark) {
+            mMark = mark;
         }
     }
 
