@@ -3,6 +3,7 @@ package com.cuongnd.wpibannerweb;
 import android.util.Log;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -47,16 +48,12 @@ public class ConnectionManager {
     private String mUsername;
     private String mPin;
 
-    HashMap<String, String> mCookies;
-
     private ConnectionManager() {
 
         // Set cookie manager VM-wide. This will not be effective so there is need of
         // manually managing cookie session later on.
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
-
-        mCookies = new HashMap<>();
 
     }
 
@@ -98,7 +95,7 @@ public class ConnectionManager {
                 Log.d(TAG, "Connection failed. Response code: " + responseCode);
                 return false;
             }
-
+            conn.disconnect();
         } catch (IOException e) {
             // TODO: Handle exception carefully
             Log.e(TAG, "Exception", e);
@@ -122,14 +119,12 @@ public class ConnectionManager {
             } else {
                 Log.d(TAG, "Log Out failed. Response code: " + responseCode);
             }
-
+            conn.disconnect();
         } catch (IOException e) {
             // TODO: Handle exception carefully
             Log.e(TAG, "Exception", e);
         }
     }
-
-
 
     /**
      * Get a page from a specifed url.
@@ -177,6 +172,7 @@ public class ConnectionManager {
                     return null;
                 }
             }
+            conn.disconnect();
             return data;
         }
         catch (IOException e) {
@@ -185,6 +181,43 @@ public class ConnectionManager {
         return null;
     }
 
+    /**
+     * Get bytes from a url
+     * @param url Url to get bytes from.
+     * @return An array of bytes.
+     * @throws IOException
+     */
+    byte[] getBytes(String url) throws IOException {
+        HttpURLConnection connection = makeConnection(url, null, null);
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = connection.getInputStream();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = in.read(buffer)) > 0) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.close();
+            return out.toByteArray();
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    /**
+     * Helper function for making a HttpURLConnection
+     * @param url Url of the connection.
+     * @param referrer Referrer of the connection. Can be null.
+     * @param data Data of the connection. If set, the method of the connection will be set to POST
+     * @return A HttpURLConnection object containing the provided parameters.
+     * @throws IOException
+     */
     private HttpURLConnection makeConnection(String url, String referrer, String data) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         if (referrer != null) {
@@ -206,17 +239,16 @@ public class ConnectionManager {
      * @return A string read from the input stream.
      */
     private String inputStreamToString(InputStream is) {
-        String str = new Scanner(is, CHARSET).useDelimiter("\\A").next();
-        return str;
+        return new Scanner(is, CHARSET).useDelimiter("\\A").next();
     }
 
     /**
      * Check if a page is the home
-     * @param data
-     * @return
+     * @param html HTML of the page
+     * @return True if the page is the homepage and false, otherwise.
      */
-    private boolean isUserLoginPage(String data) {
-        return (data.contains("<TITLE>User Login</TITLE>")); // User Login page signature
+    private boolean isUserLoginPage(String html) {
+        return (html.contains("<TITLE>User Login</TITLE>")); // User Login page signature
     }
 
 }
