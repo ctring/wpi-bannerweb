@@ -19,7 +19,7 @@ import org.jsoup.select.Elements;
  * Created by Cuong Nguyen on 5/11/2015.
  */
 public class MailboxPage extends SimplePage {
-    public static final String PAGE_NAME = "MailboxParser";
+    public static final String PAGE_NAME = "MailboxPage";
 
     public static final String JSON_BOX = "box";
     public static final String JSON_NUM1 = "num1";

@@ -20,7 +20,7 @@ import org.jsoup.nodes.Element;
  */
 public class AdvisorPage extends SimplePage {
 
-    public static final String PAGE_NAME = "AdvisorParser";
+    public static final String PAGE_NAME = "AdvisorPage";
 
     public static final String JSON_COUNT_ADVISOR = "count";
     public static final String JSON_ADVISOR = "advisor";

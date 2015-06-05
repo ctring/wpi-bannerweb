@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * Created by Cuong Nguyen on 5/11/2015.
  */
 public class CardBalancePage extends SimplePage {
-    public static final String PAGE_NAME = "CardBalanceParser";
+    public static final String PAGE_NAME = "CardBalancePage";
 
     public static final String JSON_MEAL_PLAN = "mealplan";
     public static final String JSON_DATE_STAMP = "datestamp";
