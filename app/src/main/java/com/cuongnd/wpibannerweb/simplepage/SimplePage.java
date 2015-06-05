@@ -19,8 +19,6 @@ public abstract class SimplePage {
 
     public abstract boolean parse(String html);
 
-    public abstract View getView(LayoutInflater inflater, ViewGroup container);
-
     public abstract void updateView(Context context, View v);
 
     public abstract String getName();

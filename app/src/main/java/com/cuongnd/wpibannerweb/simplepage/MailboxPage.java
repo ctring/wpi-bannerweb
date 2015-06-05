@@ -62,10 +62,6 @@ public class MailboxPage extends SimplePage {
         return true;
     }
 
-    @Override
-    public View getView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.card_mailbox, container, false);
-    }
 
     @Override
     public String getUri() {

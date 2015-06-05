@@ -76,11 +76,6 @@ public class CardBalancePage extends SimplePage {
     }
 
     @Override
-    public View getView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.card_cardbalance, container, false);
-    }
-
-    @Override
     public String getUri() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display";
     }

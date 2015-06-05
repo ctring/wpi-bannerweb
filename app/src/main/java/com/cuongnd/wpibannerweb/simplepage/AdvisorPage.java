@@ -72,11 +72,6 @@ public class AdvisorPage extends SimplePage {
         // TODO: when to return false?
         return true;
     }
-
-    @Override
-    public View getView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.card_advisor, container, false);
-    }
     
     @Override
     public void updateView(Context context, View v) {
