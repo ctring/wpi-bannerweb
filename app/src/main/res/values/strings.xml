@@ -6,7 +6,7 @@
     <string name="title_activity_classes">Registered Classes</string>
     <string name="title_activity_select_term">Select Term</string>
 
-    <!-- Strings related to login -->
+    <!-- Strings in login screen -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_log_in">Log in</string>
@@ -18,6 +18,13 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
 
+    <!-- Strings in Dashboard page -->
+    <string name="view_final_grade">View final grade</string>
+    <string name="view_classes">View registered classes</string>
+    <string name="title_cardbalance">WPI ID Card Balances</string>
+    <string name="title_mailbox">Mail Box Information</string>
+    <string name="title_advisor">Advisor Contact Information</string>
+
     <!-- Strings in Advisor Page -->
     <string name="advisor">Primary Advisor</string>
     <string name="advisor2">Advisor for 2nd Major</string>
@@ -25,12 +32,17 @@
     <string name="department">Advisor Department</string>
     <string name="office">Office Location</string>
 
-    <!-- String in Card Balance Page -->
+    <!-- Strings in Card Balance Page -->
     <string name="account">Account</string>
-    <string name="balance">Balance</string>
-    <string name="lastused">Date Last Used</string>
+    <string name="balance">| Balance</string>
+    <string name="lastused">| Date Last Used</string>
 
-    <!-- String in Final Grade Page -->
+    <!-- Strings in Mail Box Page -->
+    <string name="first_turn">At least 4 complete turns</string>
+    <string name="second_turn">Passing the first number one time</string>
+    <string name="to_open">To open</string>
+
+    <!-- Strings in Final Grade Page -->
     <string name="course">Course</string>
     <string name="finalgrade">Final Grade</string>
     <string name="currentterm">Current Term</string>

@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class CardBalancePage extends SimplePage {
 
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.fragment_cardbalance, container, false);
+        return inflater.inflate(R.layout.card_cardbalance, container, false);
     }
 
     @Override
@@ -112,8 +113,28 @@ public class CardBalancePage extends SimplePage {
 
     private void addRow(Context context, TableLayout table) {
         TableRow row = new TableRow(context);
-        for (int j = 0; j < 3; j++)
-            row.addView(new TextView(context));
+
+        TableRow.LayoutParams paramsAccount =
+                new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.4f);
+        TextView textAccount = new TextView(context);
+        textAccount.setLayoutParams(paramsAccount);
+
+        TableRow.LayoutParams paramsBalance =
+                new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.3f);
+        TextView textBalance = new TextView(context);
+        textBalance.setLayoutParams(paramsBalance);
+        textBalance.setGravity(Gravity.CENTER);
+
+        TableRow.LayoutParams paramsDate =
+                new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 0.3f);
+        TextView textDate = new TextView(context);
+        textDate.setLayoutParams(paramsDate);
+        textDate.setGravity(Gravity.CENTER);
+
+        row.addView(textAccount);
+        row.addView(textBalance);
+        row.addView(textDate);
+
         table.addView(row);
     }
 }

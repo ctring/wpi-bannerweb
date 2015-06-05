@@ -56,18 +56,10 @@ public class SimplePageManager {
         return false;
     }
 
-    public View getView(String name, LayoutInflater inflater, ViewGroup container) {
+    public void updateView(String name, View view) {
         SimplePage page = getPageParserByName(name);
         if (page != null) {
-            return page.getView(inflater, container);
-        }
-        return null;
-    }
-
-    public void updateView(String name, Context context, View view) {
-        SimplePage page = getPageParserByName(name);
-        if (page != null) {
-            page.updateView(context, view);
+            page.updateView(mContext, view);
         }
     }
 

@@ -1,23 +1,26 @@
 package com.cuongnd.wpibannerweb;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
+
 import android.widget.ImageView;
-import android.widget.TableLayout;
+
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
 import com.cuongnd.wpibannerweb.simplepage.AdvisorPage;
 import com.cuongnd.wpibannerweb.simplepage.CardBalancePage;
-import com.cuongnd.wpibannerweb.simplepage.ContentFragment;
 import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
+import com.cuongnd.wpibannerweb.simplepage.SimplePageManager;
 
 
 /**
@@ -26,11 +29,20 @@ import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
 public class DashboardFragment extends Fragment {
 
     public static final String EXTRA_USERNAME = "username";
-    private static final String DIALOG_CONTENT = "content";
 
-    private ImageView imageProfile;
+    private ImageView mImageProfile;
+    private CardView mCardAdvisor;
+    private CardView mCardMailbox;
+    private CardView mCardCardbalance;
+    private SwipeRefreshLayout mSwipeRefresh ;
 
-    private TextView textTest;
+    private volatile int mTaskCounter;
+    private SimplePageManager mSimplePageManager;
+    private boolean mFirstRun;
+
+    private GetContentTask mGetMailbox;
+    private GetContentTask mGetCardBalance;
+    private GetContentTask mGetAdvisor;
 
     public static DashboardFragment newInstance(String username) {
         Bundle args = new Bundle();
@@ -48,45 +60,27 @@ public class DashboardFragment extends Fragment {
         SessionManager sm = SessionManager.getInstance(getActivity().getApplicationContext());
         sm.checkStatus();
 
+        setRetainInstance(true);
+
+        mSimplePageManager = SimplePageManager.getInstance(getActivity());
+        mTaskCounter = 0;
+        mFirstRun = true;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        imageProfile = (ImageView) v.findViewById(R.id.image_profile);
+        mImageProfile = (ImageView) v.findViewById(R.id.image_profile);
+        mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
+        mCardMailbox = (CardView) v.findViewById(R.id.cv_mailbox);
+        mCardCardbalance = (CardView) v.findViewById(R.id.cv_cardbalance);
 
         TextView textName = (TextView) v.findViewById(R.id.text_name);
         textName.setText(SessionManager.getInstance(getActivity().getApplicationContext())
                 .getUserName());
 
-        TextView textWpiId = (TextView) v.findViewById(R.id.text_wpiid);
-
-        ImageButton buttonBalance = (ImageButton) v.findViewById(R.id.button_balance);
-        buttonBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showContentDialog(CardBalancePage.PAGE_NAME);
-            }
-        });
-
-        ImageButton buttonMailbox = (ImageButton) v.findViewById(R.id.button_mailbox);
-        buttonMailbox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showContentDialog(MailboxPage.PAGE_NAME);
-            }
-        });
-
-        ImageButton buttonAdvisor = (ImageButton) v.findViewById(R.id.button_advisor);
-        buttonAdvisor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showContentDialog(AdvisorPage.PAGE_NAME);
-            }
-        });
-
-        ImageButton buttonGrade = (ImageButton) v.findViewById(R.id.button_grade);
+        Button buttonGrade = (Button) v.findViewById(R.id.button_grade);
         buttonGrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +89,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        ImageButton buttonClasses = (ImageButton) v.findViewById(R.id.button_classes);
+        Button buttonClasses = (Button) v.findViewById(R.id.button_classes);
         buttonClasses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,16 +98,91 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        // TODO: make width equal height
-        TableLayout tableInfo = (TableLayout) v.findViewById(R.id.table_info);
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         return v;
     }
 
-    private void showContentDialog(String pageName) {
-        FragmentManager fm = getActivity().getFragmentManager();
-        ContentFragment fragment = ContentFragment.newInstance(pageName);
-        fragment.show(fm, DIALOG_CONTENT);
+    @Override
+    public void onStart() {
+        super.onStart();
+        mSimplePageManager.updateView(CardBalancePage.PAGE_NAME, mCardCardbalance);
+        mSimplePageManager.updateView(AdvisorPage.PAGE_NAME, mCardAdvisor);
+        mSimplePageManager.updateView(MailboxPage.PAGE_NAME, mCardMailbox);
+        if (mFirstRun) {
+            mFirstRun = false;
+            refresh();
+        }
+    }
+
+    private void refresh() {
+        mGetCardBalance = new GetContentTask(CardBalancePage.PAGE_NAME, mCardCardbalance);
+        mGetCardBalance.execute();
+        mGetAdvisor = new GetContentTask(AdvisorPage.PAGE_NAME, mCardAdvisor);
+        mGetAdvisor.execute();
+        mGetMailbox = new GetContentTask(MailboxPage.PAGE_NAME, mCardMailbox);
+        mGetMailbox.execute();
+    }
+
+    @Override
+    public void onStop() {
+        if (mGetCardBalance != null) {
+            mGetCardBalance.cancel(false);
+            mGetCardBalance = null;
+        }
+        if (mGetAdvisor != null) {
+            mGetAdvisor.cancel(false);
+            mGetAdvisor = null;
+        }
+        if (mGetMailbox != null) {
+            mGetMailbox.cancel(false);
+            mGetMailbox = null;
+        }
+        super.onStop();
+    }
+
+    private class GetContentTask extends AsyncTask<Void, Void, Boolean> {
+
+        View mView;
+        String mPageName;
+
+        GetContentTask(String pageName, View view) {
+            mView = view;
+            mPageName = pageName;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mTaskCounter++;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return !isCancelled() && mSimplePageManager.refreshPage(mPageName);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (!this.isCancelled() && success) {
+                mSimplePageManager.updateView(mPageName, mView);
+            }
+            mTaskCounter--;
+            if (mTaskCounter == 0)
+                mSwipeRefresh.setRefreshing(false);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mTaskCounter--;
+            if (mTaskCounter == 0)
+                mSwipeRefresh.setRefreshing(false);
+        }
     }
 
 }

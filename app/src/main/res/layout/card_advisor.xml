@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="180dp">
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/profile"
+        android:scaleType="fitStart"
+        />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:paddingStart="@dimen/common_margin_padding"
+        android:paddingLeft="@dimen/common_margin_padding"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/advisor"
+            android:id="@+id/textView"
+            style="@style/TextViewLabelStyle"
+            android:layout_marginTop="11dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cuong Tri Nguyen"
+            android:id="@+id/text_advisor"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            style="@style/TextViewLabelStyle"
+            android:layout_marginTop="11dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ctnguyendinh@wpi.edu"
+            android:id="@+id/text_email"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/department"
+            style="@style/TextViewLabelStyle"
+            android:layout_marginTop="11dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Computer Science"
+            android:id="@+id/text_department"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/office"
+            style="@style/TextViewLabelStyle"
+            android:layout_marginTop="11dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Not Applicable"
+            android:id="@+id/text_office"
+            />
+
+    </LinearLayout>
+</LinearLayout>
+

@@ -1,122 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:paddingBottom="@dimen/activity_vertical_margin"
-             android:paddingLeft="@dimen/activity_horizontal_margin"
-             android:paddingRight="@dimen/activity_horizontal_margin"
-             android:paddingTop="@dimen/activity_vertical_margin" >
-
-    <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/background_color">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:background="@color/accent_color"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:id="@+id/image_profile"
+                android:scaleType="centerInside"
+                android:src="@drawable/profile"/>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="24dp">
+                android:layout_marginLeft="16dp"
+                android:gravity="center_vertical">
 
-                <ImageView
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:id="@+id/image_profile"
-                    android:scaleType="centerInside"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dp"
+                    android:text="ctnguyendinh"
+                    android:id="@+id/text_name"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/swipe_refresh">
+            <ScrollView android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="none"
+                        android:overScrollMode="never">
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="12dp">
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/common_margin_padding">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="New Text"
-                        android:id="@+id/text_name"/>
+                        android:id="@+id/cv_cardbalance"
+                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_cardbalance"
+                                style="@style/TextViewCardTitleStyle"/>
+                            <include layout="@layout/divider" />
+                            <include layout="@layout/card_cardbalance" />
+                        </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    </android.support.v7.widget.CardView>
+
+                    <Button
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="New Text"
-                        android:id="@+id/text_wpiid"/>
+                        android:text="@string/view_final_grade"
+                        android:id="@+id/button_grade"
+                        android:layout_marginBottom="@dimen/common_margin_padding"
+                        android:textColor="@color/accent_color"/>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/view_classes"
+                        android:id="@+id/button_classes"
+                        android:layout_marginBottom="@dimen/common_margin_padding"
+                        android:textColor="@color/accent_color"/>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cv_advisor"
+                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_advisor"
+                                style="@style/TextViewCardTitleStyle"/>
+                            <include layout="@layout/divider" />
+                            <include layout="@layout/card_advisor" />
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cv_mailbox"
+                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/title_mailbox"
+                                style="@style/TextViewCardTitleStyle"/>
+                            <include layout="@layout/divider" />
+                            <include layout="@layout/card_mailbox" />
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
+
+
                 </LinearLayout>
 
-            </LinearLayout>
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:id="@+id/table_info">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/button_balance"
-                        android:layout_weight="1"
-                        android:layout_marginRight="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginBottom="12dp"/>
-
-                    <ImageButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/button_mailbox"
-                        android:layout_weight="1"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginBottom="12dp"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/button_advisor"
-                        android:layout_weight="1"
-                        android:layout_marginRight="12dp"
-                        android:layout_marginEnd="12dp"
-                        android:layout_marginTop="12dp"/>
-
-                    <ImageButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/button_grade"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="12dp"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <ImageButton
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_span="2"
-                        android:layout_weight="1"
-                        android:layout_marginTop="12dp"
-                        android:id="@+id/button_classes"/>
-                </TableRow>
-            </TableLayout>
-
-        </LinearLayout>
-    </ScrollView>
-</FrameLayout>
+            </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

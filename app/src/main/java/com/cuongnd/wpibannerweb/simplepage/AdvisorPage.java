@@ -75,7 +75,7 @@ public class AdvisorPage extends SimplePage {
 
     @Override
     public View getView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.fragment_advisor, container, false);
+        return inflater.inflate(R.layout.card_advisor, container, false);
     }
     
     @Override
