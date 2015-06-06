@@ -18,7 +18,7 @@
                 android:layout_height="70dp"
                 android:id="@+id/image_id"
                 android:scaleType="centerInside"
-                android:src="@drawable/profile"/>
+                android:src="@drawable/goat"/>
 
             <LinearLayout
                 android:orientation="vertical"

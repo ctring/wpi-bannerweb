@@ -34,8 +34,8 @@
 
     <!-- Strings in Card Balance Page -->
     <string name="account">Account</string>
-    <string name="balance">| Balance</string>
-    <string name="lastused">| Date Last Used</string>
+    <string name="balance">Balance</string>
+    <string name="lastused">Date Last Used</string>
 
     <!-- Strings in Mail Box Page -->
     <string name="first_turn">At least 4 complete turns</string>
