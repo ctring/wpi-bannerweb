@@ -170,7 +170,8 @@ public class ConnectionManager {
                     is.close();
                 }
                 else {
-                    return null;
+                    // TODO: make this better
+                    throw new IOException("Log in failed");
                 }
             }
             return data;
