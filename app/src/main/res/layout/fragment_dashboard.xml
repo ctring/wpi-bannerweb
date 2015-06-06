@@ -32,9 +32,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
                     android:textSize="20dp"
-                    android:text="ctnguyendinh"
                     android:id="@+id/text_name"
-                    />
+                    android:text="A random goat"/>
 
             </LinearLayout>
 
