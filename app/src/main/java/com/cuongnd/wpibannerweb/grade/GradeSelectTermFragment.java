@@ -37,7 +37,7 @@ public class GradeSelectTermFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mFirstRun = true;
     }
-
+    // TODO: think about empty list
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
@@ -117,18 +117,21 @@ public class GradeSelectTermFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
-            if (termValues == null) {
-                // TODO: notify by toast
-                getActivity().finish();
-                return;
+            try {
+                if (termValues == null) {
+                    // TODO: notify by toast
+                    getActivity().finish();
+                    return;
+                }
+                if (isCancelled()) return;
+                ArrayAdapter<Utils.TermValue> adapter =
+                        new ArrayAdapter<>(getActivity(),
+                                android.R.layout.simple_list_item_1, termValues);
+                GradeSelectTermFragment.this.setListAdapter(adapter);
+            } finally {
+                mSwipeRefreshLayout.setRefreshing(false);
+                mGetTermsTask = null;
             }
-            if (isCancelled()) return;
-            ArrayAdapter<Utils.TermValue> adapter =
-                    new ArrayAdapter<>(getActivity(),
-                            android.R.layout.simple_list_item_1, termValues);
-            GradeSelectTermFragment.this.setListAdapter(adapter);
-            mSwipeRefreshLayout.setRefreshing(false);
-            mGetTermsTask = null;
         }
 
         @Override

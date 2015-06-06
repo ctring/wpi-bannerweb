@@ -114,18 +114,21 @@ public class ClassesSelectTermFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
-            if (termValues == null) {
-            // TODO: notify by toast
-                getActivity().finish();
-                return;
+            try {
+                if (termValues == null) {
+                    // TODO: notify by toast
+                    getActivity().finish();
+                    return;
+                }
+                if (isCancelled()) return;
+                ArrayAdapter<Utils.TermValue> adapter =
+                        new ArrayAdapter<>(getActivity(),
+                                android.R.layout.simple_list_item_1, termValues);
+                ClassesSelectTermFragment.this.setListAdapter(adapter);
+            } finally {
+                mSwipeRefreshLayout.setRefreshing(false);
+                mGetTermsTask = null;
             }
-            if (isCancelled()) return;
-            ArrayAdapter<Utils.TermValue> adapter =
-                    new ArrayAdapter<>(getActivity(),
-                            android.R.layout.simple_list_item_1, termValues);
-            ClassesSelectTermFragment.this.setListAdapter(adapter);
-            mSwipeRefreshLayout.setRefreshing(false);
-            mGetTermsTask = null;
         }
 
         @Override
