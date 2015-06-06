@@ -17,7 +17,8 @@
             android:layout_weight="0.40"
             android:text="@string/account"
 
-            style="@style/TextViewLabelStyle"/>
+            style="@style/TextViewLabelStyle"
+            android:gravity="center_horizontal"/>
 
         <TextView
             android:layout_width="0dp"
