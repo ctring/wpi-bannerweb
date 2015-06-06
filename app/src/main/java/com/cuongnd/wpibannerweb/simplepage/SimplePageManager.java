@@ -40,7 +40,9 @@ public class SimplePageManager {
         mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
                 MailboxPage.PAGE_NAME + ".json"));
 
-        mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage};
+        IDImagePage idImagePage = new IDImagePage(mContext);
+
+        mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage, idImagePage};
     }
 
     public boolean refreshPage(String name) {
@@ -50,7 +52,8 @@ public class SimplePageManager {
             if (html == null)
                 return false;
             page.parse(html);
-            JSONSerializer.saveJSONToFile(mContext, page.getName() + ".json", page.getData());
+            if (!(page instanceof IDImagePage))
+                JSONSerializer.saveJSONToFile(mContext, page.getName() + ".json", page.getData());
             return true;
         }
         return false;

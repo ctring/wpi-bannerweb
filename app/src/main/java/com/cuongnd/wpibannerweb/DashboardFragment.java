@@ -19,6 +19,7 @@ import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
 import com.cuongnd.wpibannerweb.simplepage.AdvisorPage;
 import com.cuongnd.wpibannerweb.simplepage.CardBalancePage;
+import com.cuongnd.wpibannerweb.simplepage.IDImagePage;
 import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
 import com.cuongnd.wpibannerweb.simplepage.SimplePageManager;
 
@@ -30,7 +31,7 @@ public class DashboardFragment extends Fragment {
 
     public static final String EXTRA_USERNAME = "username";
 
-    private ImageView mImageProfile;
+    private ImageView mIDImage;
     private CardView mCardAdvisor;
     private CardView mCardMailbox;
     private CardView mCardCardbalance;
@@ -71,7 +72,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        mImageProfile = (ImageView) v.findViewById(R.id.image_profile);
+        mIDImage = (ImageView) v.findViewById(R.id.image_id);
         mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
         mCardMailbox = (CardView) v.findViewById(R.id.cv_mailbox);
         mCardCardbalance = (CardView) v.findViewById(R.id.cv_cardbalance);
@@ -115,36 +116,43 @@ public class DashboardFragment extends Fragment {
         mSimplePageManager.updateView(CardBalancePage.PAGE_NAME, mCardCardbalance);
         mSimplePageManager.updateView(AdvisorPage.PAGE_NAME, mCardAdvisor);
         mSimplePageManager.updateView(MailboxPage.PAGE_NAME, mCardMailbox);
+        mSimplePageManager.updateView(IDImagePage.PAGE_NAME, mIDImage);
         if (mFirstRun) {
             mFirstRun = false;
+            new GetContentTask(IDImagePage.PAGE_NAME, mIDImage).execute();
             refresh();
         }
     }
 
     private void refresh() {
+        mSwipeRefresh.setRefreshing(true);
+        cancelTask(mGetCardBalance);
         mGetCardBalance = new GetContentTask(CardBalancePage.PAGE_NAME, mCardCardbalance);
         mGetCardBalance.execute();
+        cancelTask(mGetAdvisor);
         mGetAdvisor = new GetContentTask(AdvisorPage.PAGE_NAME, mCardAdvisor);
         mGetAdvisor.execute();
+        cancelTask(mGetMailbox);
         mGetMailbox = new GetContentTask(MailboxPage.PAGE_NAME, mCardMailbox);
         mGetMailbox.execute();
     }
 
     @Override
     public void onStop() {
-        if (mGetCardBalance != null) {
-            mGetCardBalance.cancel(false);
-            mGetCardBalance = null;
-        }
-        if (mGetAdvisor != null) {
-            mGetAdvisor.cancel(false);
-            mGetAdvisor = null;
-        }
-        if (mGetMailbox != null) {
-            mGetMailbox.cancel(false);
-            mGetMailbox = null;
-        }
+        cancelTask(mGetCardBalance);
+        mGetCardBalance = null;
+
+        cancelTask(mGetAdvisor);
+        mGetAdvisor = null;
+
+        cancelTask(mGetMailbox);
+        mGetMailbox = null;
         super.onStop();
+    }
+
+    private void cancelTask(AsyncTask task) {
+        if (task != null)
+            task.cancel(false);
     }
 
     private class GetContentTask extends AsyncTask<Void, Void, Boolean> {

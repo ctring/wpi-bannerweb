@@ -184,20 +184,26 @@ public class ConnectionManager {
     /**
      * Get bytes from a url
      * @param url Url to get bytes from.
+     * @param referer Referer if required to access the page
      * @return An array of bytes.
      * @throws IOException
      */
-    byte[] getBytes(String url) throws IOException {
-        HttpURLConnection connection = makeConnection(url, null, null);
+    public byte[] getBytes(String url, String referer) throws IOException {
+        HttpURLConnection conn = makeConnection(url, referer, null);
 
         try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InputStream in = connection.getInputStream();
-
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
+            conn.connect();
+            if (conn.getResponseCode()  != 200) {
+                if (logIn()) {
+                    conn = makeConnection(url, referer, null);
+                }
+                else {
+                    return null;
+                }
             }
 
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = conn.getInputStream();
             int bytesRead = 0;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
@@ -206,7 +212,7 @@ public class ConnectionManager {
             out.close();
             return out.toByteArray();
         } finally {
-            connection.disconnect();
+            conn.disconnect();
         }
     }
 
