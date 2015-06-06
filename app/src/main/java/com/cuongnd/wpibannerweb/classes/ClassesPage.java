@@ -16,6 +16,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,7 +63,7 @@ public class ClassesPage {
         loadFromLocal(); // Always call this after mClassesPageDir is initiated
     }
 
-    public static ArrayList<Utils.TermValue> getTerms(Context context) {
+    public static ArrayList<Utils.TermValue> getTerms(Context context) throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, REGISTRATION);
 
@@ -92,10 +93,10 @@ public class ClassesPage {
             for (Utils.TermValue t : terms) {
                 if (f.getName().equals(t.getValue() + ".json")) {
                     exist = true;
-                    JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
                     try {
+                        JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
                         t.setMark(obj.getBoolean(JSON_REMIND));
-                    } catch (JSONException e) {
+                    } catch (JSONException | IOException e) {
                         Utils.logError(TAG, e);
                     }
                     break;
@@ -130,7 +131,7 @@ public class ClassesPage {
                 classes.add(c);
             }
             mRemind = jsonObject.getBoolean(JSON_REMIND);
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             Utils.logError(TAG, e);
         }
         mClasses = classes;
@@ -147,12 +148,12 @@ public class ClassesPage {
             jsonObject.put(JSON_REMIND, mRemind);
             JSONSerializer
                     .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTermId), jsonObject);
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             Utils.logError(TAG, e);
         }
     }
 
-    public boolean refresh() {
+    public boolean refresh() throws IOException {
         ArrayList<WPIClass> classes = new ArrayList<>();
 
         selectTerm();
@@ -192,7 +193,7 @@ public class ClassesPage {
         return true;
     }
 
-    private void selectTerm() {
+    private void selectTerm() throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
         cm.getPage(SELECT_TERM, VIEW_TERM, "term_in=" + mTermId);
     }

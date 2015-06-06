@@ -10,12 +10,15 @@ import android.widget.ListView;
 
 import com.cuongnd.wpibannerweb.helper.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Created by Cuong Nguyen on 5/29/2015.
  */
 public class ClassesSelectTermFragment extends ListFragment {
+
+    private static final String TAG = "ClassesSelectTermFragment";
 
     private GetTermsTask mGetTermsTask;
 
@@ -46,11 +49,18 @@ public class ClassesSelectTermFragment extends ListFragment {
     private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
-            return ClassesPage.getTerms(getActivity());
+            try {
+                return ClassesPage.getTerms(getActivity());
+            } catch (IOException e) {
+                Utils.logError(TAG, e);
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
+            if (termValues == null) return;
+
             ArrayAdapter<Utils.TermValue> adapter =
                     new ArrayAdapter<>(getActivity(),
                             android.R.layout.simple_list_item_1, termValues);

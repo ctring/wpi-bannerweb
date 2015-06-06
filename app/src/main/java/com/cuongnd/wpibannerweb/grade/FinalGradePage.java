@@ -11,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -30,7 +31,7 @@ public class FinalGradePage {
     public static final String JSON_SUMMARY = "summary";
     public static final String JSON_TERM = "term";
 
-    public static ArrayList<Utils.TermValue> getTerms() {
+    public static ArrayList<Utils.TermValue> getTerms() throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, STUDENT_RECORDS);
 
@@ -47,11 +48,9 @@ public class FinalGradePage {
         return terms;
     }
 
-    public static JSONObject load(String termid) {
+    public static JSONObject load(String termid) throws IOException, JSONException {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_GRADE, VIEW_TERM, "term_in=" + termid);
-
-        if (html == null) return null;
 
         Document doc = Jsoup.parse(html);
         Element tableCourse = doc.select("table:contains(Undergraduate Course work)").first();
@@ -60,17 +59,11 @@ public class FinalGradePage {
         Table course = new Table(tableCourse);
         Table summary = new Table(tableSummary);
 
-        try {
-            JSONObject data = new JSONObject();
-            data.put(JSON_TERM, termid);
-            data.put(JSON_COURSE, course.toJSONArray());
-            data.put(JSON_SUMMARY, summary.toJSONArray());
-            return data;
-        } catch (JSONException e) {
-            Utils.logError(TAG, e);
-        }
-
-        return null;
+        JSONObject data = new JSONObject();
+        data.put(JSON_TERM, termid);
+        data.put(JSON_COURSE, course.toJSONArray());
+        data.put(JSON_SUMMARY, summary.toJSONArray());
+        return data;
     }
 
 

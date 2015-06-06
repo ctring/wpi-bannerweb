@@ -11,6 +11,7 @@ import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -61,12 +62,14 @@ public class AdvisorPage extends SimplePage {
         String location = locationE.nextSibling().toString().trim();
 
         try {
+            if (mData == null)
+                mData = new JSONObject();
             mData.put(JSON_ADVISOR, name)
                     .put(JSON_EMAIL, email)
                     .put(JSON_DEPARTMENT, department)
                     .put(JSON_LOCATION, location);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Utils.logError(PAGE_NAME, e);
         }
 
         // TODO: when to return false?

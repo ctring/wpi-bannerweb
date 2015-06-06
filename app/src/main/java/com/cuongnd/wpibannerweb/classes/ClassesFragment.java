@@ -18,7 +18,9 @@ import android.widget.ViewSwitcher;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -27,6 +29,9 @@ import java.util.List;
  * Created by Cuong Nguyen on 5/29/2015.
  */
 public class ClassesFragment extends Fragment implements WeekView.MonthChangeListener {
+
+    private static final String TAG = "ClassesFragment";
+
     public static final String EXTRA_TERM_ID = "TermId";
 
     public static ClassesFragment newInstance(String termId) {
@@ -198,7 +203,12 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     private class GetClassesTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
-            return !isCancelled() && mClassesPage.refresh();
+            try {
+                return !isCancelled() && mClassesPage.refresh();
+            } catch (IOException e) {
+                Utils.logError(TAG, e);
+            }
+            return false;
         }
 
         @Override

@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,23 +21,24 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
- * Created by Cuong Nguyen on 6/2/2015.
+ * Helper class for saving and loading JSON files
  */
 public class JSONSerializer {
     private static final String TAG = "JSONSerializer";
 
-    public static JSONObject loadJSONFromFile(Context context, String fileName) {
+    public static JSONObject loadJSONFromFile(Context context,
+                                              String fileName) throws JSONException, IOException {
         return loadJSONFromFile(context, null, fileName);
     }
 
-    public static JSONObject loadJSONFromFile(Context context, File dir, String fileName) {
+    public static JSONObject loadJSONFromFile
+            (Context context, File dir, String fileName) throws JSONException, IOException{
         BufferedReader reader = null;
         try {
             InputStream in;
             if (dir == null) {
                 in = context.openFileInput(fileName);
-            }
-            else {
+            } else {
                 in = new FileInputStream(new File(dir, fileName));
             }
             reader = new BufferedReader(new InputStreamReader(in));
@@ -46,25 +48,20 @@ public class JSONSerializer {
                 jsonString.append(line);
             }
             return new JSONObject(jsonString.toString());
-        } catch (IOException | JSONException e) {
-            Utils.logError(TAG, e);
         } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (IOException e) {
-                Utils.logError(TAG, e);
-            }
+            if (reader != null)
+                reader.close();
         }
-        return new JSONObject();
     }
 
-    public static void saveJSONToFile(Context context, String fileName, JSONObject jsonObject) {
+
+    public static void saveJSONToFile(Context context,
+                                      String fileName, JSONObject jsonObject) throws IOException {
         saveJSONToFile(context, null, fileName, jsonObject);
     }
 
     public static void saveJSONToFile(Context context, File dir, String fileName,
-                                      JSONObject jsonObject) {
+                                      JSONObject jsonObject) throws IOException {
         Writer writer = null;
         try {
             OutputStream out;
@@ -75,15 +72,9 @@ public class JSONSerializer {
             }
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(jsonObject.toString());
-        } catch (IOException e) {
-            Utils.logError(TAG, e);
         } finally {
-            try {
-                if (writer != null)
-                    writer.close();
-            } catch (IOException e) {
-                Utils.logError(TAG, e);
-            }
+            if (writer != null)
+                writer.close();
         }
     }
 }

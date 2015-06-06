@@ -10,12 +10,15 @@ import android.widget.ListView;
 
 import com.cuongnd.wpibannerweb.helper.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Created by Cuong Nguyen on 5/29/2015.
  */
 public class GradeSelectTermFragment extends ListFragment {
+
+    private static final String TAG = "GradeSelectTermFragment";
 
     private GetTermsTask mGetTermsTask;
     @Override
@@ -47,12 +50,17 @@ public class GradeSelectTermFragment extends ListFragment {
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
             if (isCancelled())
                 return null;
-            return FinalGradePage.getTerms();
+            try {
+                return FinalGradePage.getTerms();
+            } catch (IOException e) {
+                Utils.logError(TAG, e);
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
-            if (isCancelled())
+            if (isCancelled() || termValues == null)
                 return;
             ArrayAdapter<Utils.TermValue> adapter =
                     new ArrayAdapter<>(getActivity(),

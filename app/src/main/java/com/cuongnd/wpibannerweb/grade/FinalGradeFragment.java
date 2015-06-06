@@ -22,6 +22,7 @@ import com.cuongnd.wpibannerweb.helper.Table;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -88,11 +89,20 @@ public class FinalGradeFragment extends Fragment {
     private class GetGradeTask extends AsyncTask<String, Void, JSONObject> {
         @Override
         protected JSONObject doInBackground(String... params) {
-            return FinalGradePage.load(params[0]);
+            try {
+                return FinalGradePage.load(params[0]);
+            } catch (IOException | JSONException e) {
+                Utils.logError(TAG, e);
+            }
+            return null;
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
+            if (result == null) {
+                // TODO: notify that downloading failed
+                return;
+            }
             mScrollGrade.setVisibility(View.VISIBLE);
             try {
                 Table course = new Table(result.getJSONArray(FinalGradePage.JSON_COURSE));

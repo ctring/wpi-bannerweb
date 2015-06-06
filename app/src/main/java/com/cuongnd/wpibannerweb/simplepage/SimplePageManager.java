@@ -7,11 +7,18 @@ import android.view.ViewGroup;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
+import com.cuongnd.wpibannerweb.helper.Utils;
+
+import org.json.JSONException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by Cuong Nguyen on 5/11/2015.
  */
 public class SimplePageManager {
+    private static final String TAG = "SimplePageManager";
 
     private static SimplePageManager manager;
 
@@ -29,23 +36,36 @@ public class SimplePageManager {
         mContext = context;
 
         AdvisorPage advisorPage = new AdvisorPage();
-        advisorPage.setData(JSONSerializer.loadJSONFromFile(context,
-                AdvisorPage.PAGE_NAME + ".json"));
+        try {
+            advisorPage.setData(JSONSerializer.loadJSONFromFile(context,
+                    AdvisorPage.PAGE_NAME + ".json"));
+        } catch (IOException | JSONException e) {
+            advisorPage.setData(null);
+        }
 
         CardBalancePage cardBalancePage = new CardBalancePage();
-        cardBalancePage.setData(JSONSerializer.loadJSONFromFile(context,
-                CardBalancePage.PAGE_NAME + ".json"));
+        try {
+            cardBalancePage.setData(JSONSerializer.loadJSONFromFile(context,
+                    CardBalancePage.PAGE_NAME + ".json"));
+        } catch (IOException | JSONException e) {
+            // TODO Log this exception somewhere
+            cardBalancePage.setData(null);
+        }
 
         MailboxPage mailboxPage = new MailboxPage();
-        mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
-                MailboxPage.PAGE_NAME + ".json"));
+        try {
+            mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
+                    MailboxPage.PAGE_NAME + ".json"));
+        } catch (IOException | JSONException e) {
+            mailboxPage.setData(null);
+        }
 
         IDImagePage idImagePage = new IDImagePage(mContext);
 
         mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage, idImagePage};
     }
 
-    public boolean refreshPage(String name) {
+    public boolean refreshPage(String name) throws IOException, JSONException {
         SimplePage page = getPageParserByName(name);
         if (page != null) {
             String html = ConnectionManager.getInstance().getPage(page.getUri());

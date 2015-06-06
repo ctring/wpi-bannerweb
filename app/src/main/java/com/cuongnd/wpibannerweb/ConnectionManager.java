@@ -68,7 +68,7 @@ public class ConnectionManager {
      */
     public boolean logIn() {
         if (mUsername == null || mPin == null) {
-            throw new RuntimeException("Username and password is null.");
+            return false;
         }
         try {
             // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
@@ -131,7 +131,7 @@ public class ConnectionManager {
      * @param url Url to get page from.
      * @return The HTML string of the page. Return null if error occurs.
      */
-    public String getPage(String url) {
+    public String getPage(String url) throws IOException {
         return getPage(url, null);
     }
 
@@ -141,7 +141,7 @@ public class ConnectionManager {
      * @param referrer Referrer to the page.
      * @return The HTML string of the page. Return null if error occurs.
      */
-    public String getPage(String url, String referrer) {
+    public String getPage(String url, String referrer) throws IOException {
         return getPage(url, referrer, null);
     }
 
@@ -151,12 +151,13 @@ public class ConnectionManager {
      * @param url      Url to get page from.
      * @param referrer Referrer to the page.
      * @param postData Data for the post method
-     * @return The HTML string of the page. Return null if error occurs.
+     * @return The HTML string of the page.
+     * @throws IOException
      */
-    public String getPage(String url, String referrer, String postData) {
+    public String getPage(String url, String referrer, String postData) throws IOException {
+        HttpURLConnection conn = null;
         try {
-            HttpURLConnection conn = makeConnection(url, referrer, postData);
-
+            conn = makeConnection(url, referrer, postData);
             InputStream is = conn.getInputStream();
             String data = inputStreamToString(is);
             is.close();
@@ -172,13 +173,12 @@ public class ConnectionManager {
                     return null;
                 }
             }
-            conn.disconnect();
             return data;
+        } finally {
+            if (conn != null)
+                conn.disconnect();
         }
-        catch (IOException e) {
-            Log.e(TAG, "Exception", e);
-        }
-        return null;
+
     }
 
     /**
@@ -189,9 +189,10 @@ public class ConnectionManager {
      * @throws IOException
      */
     public byte[] getBytes(String url, String referer) throws IOException {
-        HttpURLConnection conn = makeConnection(url, referer, null);
-
+        HttpURLConnection conn = null;
         try {
+            conn = makeConnection(url, referer, null);
+
             conn.connect();
             if (conn.getResponseCode()  != 200) {
                 if (logIn()) {
@@ -212,7 +213,8 @@ public class ConnectionManager {
             out.close();
             return out.toByteArray();
         } finally {
-            conn.disconnect();
+            if (conn != null)
+                conn.disconnect();
         }
     }
 

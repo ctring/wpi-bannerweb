@@ -17,11 +17,17 @@ import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
+import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.simplepage.AdvisorPage;
 import com.cuongnd.wpibannerweb.simplepage.CardBalancePage;
 import com.cuongnd.wpibannerweb.simplepage.IDImagePage;
 import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
 import com.cuongnd.wpibannerweb.simplepage.SimplePageManager;
+
+import org.json.JSONException;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 
 /**
@@ -29,6 +35,7 @@ import com.cuongnd.wpibannerweb.simplepage.SimplePageManager;
  */
 public class DashboardFragment extends Fragment {
 
+    private static final String TAG = "DashboardFragment";
     public static final String EXTRA_USERNAME = "username";
 
     private ImageView mIDImage;
@@ -59,7 +66,9 @@ public class DashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         SessionManager sm = SessionManager.getInstance(getActivity().getApplicationContext());
-        sm.checkStatus();
+        if (!sm.checkStatus()) {
+            getActivity().finish();
+        }
 
         setRetainInstance(true);
 
@@ -172,7 +181,15 @@ public class DashboardFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return !isCancelled() && mSimplePageManager.refreshPage(mPageName);
+            try {
+                return !isCancelled() && mSimplePageManager.refreshPage(mPageName);
+            } catch (FileNotFoundException e) {
+                // TODO: report error in other way
+                Utils.logError(TAG, e);
+            } catch (IOException | JSONException e) {
+                Utils.logError(TAG, e);
+            }
+            return false;
         }
 
         @Override

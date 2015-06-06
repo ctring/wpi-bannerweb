@@ -39,14 +39,15 @@ public class SessionManager {
             .apply();
     }
 
-    public void checkStatus() {
+    public boolean checkStatus() {
         String username = mPref.getString(PREF_SID, null);
         String password = mPref.getString(PREF_PIN, null);
         if (username == null || password == null) {
             startLoginActivity();
-        } else {
-            mConnectionManager.setUsernameAndPin(username, password);
+            return false;
         }
+        mConnectionManager.setUsernameAndPin(username, password);
+        return true;
     }
 
     public void deactivate() {
