@@ -32,7 +32,13 @@ public class MailboxPage extends SimplePage {
     }
 
     @Override
+    public boolean dataLoaded() {
+        return mData.has(JSON_BOX);
+    }
+
+    @Override
     public boolean parse(String html) {
+
         Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
         Element body = doc.body();
 
@@ -70,8 +76,6 @@ public class MailboxPage extends SimplePage {
 
     @Override
     public void updateView(Context context, View v) {
-        if (mData == null)
-            return;
         try {
             TextView text = (TextView) v.findViewById(R.id.text_box);
             text.setText(mData.getString(JSON_BOX));

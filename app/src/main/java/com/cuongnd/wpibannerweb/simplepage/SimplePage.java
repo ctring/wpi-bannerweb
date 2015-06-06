@@ -33,4 +33,5 @@ public abstract class SimplePage {
         return mData;
     }
 
+    public abstract boolean dataLoaded();
 }

@@ -43,8 +43,14 @@ public class AdvisorPage extends SimplePage {
         return PAGE_NAME;
     }
 
+    @Override
     public String getUri() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwksadv.P_Summary";
+    }
+
+    @Override
+    public boolean dataLoaded() {
+        return false;
     }
 
     @Override
@@ -62,8 +68,6 @@ public class AdvisorPage extends SimplePage {
         String location = locationE.nextSibling().toString().trim();
 
         try {
-            if (mData == null)
-                mData = new JSONObject();
             mData.put(JSON_ADVISOR, name)
                     .put(JSON_EMAIL, email)
                     .put(JSON_DEPARTMENT, department)
@@ -78,8 +82,6 @@ public class AdvisorPage extends SimplePage {
     
     @Override
     public void updateView(Context context, View v) {
-        if (mData == null)
-            return;
         try {
             TextView text = (TextView) v.findViewById(R.id.text_advisor);
             text.setText(mData.getString(JSON_ADVISOR));

@@ -10,6 +10,7 @@ import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class SimplePageManager {
             advisorPage.setData(JSONSerializer.loadJSONFromFile(context,
                     AdvisorPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
-            advisorPage.setData(null);
+            advisorPage.setData(new JSONObject());
         }
 
         CardBalancePage cardBalancePage = new CardBalancePage();
@@ -49,7 +50,7 @@ public class SimplePageManager {
                     CardBalancePage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             // TODO Log this exception somewhere
-            cardBalancePage.setData(null);
+            cardBalancePage.setData(new JSONObject());
         }
 
         MailboxPage mailboxPage = new MailboxPage();
@@ -57,7 +58,7 @@ public class SimplePageManager {
             mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
                     MailboxPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
-            mailboxPage.setData(null);
+            mailboxPage.setData(new JSONObject());
         }
 
         IDImagePage idImagePage = new IDImagePage(mContext);
@@ -68,9 +69,11 @@ public class SimplePageManager {
     public boolean refreshPage(String name) throws IOException, JSONException {
         SimplePage page = getPageParserByName(name);
         if (page != null) {
+            if (page.dataLoaded()) {
+                return true;
+            }
+
             String html = ConnectionManager.getInstance().getPage(page.getUri());
-            if (html == null)
-                return false;
             page.parse(html);
             if (!(page instanceof IDImagePage))
                 JSONSerializer.saveJSONToFile(mContext, page.getName() + ".json", page.getData());

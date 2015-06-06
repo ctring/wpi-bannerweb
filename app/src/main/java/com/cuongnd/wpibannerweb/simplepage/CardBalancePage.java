@@ -14,6 +14,7 @@ import com.cuongnd.wpibannerweb.helper.Table;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,6 +36,11 @@ public class CardBalancePage extends SimplePage {
     @Override
     public String getName() {
         return PAGE_NAME;
+    }
+
+    @Override
+    public boolean dataLoaded() {
+        return false;
     }
 
     @Override
@@ -62,7 +68,6 @@ public class CardBalancePage extends SimplePage {
 
         try {
             Table mealTable = new Table(table);
-
             mData.put(JSON_MEAL_PLAN, mealPlan)
                     .put(JSON_DATE_STAMP, dateStamp)
                     .put(JSON_TIME_STAMP, timeStamp)
@@ -82,8 +87,6 @@ public class CardBalancePage extends SimplePage {
 
     @Override
     public void updateView(Context context, View v) {
-        if (mData == null)
-            return;
         try {
             TableLayout tableView = (TableLayout) v
                     .findViewById(R.id.table_cardbalance);

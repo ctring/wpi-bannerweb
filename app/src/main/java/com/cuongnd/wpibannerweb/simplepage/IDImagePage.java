@@ -14,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,12 @@ public class IDImagePage extends SimplePage {
 
     IDImagePage(Context context) {
         mContext = context;
+    }
+
+    @Override
+    public boolean dataLoaded() {
+        File file = new File(mContext.getFilesDir(), IMAGE_NAME);
+        return file.exists();
     }
 
     @Override

@@ -46,7 +46,7 @@ public class DashboardFragment extends Fragment {
 
     private volatile int mTaskCounter;
     private SimplePageManager mSimplePageManager;
-    private boolean mFirstRun;
+    private boolean mFirstRun, mTerminated;
 
     private GetContentTask mGetMailbox;
     private GetContentTask mGetCardBalance;
@@ -65,9 +65,10 @@ public class DashboardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mTerminated = false;
         SessionManager sm = SessionManager.getInstance(getActivity().getApplicationContext());
         if (!sm.checkStatus()) {
-            getActivity().finish();
+            mTerminated = true;
         }
 
         setRetainInstance(true);
@@ -109,6 +110,7 @@ public class DashboardFragment extends Fragment {
         });
 
         mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh);
+        mSwipeRefresh.setColorSchemeResources(R.color.accent_color, android.R.color.black);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -122,19 +124,25 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (mTerminated) return;
         mSimplePageManager.updateView(CardBalancePage.PAGE_NAME, mCardCardbalance);
         mSimplePageManager.updateView(AdvisorPage.PAGE_NAME, mCardAdvisor);
         mSimplePageManager.updateView(MailboxPage.PAGE_NAME, mCardMailbox);
         mSimplePageManager.updateView(IDImagePage.PAGE_NAME, mIDImage);
         if (mFirstRun) {
             mFirstRun = false;
+            mSwipeRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefresh.setRefreshing(true);
+                }
+            });
             new GetContentTask(IDImagePage.PAGE_NAME, mIDImage).execute();
             refresh();
         }
     }
 
     private void refresh() {
-        mSwipeRefresh.setRefreshing(true);
         cancelTask(mGetCardBalance);
         mGetCardBalance = new GetContentTask(CardBalancePage.PAGE_NAME, mCardCardbalance);
         mGetCardBalance.execute();
