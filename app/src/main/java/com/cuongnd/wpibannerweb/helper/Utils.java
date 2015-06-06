@@ -16,17 +16,6 @@ public class Utils {
         Log.e(TAG, "exception", e);
     }
 
-    public static void addRow(TableLayout table, String... text) {
-        Context context = table.getContext();
-        TableRow newRow = new TableRow(context);
-        for (String t : text) {
-            TextView newCell = new TextView(context);
-            newCell.setText(t);
-            newRow.addView(newCell);
-        }
-        table.addView(newRow);
-    }
-
     /**
      * Data structure for holding name and id of a term
      */

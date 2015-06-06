@@ -98,6 +98,7 @@ public class GradeSelectTermFragment extends ListFragment {
         Utils.TermValue selectedTerm = (Utils.TermValue) getListAdapter().getItem(position);
         Intent i = new Intent(getActivity(), FinalGradeActivity.class);
         i.putExtra(FinalGradeFragment.EXTRA_TERM_ID, selectedTerm.getValue());
+        i.putExtra(FinalGradeFragment.EXTRA_TERM_NAME, selectedTerm.toString());
         startActivity(i);
     }
 

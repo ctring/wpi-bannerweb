@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/finalgrade_swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scroll_grade"
-        android:visibility="invisible">
+        android:background="@color/background_color"
+        android:overScrollMode="never"
+        android:id="@+id/scroll_grade">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,13 +20,21 @@
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/table_course">
+                android:padding="@dimen/common_margin_padding"
+                android:id="@+id/finalgrade_table_grades">
 
             </TableLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/common_margin_padding"
+                style="@style/DividerStyle" />
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/common_margin_padding"
                 android:id="@+id/table_summary">
 
                 <TableRow
@@ -33,13 +43,19 @@
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/currentterm"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:padding="@dimen/common_margin_padding"
+                        android:text="@string/currentterm"
+                        android:gravity="center_vertical"/>
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/text_current_term"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:padding="@dimen/common_margin_padding"
+                        android:id="@+id/text_current_term"
+                        android:gravity="center"/>
                 </TableRow>
 
                 <TableRow
@@ -48,13 +64,19 @@
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/cumulative"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:padding="@dimen/common_margin_padding"
+                        android:text="@string/cumulative"
+                        android:gravity="center_vertical"/>
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/text_cumulative"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:padding="@dimen/common_margin_padding"
+                        android:id="@+id/text_cumulative"
+                        android:gravity="center"/>
                 </TableRow>
 
                 <TableRow
@@ -63,13 +85,19 @@
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/transfer"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:padding="@dimen/common_margin_padding"
+                        android:text="@string/transfer"
+                        android:gravity="center_vertical"/>
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/text_transfer"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:padding="@dimen/common_margin_padding"
+                        android:id="@+id/text_transfer"
+                        android:gravity="center"/>
                 </TableRow>
 
                 <TableRow
@@ -78,13 +106,19 @@
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/overall"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:padding="@dimen/common_margin_padding"
+                        android:text="@string/overall"
+                        android:gravity="center_vertical"/>
 
                     <TextView
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/text_overall"/>
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:padding="@dimen/common_margin_padding"
+                        android:id="@+id/text_overall"
+                        android:gravity="center"/>
                 </TableRow>
             </TableLayout>
         </LinearLayout>
@@ -92,4 +126,4 @@
     </ScrollView>
 
 
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

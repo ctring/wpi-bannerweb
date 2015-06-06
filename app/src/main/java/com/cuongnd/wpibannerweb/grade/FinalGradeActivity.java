@@ -11,6 +11,7 @@ public class FinalGradeActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         String termId = getIntent().getStringExtra(FinalGradeFragment.EXTRA_TERM_ID);
-        return FinalGradeFragment.newInstance(termId);
+        String termName = getIntent().getStringExtra(FinalGradeFragment.EXTRA_TERM_NAME);
+        return FinalGradeFragment.newInstance(termId, termName);
     }
 }
