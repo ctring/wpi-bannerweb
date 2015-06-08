@@ -104,12 +104,13 @@ public class DashboardFragment extends Fragment {
         buttonClasses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
+                //Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
+                Intent i = new Intent(getActivity(), TestActivity.class);
                 startActivity(i);
             }
         });
 
-        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh);
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_dashboard);
         mSwipeRefresh.setColorSchemeResources(R.color.accent_color, android.R.color.black);
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
