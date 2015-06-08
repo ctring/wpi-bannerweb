@@ -42,7 +42,7 @@
         <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/swipe_refresh">
+            android:id="@+id/swipe_refresh_dashboard">
             <ScrollView android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="none"
@@ -69,7 +69,7 @@
                                 android:text="@string/title_cardbalance"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
-                            <include layout="@layout/card_cardbalance" />
+                            <include layout="@layout/fragment_dashboard_card_cardbalance" />
                         </LinearLayout>
 
                     </android.support.v7.widget.CardView>
@@ -105,7 +105,7 @@
                                 android:text="@string/title_advisor"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
-                            <include layout="@layout/card_advisor" />
+                            <include layout="@layout/fragment_dashboard_card_advisor" />
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 
@@ -124,7 +124,7 @@
                                 android:text="@string/title_mailbox"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
-                            <include layout="@layout/card_mailbox" />
+                            <include layout="@layout/fragment_dashboard_card_mailbox" />
                         </LinearLayout>
 
                     </android.support.v7.widget.CardView>
