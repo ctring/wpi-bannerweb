@@ -5,19 +5,19 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:id="@+id/switcher">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text_classes"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"/>
-        </LinearLayout>
-    </ScrollView>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipe_refresh_classes">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_classes" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

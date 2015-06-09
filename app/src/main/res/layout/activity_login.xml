@@ -4,10 +4,10 @@
               android:layout_height="match_parent"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin"
+              android:paddingBottom="@dimen/common_margin_padding_large"
+              android:paddingLeft="@dimen/common_margin_padding_large"
+              android:paddingRight="@dimen/common_margin_padding_large"
+              android:paddingTop="@dimen/common_margin_padding_large"
               tools:context="com.cuongnd.wpibannerweb.LoginActivity">
 
     <!-- Login progress -->

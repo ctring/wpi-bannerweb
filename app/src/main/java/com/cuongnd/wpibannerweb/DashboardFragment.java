@@ -105,7 +105,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
-                Intent i = new Intent(getActivity(), TestActivity.class);
+                Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
                 startActivity(i);
             }
         });

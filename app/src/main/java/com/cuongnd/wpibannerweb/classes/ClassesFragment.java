@@ -2,16 +2,22 @@ package com.cuongnd.wpibannerweb.classes;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -19,6 +25,9 @@ import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Utils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,8 +59,8 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
     private ViewSwitcher mSwitcher;
     private WeekView mWeekView;
-    private TextView mTextClasses;
-    private CheckBox mCheckRemind;
+    private RecyclerView mRecyclerClasses;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,10 +84,20 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         View v = inflater.inflate(R.layout.fragment_classes, container, false);
         mSwitcher = (ViewSwitcher) v.findViewById(R.id.switcher);
 
-        mTextClasses = (TextView) v.findViewById(R.id.text_classes);
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_classes);
+        mSwipeRefresh.setColorSchemeResources(R.color.accent_color, android.R.color.black);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
 
         mWeekView = (WeekView) v.findViewById(R.id.weekView);
         mWeekView.setMonthChangeListener(this);
+
+        mRecyclerClasses = (RecyclerView) v.findViewById(R.id.recycler_classes);
+        mRecyclerClasses.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
     }
@@ -88,7 +107,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         super.onStart();
         updateView();
         if (mFirstTime) {
-            updateData();
+            refresh();
             mFirstTime = false;
         }
     }
@@ -182,7 +201,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         return events;
     }
 
-    private void updateData() {
+    private void refresh() {
         if (mGetClassesTask == null) {
             mGetClassesTask = new GetClassesTask();
             mGetClassesTask.execute();
@@ -194,10 +213,8 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         if (classes == null)
             return;
 
-        String text = "";
-        for (WPIClass c : classes)
-            text += c.toString() + "\n";
-        mTextClasses.setText(text);
+        ClassesAdapter adapter = new ClassesAdapter(classes);
+        mRecyclerClasses.setAdapter(adapter);
     }
 
     private class GetClassesTask extends AsyncTask<Void, Void, Boolean> {
@@ -213,15 +230,75 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
         @Override
         protected void onPostExecute(Boolean success) {
-            mGetClassesTask = null;
-            if (!success) return;
-
-            updateView();
+            try {
+                if (!success) return;
+                updateView();
+            } finally {
+                mGetClassesTask = null;
+            }
         }
 
         @Override
         protected void onCancelled() {
             mGetClassesTask = null;
+        }
+    }
+
+    private class ClassesAdapter extends RecyclerView.Adapter<ClassesAdapter.ClassesViewHolder> {
+
+        class ClassesViewHolder extends RecyclerView.ViewHolder {
+
+            TextView textClassName;
+            TextView textInstructorSection;
+            TextView textCrn;
+            CardView card;
+
+            public ClassesViewHolder(View itemView) {
+                super(itemView);
+                textClassName = (TextView) itemView.findViewById(R.id.text_class_name);
+                textInstructorSection = (TextView) itemView.findViewById(R.id.text_instructor_section);
+                textCrn = (TextView) itemView.findViewById(R.id.text_crn);
+                card = (CardView) itemView.findViewById(R.id.card_class);
+            }
+        }
+
+        private ArrayList<WPIClass> mClasses;
+
+        public ClassesAdapter(ArrayList<WPIClass> classes) {
+            mClasses = classes;
+        }
+
+        @Override
+        public ClassesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_classes_card,
+                    parent, false);
+            return new ClassesViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(ClassesViewHolder holder, int position) {
+            final WPIClass c = mClasses.get(position);
+            holder.textClassName.setText(c.getName());
+            holder.textInstructorSection.setText(String.format("%s  |  %s", c.getInstructor(),
+                    c.getSection()));
+            holder.textCrn.setText(String.format("CRN %s", c.getCRN()));
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        Intent i = new Intent(getActivity(), ClassesDetailActivity.class);
+                        JSONObject data = c.toJSON();
+                        i.putExtra(ClassesDetailFragment.EXTRA_WPI_CLASS, data.toString());
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Exception occurred", e);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mClasses.size();
         }
     }
 }
