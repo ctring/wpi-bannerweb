@@ -33,6 +33,8 @@
                   android:screenOrientation="portrait"/>
         <activity android:name=".classes.ClassesActivity"
                   android:label="@string/title_activity_classes" />
+        <activity android:name=".classes.ClassesDetailActivity"
+                  android:label="@string/title_activity_classes_detail" />
     </application>
 
 </manifest>
