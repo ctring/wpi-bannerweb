@@ -87,7 +87,7 @@ public class FinalGradeFragment extends Fragment {
 
 
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.finalgrade_swipe_refresh);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_grade);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -137,8 +137,8 @@ public class FinalGradeFragment extends Fragment {
             mTableCourse.removeAllViews();
             LayoutInflater inflater = getActivity().getLayoutInflater();
             for (int i = 1; i < course.size(); i++) {
-                String courseTitle = String.format("%s (%s %s)",
-                        course.get(i, 4), course.get(i, 1), course.get(i, 2));
+                String courseTitle = String.format("%s %s - %s",
+                        course.get(i, 1), course.get(i, 2), course.get(i, 4));
                 String grade = course.get(i, 6);
 
                 TableRow newRow = (TableRow) inflater.inflate(R.layout.fragment_finalgrade_row,
