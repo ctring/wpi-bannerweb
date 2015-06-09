@@ -9,8 +9,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:paddingStart="@dimen/common_margin_padding"
-        android:paddingLeft="@dimen/common_margin_padding"
+        android:paddingStart="@dimen/common_margin_padding_medium"
+        android:paddingLeft="@dimen/common_margin_padding_medium"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"

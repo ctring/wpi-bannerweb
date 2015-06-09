@@ -3,6 +3,7 @@
     <!-- Universal colors -->
     <color name="background_color">#f2f2f2</color>
     <color name="accent_color">#c41230</color>
+    <color name="grey">#abacab</color>
 
     <color name="event_color_01">#59dbe0</color>
     <color name="event_color_02">#f57f68</color>

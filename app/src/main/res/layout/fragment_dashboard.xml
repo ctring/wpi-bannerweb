@@ -52,13 +52,13 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/common_margin_padding">
+                    android:padding="@dimen/common_margin_padding_medium">
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/cv_cardbalance"
-                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        android:layout_marginBottom="@dimen/common_margin_padding_medium">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -67,6 +67,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/title_cardbalance"
+                                android:padding="@dimen/common_margin_padding_medium"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
                             <include layout="@layout/fragment_dashboard_card_cardbalance" />
@@ -79,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/view_classes"
                         android:id="@+id/button_classes"
-                        android:layout_marginBottom="@dimen/common_margin_padding"
+                        android:layout_marginBottom="@dimen/common_margin_padding_medium"
                         android:textColor="@color/accent_color"/>
 
                     <Button
@@ -87,14 +88,14 @@
                         android:layout_height="wrap_content"
                         android:text="@string/view_final_grade"
                         android:id="@+id/button_grade"
-                        android:layout_marginBottom="@dimen/common_margin_padding"
+                        android:layout_marginBottom="@dimen/common_margin_padding_medium"
                         android:textColor="@color/accent_color"/>
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/cv_advisor"
-                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        android:layout_marginBottom="@dimen/common_margin_padding_medium">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -103,6 +104,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/title_advisor"
+                                android:padding="@dimen/common_margin_padding_medium"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
                             <include layout="@layout/fragment_dashboard_card_advisor" />
@@ -113,7 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/cv_mailbox"
-                        android:layout_marginBottom="@dimen/common_margin_padding">
+                        android:layout_marginBottom="@dimen/common_margin_padding_medium">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -122,6 +124,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/title_mailbox"
+                                android:padding="@dimen/common_margin_padding_medium"
                                 style="@style/TextViewCardTitleStyle"/>
                             <include layout="@layout/divider" />
                             <include layout="@layout/fragment_dashboard_card_mailbox" />

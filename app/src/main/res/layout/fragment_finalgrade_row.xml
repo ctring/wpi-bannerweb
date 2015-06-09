@@ -8,7 +8,7 @@
         android:layout_weight="5"
         android:id="@+id/finalgrade_course_name"
         android:text=""
-        android:padding="@dimen/common_margin_padding"
+        android:padding="@dimen/common_margin_padding_medium"
         android:gravity="center_vertical"/>
     <TextView
         android:layout_width="0dp"
@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:id="@+id/finalgrade_grade"
         android:background="#b0b0b0"
-        android:padding="@dimen/common_margin_padding"
+        android:padding="@dimen/common_margin_padding_medium"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:text="\?"
