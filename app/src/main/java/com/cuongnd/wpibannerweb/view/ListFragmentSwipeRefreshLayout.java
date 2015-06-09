@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cuongnd.wpibannerweb.helper;
+package com.cuongnd.wpibannerweb.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
