@@ -6,20 +6,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
-import com.cuongnd.wpibannerweb.grade.FinalGradePage;
 import com.cuongnd.wpibannerweb.helper.Utils;
 import com.cuongnd.wpibannerweb.helper.Table;
 
@@ -27,15 +22,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.zip.Inflater;
+import java.net.SocketTimeoutException;
 
 /**
- * Created by Cuong Nguyen on 5/13/2015.
+ * @author Cuong Nguyen
  */
 public class FinalGradeFragment extends Fragment {
 
-    private static final String TAG = "FinalGradeFragment";
+    private static final String TAG = FinalGradeFragment.class.getSimpleName();
 
     public static final String EXTRA_TERM_ID = "termId";
     public static final String EXTRA_TERM_NAME = "termName";
@@ -54,7 +48,6 @@ public class FinalGradeFragment extends Fragment {
     private GetGradeTask mGetGradeTask;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ScrollView mScrollGrade;
     private TableLayout mTableCourse;
     private TextView mTextCurrentTerm;
     private TextView mTextCumulative;
@@ -78,14 +71,11 @@ public class FinalGradeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_finalgrade, container, false);
 
-        mScrollGrade = (ScrollView) v.findViewById(R.id.scroll_grade);
         mTableCourse = (TableLayout) v.findViewById(R.id.finalgrade_table_grades);
         mTextCurrentTerm = (TextView) v.findViewById(R.id.text_current_term);
         mTextCumulative = (TextView) v.findViewById(R.id.text_cumulative);
         mTextTransfer = (TextView) v.findViewById(R.id.text_transfer);
         mTextOverall = (TextView) v.findViewById(R.id.text_overall);
-
-
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipe_refresh_grade);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -118,6 +108,13 @@ public class FinalGradeFragment extends Fragment {
         }
     }
 
+    private void refresh() {
+        if (mGetGradeTask == null) {
+            mGetGradeTask = new GetGradeTask();
+            mGetGradeTask.execute(mTermId);
+        }
+    }
+
     @Override
     public void onDestroy() {
         if (mGetGradeTask != null) {
@@ -129,13 +126,14 @@ public class FinalGradeFragment extends Fragment {
 
     private void updateView() {
         if (mResult == null) return;
-        mScrollGrade.setVisibility(View.VISIBLE);
         try {
             Table course = new Table(mResult.getJSONArray(FinalGradePage.JSON_COURSE));
             Table summary = new Table(mResult.getJSONArray(FinalGradePage.JSON_SUMMARY));
 
             mTableCourse.removeAllViews();
+
             LayoutInflater inflater = getActivity().getLayoutInflater();
+
             for (int i = 1; i < course.size(); i++) {
                 String courseTitle = String.format("%s %s - %s",
                         course.get(i, 1), course.get(i, 2), course.get(i, 4));
@@ -145,16 +143,11 @@ public class FinalGradeFragment extends Fragment {
                         mTableCourse, false);
                 TextView textCourseName = (TextView) newRow.findViewById(R.id.finalgrade_course_name);
                 TextView textGrade = (TextView) newRow.findViewById(R.id.finalgrade_grade);
+
                 textCourseName.setText(courseTitle);
                 textGrade.setText(grade);
-                switch (grade) {
-                    case "A": textGrade.setBackgroundResource(R.color.grade_A_color);
-                        break;
-                    case "B": textGrade.setBackgroundResource(R.color.grade_B_color);
-                        break;
-                    case "C": textGrade.setBackgroundResource(R.color.grade_C_color);
-                        break;
-                }
+                textGrade.setBackgroundResource(chooseColorByGrade(grade));
+
                 mTableCourse.addView(newRow);
             }
 
@@ -163,15 +156,18 @@ public class FinalGradeFragment extends Fragment {
             mTextTransfer.setText(summary.get(3, 5));
             mTextOverall.setText(summary.get(4, 5));
 
-        } catch (JSONException e) {
-            Utils.logError(TAG, e);
+        } catch (JSONException | NullPointerException e) {
+            Log.e(TAG, "Cannot read data from result!", e);
         }
     }
 
-    private void refresh() {
-        if (mGetGradeTask == null) {
-            mGetGradeTask = new GetGradeTask();
-            mGetGradeTask.execute(mTermId);
+    private int chooseColorByGrade(String grade) {
+        switch (grade) {
+            case "A": return R.color.grade_A_color;
+            case "B": return R.color.grade_B_color;
+            case "C": return R.color.grade_C_color;
+            default:
+                return R.color.grade_A_color;
         }
     }
 
@@ -192,9 +188,16 @@ public class FinalGradeFragment extends Fragment {
             if (isCancelled())
                 return null;
             try {
-                return FinalGradePage.load(params[0]);
-            } catch (IOException | JSONException e) {
-                Utils.logError(TAG, e);
+                return FinalGradePage.loadData(params[0]);
+            } catch (SocketTimeoutException e) {
+              Utils.showShortToast(getActivity(),
+                      getString(R.string.error_connection_timed_out));
+            } catch (IOException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_problem_occurred));
+            } catch (NullPointerException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_no_data_received));
             }
             return null;
         }
@@ -202,15 +205,10 @@ public class FinalGradeFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject result) {
             try {
-                if (result == null || isCancelled()) {
-                    // TODO: notify that downloading failed
-                    mGetGradeTask = null;
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    return;
+                if (result != null && isCancelled()) {
+                    mResult = result;
+                    updateView();
                 }
-                mResult = result;
-                updateView();
-
             } finally {
                 mGetGradeTask = null;
                 mSwipeRefreshLayout.setRefreshing(false);

@@ -18,7 +18,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * Represents the Mailbox page.
+ * Represents the Mailbox page model.
  *
  * @author Cuong Nguyen
  */

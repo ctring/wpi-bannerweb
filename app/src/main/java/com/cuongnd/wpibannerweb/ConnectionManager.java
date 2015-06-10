@@ -83,7 +83,7 @@ public class ConnectionManager {
      *
      * @return <code>true</code> if logged in successfully, <code>false</code> otherwise
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public boolean logIn() throws IOException {
 
@@ -141,7 +141,7 @@ public class ConnectionManager {
      * @param url url to get page from
      * @return the HTML string representing the page
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public String getPage(String url) throws IOException {
         return getPage(url, null);
@@ -154,7 +154,7 @@ public class ConnectionManager {
      * @param referrer referrer to the page
      * @return the HTML string representing the page
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public String getPage(String url, @Nullable String referrer) throws IOException {
         return getPage(url, referrer, null);
@@ -169,7 +169,7 @@ public class ConnectionManager {
      * @param postData data for the post method
      * @return the HTML string representing the page
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public String getPage(String url, @Nullable String referrer, @Nullable String postData)
             throws IOException {
@@ -189,7 +189,6 @@ public class ConnectionManager {
                     is.close();
                 }
                 else {
-                    // TODO: make this better
                     throw new IOException("Log in failed");
                 }
             }
@@ -208,7 +207,7 @@ public class ConnectionManager {
      * @param referrer referrer to the page
      * @return an array of bytes
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public byte[] getBytes(String url, String referrer) throws IOException {
         HttpURLConnection conn = null;
@@ -249,7 +248,7 @@ public class ConnectionManager {
      * @param data data of the connection. If set, the method of the connection will be set to POST
      * @return a HttpURLConnection object containing the provided parameters
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     private HttpURLConnection makeConnection(String url, String referrer, String data)
             throws IOException {

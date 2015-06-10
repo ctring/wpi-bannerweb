@@ -44,6 +44,7 @@ public class SessionManager {
     /**
      * Checks the current login status. If username and password were already saved locally,
      * they are set in the connection manager. Otherwise, starts the login activity.
+     *
      * @return <code>true</code> if logged in. And <code>false</code>, otherwise
      */
     public boolean checkStatus() {

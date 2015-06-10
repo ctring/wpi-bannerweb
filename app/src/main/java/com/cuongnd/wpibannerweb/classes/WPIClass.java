@@ -14,7 +14,20 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * Created by Cuong Nguyen on 6/1/2015.
+ * Represents a class at WPI. The most crucial information for a WPI class is:
+ * <ul>
+ *     <li>Class name (for example: introduction to program design)</li>
+ *     <li>Class code (for example: CS 1021)</li>
+ *     <li>Section (for example: A01)</li>
+ *     <li>Class CRN (for example: 12345) </li>
+ *     <li>Instructor</li>
+ *     <li>Schedules</li>
+ * </ul>
+ * <p>
+ * Each class contains a list of schedules for lectures, labs or conferences. A schedule model
+ * is represented by the class {@link com.cuongnd.wpibannerweb.classes.WPIClass.Schedule}.
+ *
+ * @author Cuong Nguyen
  */
 public class WPIClass {
 

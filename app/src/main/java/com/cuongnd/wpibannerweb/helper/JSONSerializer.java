@@ -21,18 +21,41 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 /**
- * Helper class for saving and loading JSON files
+ * JSONSerializer is a utility class for loading and saving JSON files.
+ *
+ * @author Cuong Nguyen
  */
 public class JSONSerializer {
-    private static final String TAG = "JSONSerializer";
 
+    /**
+     * Loads a JSON object from an internal file locating in the app data folder.
+     *
+     * @param context the context application that hold the internal file
+     * @param fileName name of the file
+     * @return the JSON object read from the file
+     * @throws JSONException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
     public static JSONObject loadJSONFromFile(Context context,
                                               String fileName) throws JSONException, IOException {
         return loadJSONFromFile(context, null, fileName);
     }
 
+    /**
+     * Loads a JSON object from an internal file locating in a specified folder.
+     *
+     * @param context the context application that hold the internal file
+     * @param dir the folder that the file is locating. If set to null, the file will be sought in
+     *            the app data folder
+     * @param fileName name of the file
+     * @return the JSON object read from the file
+     * @throws FileNotFoundException
+     * @throws JSONException
+     * @throws IOException
+     */
     public static JSONObject loadJSONFromFile
-            (Context context, File dir, String fileName) throws JSONException, IOException{
+            (Context context, File dir, String fileName) throws JSONException, IOException {
         BufferedReader reader = null;
         try {
             InputStream in;
@@ -43,7 +66,7 @@ public class JSONSerializer {
             }
             reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder jsonString = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 jsonString.append(line);
             }
@@ -54,12 +77,29 @@ public class JSONSerializer {
         }
     }
 
-
+    /**
+     *  Save a JSON object to a file locating in the app data folder.
+     *
+     * @param context he context application to be saved in
+     * @param fileName name of the file to be saved
+     * @param jsonObject the JSON object to be saved
+     * @throws IOException
+     */
     public static void saveJSONToFile(Context context,
                                       String fileName, JSONObject jsonObject) throws IOException {
         saveJSONToFile(context, null, fileName, jsonObject);
     }
 
+    /**
+     * Save a JSON object to a file locating in a specified folder.
+     *
+     * @param context the context application to be saved in
+     * @param dir the folder that the file will be saved. If set to null, the file will be saved
+     *            in the app data folder
+     * @param fileName name of the file to be saved
+     * @param jsonObject the JSON object to be saved
+     * @throws IOException
+     */
     public static void saveJSONToFile(Context context, File dir, String fileName,
                                       JSONObject jsonObject) throws IOException {
         Writer writer = null;

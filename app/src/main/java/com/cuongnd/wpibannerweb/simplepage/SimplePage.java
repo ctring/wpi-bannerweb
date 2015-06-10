@@ -7,9 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * SimplePage is an abstract class for all simple pages. A simple page is defined as a page that can
- * be fetched directly from a url without posting any additional data. Data in a simple page is
- * contained in a {@link JSONObject} object.
+ * SimplePage is an abstract class for all simple pages model. A simple page is defined as a page
+ * that can be fetched directly from a url without posting any additional data. Data in a simple page
+ * is contained in a {@link JSONObject} object.
  *
  * @author Cuong Nguyen
  */

@@ -19,9 +19,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 
 /**
- * Represents the ID image page.
+ * Represents the ID image page model.
  *
  * @author Cuong Nguyen
  */
@@ -65,6 +66,8 @@ public class IDImagePage extends SimplePage {
         String referrer = "https://bannerweb.wpi.edu" + pic.attr("src");
         try {
             PictureUtils.downloadPictureAndSave(mContext, referrer, getUrl(), IMAGE_NAME, 100);
+        } catch (SocketTimeoutException e){
+            Log.e(PAGE_NAME, "Connection timed out!", e);
         } catch (IOException e) {
             Log.e(PAGE_NAME, "Cannot download ID image!", e);
         }

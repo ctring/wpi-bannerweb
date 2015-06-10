@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb.classes;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
@@ -18,6 +19,7 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,10 +27,13 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by Cuong Nguyen on 5/28/2015.
+ * Represents the Classes page.
+ *
+ * @author Cuong Nguyen
  */
 public class ClassesPage {
-    private static final String TAG = "ClassesPage";
+
+    private static final String TAG = ClassesPage.class.getSimpleName();
 
     private static final String JSON_CLASSES = "classes";
     private static final String JSON_REMIND = "remind";
@@ -48,21 +53,17 @@ public class ClassesPage {
         return termId + ".json";
     }
 
-    private Context mContext;
-    private String mTermId;
-    private volatile ArrayList<WPIClass> mClasses;
-    private volatile boolean mRemind;
-
-    private File mClassesPageDir;
-
-    public ClassesPage(Context context, String termId) {
-        mContext = context;
-        mTermId = termId;
-        mClassesPageDir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
-
-        loadFromLocal(); // Always call this after mClassesPageDir is initiated
-    }
-
+    /**
+     * Parses and returns a list of terms to select to view registered classes. After the list of
+     * terms is loaded, it is synchronised with the offline data, such that any offline data of a
+     * term that is no longer valid will be removed.
+     *
+     * @param context application context to sync offline data with
+     * @return a list of WPI terms
+     * @throws IOException If a connection problem occurred
+     * @throws NullPointerException
+     * @throws SocketTimeoutException If connection timed out
+     */
     public static ArrayList<Utils.TermValue> getTerms(Context context) throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_TERM, REGISTRATION);
@@ -93,79 +94,115 @@ public class ClassesPage {
             for (Utils.TermValue t : terms) {
                 if (f.getName().equals(t.getValue() + ".json")) {
                     exist = true;
+
+                    // Use for displaying which term is set with reminder
                     try {
                         JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
                         t.setMark(obj.getBoolean(JSON_REMIND));
-                    } catch (JSONException | IOException e) {
-                        Utils.logError(TAG, e);
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error opening file!", e);
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Error reading file!", e);
                     }
+
                     break;
                 }
             }
-            if (!exist)
-                f.delete();
+            if (exist)
+                if (!f.delete()) Log.e(TAG, "Cannot delete file!");
         }
     }
 
-    public ArrayList<WPIClass> getClasses() {
-        return mClasses;
+    private Context mContext;
+    private String mTermId;
+    private File mClassesPageDir;
+
+    private volatile ArrayList<WPIClass> mClasses;
+    private volatile boolean mRemind;
+
+    /**
+     * Constructs a new class page model. The data is initially loaded from local, if any.
+     *
+     * @param context application context to load and save offline data
+     * @param termId id of the term to be represented
+     */
+    public ClassesPage(Context context, String termId) {
+        mContext = context;
+        mTermId = termId;
+        mClassesPageDir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
+
+        loadFromLocal(); // Always call this after mClassesPageDir is initiated
     }
 
-    public boolean isReminded() {
-        return mRemind;
-    }
-
-    public void setRemind(boolean remind) {
-        mRemind = remind;
-    }
-
+    /**
+     * Loads offline data, if any.
+     */
     private void loadFromLocal() {
         mRemind = false;
         ArrayList<WPIClass> classes = new ArrayList<>();
         try {
             JSONObject jsonObject = JSONSerializer
                     .loadJSONFromFile(mContext, mClassesPageDir,getFileName(mTermId));
+
             JSONArray jsonArray = jsonObject.getJSONArray(JSON_CLASSES);
             for (int i = 0; i < jsonArray.length(); i++) {
                 WPIClass c = WPIClass.fromJSON(jsonArray.getJSONObject(i));
                 classes.add(c);
             }
             mRemind = jsonObject.getBoolean(JSON_REMIND);
-        } catch (JSONException | IOException e) {
-            Utils.logError(TAG, e);
+        } catch (IOException e) {
+            Log.e(TAG, "Error opening file!", e);
+        } catch (JSONException e) {
+            Log.e(TAG, "Error reading file!", e);
         }
         mClasses = classes;
     }
 
-    private void saveToLocal() {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        try {
-            for (WPIClass c : mClasses) {
-                jsonArray.put(c.toJSON());
-            }
-            jsonObject.put(JSON_CLASSES, jsonArray);
-            jsonObject.put(JSON_REMIND, mRemind);
-            JSONSerializer
-                    .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTermId), jsonObject);
-        } catch (JSONException | IOException e) {
-            Utils.logError(TAG, e);
-        }
+    /**
+     * Gets a list of WPI class object that this page is holding.
+     *
+     * @return a list of WPI class object
+     */
+    public ArrayList<WPIClass> getClasses() {
+        return mClasses;
     }
 
-    public boolean refresh() throws IOException {
+    /**
+     * Determines whether this class is set to be reminded or not.
+     *
+     * @return <code>true</code> if this class will be reminded
+     */
+    public boolean isReminded() {
+        return mRemind;
+    }
+
+    /**
+     * Sets if this class will be reminded in the future.
+     *
+     * @param remind <code>true</code> if this class will be reminded
+     */
+    public void setRemind(boolean remind) {
+        mRemind = remind;
+    }
+
+    /**
+     * Reloads data and saves locally when finishes.
+     *
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException If connection timed out If connection timed out
+     * @throws NullPointerException
+     */
+    public void reload() throws IOException {
         ArrayList<WPIClass> classes = new ArrayList<>();
 
         selectTerm();
+
         ConnectionManager cm = ConnectionManager.getInstance();
         String html = cm.getPage(VIEW_CLASSES, REGISTRATION);
-
-        if (html == null) return false;
-
         Document doc = Jsoup.parse(html);
 
         if (doc.title().contains("Select Term")) {
-            return false;
+            throw new IOException("Select Term page is received instead!");
         }
 
         Elements tables = doc.getElementsByClass("datadisplaytable");
@@ -190,7 +227,6 @@ public class ClassesPage {
         mClasses = classes;
 
         saveToLocal();
-        return true;
     }
 
     private void selectTerm() throws IOException {
@@ -203,8 +239,8 @@ public class ClassesPage {
         SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         ArrayList<WPIClass.Schedule> schedules = new ArrayList<>();
 
-        try {
-            for (int i = 1; i < time.size(); i++) {
+        for (int i = 1; i < time.size(); i++) {
+            try {
                 String[] timeRange = time.get(i, 1).split(" - ");
                 Calendar startTime = Calendar.getInstance();
                 startTime.setTime(formatTime.parse(timeRange[0]));
@@ -233,11 +269,28 @@ public class ClassesPage {
                         .setInstructor(instructor);
 
                 schedules.add(schedule);
+            } catch (ParseException e) {
+                Log.e(TAG, "Error parsing schedule from table", e);
             }
-        } catch (ParseException e) {
-            Utils.logError(TAG, e);
         }
+
         return schedules;
+    }
+
+    private void saveToLocal() {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        try {
+            for (WPIClass c : mClasses) {
+                jsonArray.put(c.toJSON());
+            }
+            jsonObject.put(JSON_CLASSES, jsonArray);
+            jsonObject.put(JSON_REMIND, mRemind);
+            JSONSerializer
+                    .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTermId), jsonObject);
+        } catch (JSONException | IOException e) {
+            Log.e(TAG, "Cannot save offline data", e);
+        }
     }
 
 }

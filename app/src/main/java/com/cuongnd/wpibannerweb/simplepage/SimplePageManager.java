@@ -80,7 +80,7 @@ public class SimplePageManager {
      *
      * @param name name of the page to be reload
      * @throws IOException If a connection error occurred
-     * @throws SocketTimeoutException
+     * @throws SocketTimeoutException If connection timed out
      */
     public void reloadPage(String name) throws IOException {
         SimplePage page = getPageParserByName(name);
