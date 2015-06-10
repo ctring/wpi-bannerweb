@@ -16,6 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.helper.Utils;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+
 /**
  * Created by Cuong Nguyen on 5/7/2015.
  */
@@ -26,9 +31,8 @@ public class LoginActivity extends Activity {
      */
     private UserLoginTask mAuthTask = null;
 
-    private ConnectionManager connectionManager;
+    private ConnectionManager mConnectionManager;
 
-    // UI references.
     private EditText mUsernameView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -64,7 +68,7 @@ public class LoginActivity extends Activity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        connectionManager = ConnectionManager.getInstance();
+        mConnectionManager = ConnectionManager.getInstance();
     }
 
     /**
@@ -90,8 +94,8 @@ public class LoginActivity extends Activity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+        if (!TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -99,10 +103,6 @@ public class LoginActivity extends Activity {
         // Check for a valid email address.
         if (TextUtils.isEmpty(username)) {
             mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
-            cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUsernameView.setError(getString(R.string.error_invalid_username));
             focusView = mUsernameView;
             cancel = true;
         }
@@ -118,16 +118,6 @@ public class LoginActivity extends Activity {
             mAuthTask = new UserLoginTask(username, password);
             mAuthTask.execute((Void) null);
         }
-    }
-
-    private boolean isUsernameValid(String username) {
-        //TODO: Replace this with your own logic
-        return username.length() > 1;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     /**
@@ -182,14 +172,22 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            connectionManager.setUsernameAndPin(mUsername, mPassword);
-            if (connectionManager.logIn()) {
-                SessionManager sm = SessionManager.getInstance(getApplicationContext());
-                sm.createSession(mUsername, mPassword);
-                return true;
+            mConnectionManager.setUsernameAndPin(mUsername, mPassword);
+            try {
+                if (mConnectionManager.logIn()) {
+                    SessionManager sm = SessionManager.getInstance(getApplicationContext());
+                    sm.createSession(mUsername, mPassword);
+                    return true;
+                } else
+                    return false;
+            } catch (SocketTimeoutException e) {
+                Utils.showShortToast(LoginActivity.this,
+                        getString(R.string.error_connection_timed_out));
+            } catch (IOException e) {
+                Utils.showShortToast(LoginActivity.this,
+                        getString(R.string.error_connection_problem_occurred));
             }
-            else
-                return false;
+            return false;
         }
 
         @Override
@@ -203,7 +201,7 @@ public class LoginActivity extends Activity {
                 startActivity(intent);
 
             } else {
-                // TODO: check for reason
+                mUsernameView.setError(getString(R.string.error_incorrect_username));
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
                 showProgress(false);
@@ -216,4 +214,6 @@ public class LoginActivity extends Activity {
             showProgress(false);
         }
     }
+
+
 }

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import org.json.JSONException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 
 /**
@@ -174,7 +176,7 @@ public class DashboardFragment extends Fragment {
             task.cancel(false);
     }
 
-    private class GetContentTask extends AsyncTask<Void, Void, Boolean> {
+    private class GetContentTask extends AsyncTask<Void, Void, Void> {
 
         View mView;
         String mPageName;
@@ -190,23 +192,27 @@ public class DashboardFragment extends Fragment {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             try {
-                return !isCancelled() && mSimplePageManager.refreshPage(mPageName);
-            } catch (FileNotFoundException e) {
-                // TODO: report error in other way
-                Utils.logError(TAG, e);
-            } catch (IOException | JSONException e) {
-                Utils.logError(TAG, e);
+                if (!isCancelled()) {
+                    mSimplePageManager.reloadPage(mPageName);
+                }
+            } catch (SocketTimeoutException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_timed_out));
+            } catch (IOException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_problem_occurred));
             }
-            return false;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            if (!this.isCancelled() && success) {
+        protected void onPostExecute(Void nothing) {
+            if (!this.isCancelled()) {
                 mSimplePageManager.updateView(mPageName, mView);
             }
+
             mTaskCounter--;
             if (mTaskCounter == 0)
                 mSwipeRefresh.setRefreshing(false);

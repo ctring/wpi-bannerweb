@@ -1,25 +1,27 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
-import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 /**
- * Created by Cuong Nguyen on 5/11/2015.
+ * SimplePageManager is a singleton that manages all of the simple pages. It performs networking
+ * and data saving tasks for the simple pages.
+ *
+ * @author Cuong Nguyen
  */
 public class SimplePageManager {
-    private static final String TAG = "SimplePageManager";
+
+    private static final String TAG = SimplePageManager.class.getSimpleName();
 
     private static SimplePageManager manager;
 
@@ -33,6 +35,11 @@ public class SimplePageManager {
     private final SimplePage[] mParsers;
     private Context mContext;
 
+    /**
+     * Constructs a new simple page manager. All the simple pages will be loaded with offline data,
+     * if any.
+     * @param context the application context that hold the offline data
+     */
     private SimplePageManager(Context context) {
         mContext = context;
 
@@ -42,6 +49,7 @@ public class SimplePageManager {
                     AdvisorPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             advisorPage.setData(new JSONObject());
+            Log.e(TAG, "Cannot find offline data for AdvisorPage", e);
         }
 
         CardBalancePage cardBalancePage = new CardBalancePage();
@@ -49,8 +57,8 @@ public class SimplePageManager {
             cardBalancePage.setData(JSONSerializer.loadJSONFromFile(context,
                     CardBalancePage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
-            // TODO Log this exception somewhere
             cardBalancePage.setData(new JSONObject());
+            Log.e(TAG, "Cannot find offline data for CardBalancePage", e);
         }
 
         MailboxPage mailboxPage = new MailboxPage();
@@ -59,6 +67,7 @@ public class SimplePageManager {
                     MailboxPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             mailboxPage.setData(new JSONObject());
+            Log.e(TAG, "Cannot find offline data for MailboxPage", e);
         }
 
         IDImagePage idImagePage = new IDImagePage(mContext);
@@ -66,22 +75,36 @@ public class SimplePageManager {
         mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage, idImagePage};
     }
 
-    public boolean refreshPage(String name) throws IOException, JSONException {
+    /**
+     * Reloads data for a page with specified name then saves the data locally.
+     *
+     * @param name name of the page to be reload
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
+     */
+    public void reloadPage(String name) throws IOException {
         SimplePage page = getPageParserByName(name);
-        if (page != null) {
-            if (page.dataLoaded()) {
-                return true;
-            }
+        if (page == null) return;
 
-            String html = ConnectionManager.getInstance().getPage(page.getUri());
-            page.parse(html);
-            if (!(page instanceof IDImagePage))
-                JSONSerializer.saveJSONToFile(mContext, page.getName() + ".json", page.getData());
-            return true;
+        if (page.dataLoaded()) return;
+        String html = ConnectionManager.getInstance().getPage(page.getUrl());
+        page.parse(html);
+        if (!(page instanceof IDImagePage)) {
+            try {
+                JSONSerializer.saveJSONToFile(mContext,
+                        page.getName() + ".json", page.getData());
+            } catch (IOException e) {
+                Log.e(TAG, "Cannot save offline data", e);
+            }
         }
-        return false;
     }
 
+    /**
+     * Update the view hierarchy with the data of the specified page.
+     *
+     * @param name name of the page
+     * @param view the view hierarchy to be updated
+     */
     public void updateView(String name, View view) {
         SimplePage page = getPageParserByName(name);
         if (page != null) {

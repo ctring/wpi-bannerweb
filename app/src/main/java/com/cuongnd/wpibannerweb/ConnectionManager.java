@@ -1,5 +1,6 @@
 package com.cuongnd.wpibannerweb;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.BufferedWriter;
@@ -10,15 +11,18 @@ import java.io.OutputStreamWriter;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
- * Created by Cuong Nguyen on 5/8/2015.
+ * ConnectionManager is singleton class for performing networking task.
+ *
+ * @author Cuong Nguyen
  */
 public class ConnectionManager {
-    private static final String TAG = "ConnectionManager";
+
+    private static final String TAG = ConnectionManager.class.getSimpleName();
 
     private static ConnectionManager connectionManager;
 
@@ -28,6 +32,8 @@ public class ConnectionManager {
         }
         return connectionManager;
     }
+
+    public static final int CONNECTION_TIME_OUT = 7000;
 
     public static final String BASE_URI = "https://bannerweb.wpi.edu/pls/prod/";
 
@@ -48,65 +54,71 @@ public class ConnectionManager {
     private String mUsername;
     private String mPin;
 
+    /**
+     * Constructs a new ConnectionManager object. A {@link CookieManager} object is also
+     * created and set as default.
+     */
     private ConnectionManager() {
 
-        // Set cookie manager VM-wide. This will not be effective so there is need of
-        // manually managing cookie session later on.
+        // Set cookie manager VM-wide.
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
-
     }
 
+    /**
+     * Sets username and password for log in task.
+     *
+     * @param username WPI username
+     * @param pin WPI password
+     */
     public void setUsernameAndPin(String username, String pin) {
         mUsername = username;
         mPin = pin;
     }
 
     /**
-     * Log into the BannerWeb with stored username and password, then save the cookie session
-     * @return True of login successfully, false otherwise.
+     * Logs into the WPI BannerWeb with stored username and password. If username and password
+     * are not set with the {@link #setUsernameAndPin(String, String) setUsernameAndPin} method,
+     * login will fail.
+     *
+     * @return <code>true</code> if logged in successfully, <code>false</code> otherwise
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
-    public boolean logIn() {
+    public boolean logIn() throws IOException {
+
         if (mUsername == null || mPin == null) {
+            Log.e(TAG, "Username and Pin are not set yet!");
             return false;
         }
-        try {
-            // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
-            // assume that cookies are not enabled
-            HttpURLConnection init = makeConnection(HOME, null, null);
-            init.connect();
 
-            HttpURLConnection conn = makeConnection(LOGIN, HOME,
-                    String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
+        // Load the homepage to get test cookies. Without the test cookies, BannerWeb will
+        // assume that cookies are not enabled.
+        HttpURLConnection init = makeConnection(HOME, null, null);
+        init.connect();
 
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                InputStream is = conn.getInputStream();
-                String data = inputStreamToString(is);
-                is.close();
-                // Log in successfully
-                if (data.contains("refresh")) {
-                    return true;
-                }
-                else {
-                    Log.d(TAG, "Log in failed.");
-                }
+        HttpURLConnection conn = makeConnection(LOGIN, HOME,
+                String.format("%s=%s&%s=%s", PARAM_SID, mUsername, PARAM_PIN, mPin));
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200) {
+            InputStream is = conn.getInputStream();
+            String data = inputStreamToString(is);
+            is.close();
+            // Log in successfully
+            if (data.contains("refresh")) {
+                return true;
             } else {
-                Log.d(TAG, "Connection failed. Response code: " + responseCode);
-                return false;
+                Log.e(TAG, "Log in failed.");
             }
-            conn.disconnect();
-        } catch (IOException e) {
-            // TODO: Handle exception carefully
-            Log.e(TAG, "Exception", e);
+        } else {
+            Log.e(TAG, "Connection failed. Response code: " + responseCode);
+            return false;
         }
-
+        conn.disconnect();
         return false;
     }
 
-    /**
-     * Log out of the BannerWeb
-     */
     public void logOut() {
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT).openConnection();
@@ -115,46 +127,53 @@ public class ConnectionManager {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                Log.d(TAG, "Log Out Successfully.");
-            } else {
-                Log.d(TAG, "Log Out failed. Response code: " + responseCode);
+                Log.e(TAG, "Log Out Successfully.");
             }
             conn.disconnect();
         } catch (IOException e) {
-            // TODO: Handle exception carefully
-            Log.e(TAG, "Exception", e);
+            Log.e(TAG, "Connection error!", e);
         }
     }
 
     /**
-     * Get a page from a specifed url.
-     * @param url Url to get page from.
-     * @return The HTML string of the page. Return null if error occurs.
+     * Gets a HTML page from a specified url.
+     *
+     * @param url url to get page from
+     * @return the HTML string representing the page
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
     public String getPage(String url) throws IOException {
         return getPage(url, null);
     }
 
     /**
-     * Get a page from a specifed url that requires a referrer.
-     * @param url Url to get page from.
-     * @param referrer Referrer to the page.
-     * @return The HTML string of the page. Return null if error occurs.
+     * Gets a page from a specified url that requires a referrer.
+     *
+     * @param url url to get page from
+     * @param referrer referrer to the page
+     * @return the HTML string representing the page
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
-    public String getPage(String url, String referrer) throws IOException {
+    public String getPage(String url, @Nullable String referrer) throws IOException {
         return getPage(url, referrer, null);
     }
 
     /**
-     * Get a page from a specifed url that requires a referrer and data.
+     * Gets a page from a specified url. If the post data is not null, the HTTP method will be set to
+     * POST and the post data is posted to the url. A referrer may also be passed if needed.
      *
-     * @param url      Url to get page from.
-     * @param referrer Referrer to the page.
-     * @param postData Data for the post method
-     * @return The HTML string of the page.
-     * @throws IOException
+     * @param url      url to get the page from
+     * @param referrer referrer to the page
+     * @param postData data for the post method
+     * @return the HTML string representing the page
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
-    public String getPage(String url, String referrer, String postData) throws IOException {
+    public String getPage(String url, @Nullable String referrer, @Nullable String postData)
+            throws IOException {
+
         HttpURLConnection conn = null;
         try {
             conn = makeConnection(url, referrer, postData);
@@ -183,21 +202,23 @@ public class ConnectionManager {
     }
 
     /**
-     * Get bytes from a url
-     * @param url Url to get bytes from.
-     * @param referer Referer if required to access the page
-     * @return An array of bytes.
-     * @throws IOException
+     * Gets an array of bytes from a url. A referrer may also be passed if needed.
+     *
+     * @param url url to get bytes from
+     * @param referrer referrer to the page
+     * @return an array of bytes
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
-    public byte[] getBytes(String url, String referer) throws IOException {
+    public byte[] getBytes(String url, String referrer) throws IOException {
         HttpURLConnection conn = null;
         try {
-            conn = makeConnection(url, referer, null);
+            conn = makeConnection(url, referrer, null);
 
             conn.connect();
             if (conn.getResponseCode()  != 200) {
                 if (logIn()) {
-                    conn = makeConnection(url, referer, null);
+                    conn = makeConnection(url, referrer, null);
                 }
                 else {
                     return null;
@@ -220,15 +241,21 @@ public class ConnectionManager {
     }
 
     /**
-     * Helper function for making a HttpURLConnection
-     * @param url Url of the connection.
-     * @param referrer Referrer of the connection. Can be null.
-     * @param data Data of the connection. If set, the method of the connection will be set to POST
-     * @return A HttpURLConnection object containing the provided parameters.
-     * @throws IOException
+     * Creates a {@link HttpURLConnection} with specified url, referrer or data. If the post data is
+     * set, the HTTP method will be set to POST.
+     *
+     * @param url url of the connection.
+     * @param referrer referrer of the connection. May be <code>null</code>
+     * @param data data of the connection. If set, the method of the connection will be set to POST
+     * @return a HttpURLConnection object containing the provided parameters
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException
      */
-    private HttpURLConnection makeConnection(String url, String referrer, String data) throws IOException {
+    private HttpURLConnection makeConnection(String url, String referrer, String data)
+            throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setConnectTimeout(CONNECTION_TIME_OUT);
+
         if (referrer != null) {
             conn.setRequestProperty(PARAM_REFERRER, referrer);
         }
@@ -242,20 +269,10 @@ public class ConnectionManager {
         return conn;
     }
 
-    /**
-     * Convert an input stream to string .
-     * @param is Input stream to be converted.
-     * @return A string read from the input stream.
-     */
     private String inputStreamToString(InputStream is) {
         return new Scanner(is, CHARSET).useDelimiter("\\A").next();
     }
 
-    /**
-     * Check if a page is the home
-     * @param html HTML of the page
-     * @return True if the page is the homepage and false, otherwise.
-     */
     private boolean isUserLoginPage(String html) {
         return (html.contains("<TITLE>User Login</TITLE>")); // User Login page signature
     }

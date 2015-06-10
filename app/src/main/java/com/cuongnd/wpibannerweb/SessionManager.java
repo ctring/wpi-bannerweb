@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 /**
- * Created by Cuong Nguyen on 5/10/2015.
+ * SessionManager is singleton for managing login sessions.
+ *
+ * @author Cuong Nguyen
  */
 public class SessionManager {
-    private static final String TAG = "SessionManager";
 
+    private static final String TAG = SessionManager.class.getSimpleName();
     private static final String PREF = "LoginInfo";
+    private static final String PREF_SID = "username";
+    private static final String PREF_PIN = "password";
+
     private static SessionManager sessionManager;
 
     public static SessionManager getInstance(Context context) {
@@ -18,9 +23,6 @@ public class SessionManager {
             sessionManager = new SessionManager(context);
         return sessionManager;
     }
-
-    private static final String PREF_SID = "username";
-    private static final String PREF_PIN = "password";
 
     private Context mContext;
     private SharedPreferences mPref;
@@ -39,6 +41,11 @@ public class SessionManager {
             .apply();
     }
 
+    /**
+     * Checks the current login status. If username and password were already saved locally,
+     * they are set in the connection manager. Otherwise, starts the login activity.
+     * @return <code>true</code> if logged in. And <code>false</code>, otherwise
+     */
     public boolean checkStatus() {
         String username = mPref.getString(PREF_SID, null);
         String password = mPref.getString(PREF_PIN, null);
@@ -50,6 +57,9 @@ public class SessionManager {
         return true;
     }
 
+    /**
+     * Deactivates this session by clearing local username and password.
+     */
     public void deactivate() {
         new Thread() {
             @Override
@@ -62,6 +72,9 @@ public class SessionManager {
         startLoginActivity();
     }
 
+    /**
+     * Starts the login activity and clear all the task.
+     */
     private void startLoginActivity() {
         Intent i = new Intent(mContext, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
