@@ -24,13 +24,11 @@
                   android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
         <activity android:name=".grade.GradeSelectTermActivity"
-                  android:label="@string/title_activity_select_term"
-                  android:screenOrientation="portrait"/>
+                  android:label="@string/title_activity_select_term"/>
         <activity android:name=".grade.FinalGradeActivity"
                   android:label="@string/title_activity_final_grade" />
         <activity android:name=".classes.ClassesSelectTermActivity"
-                  android:label="@string/title_activity_select_term"
-                  android:screenOrientation="portrait"/>
+                  android:label="@string/title_activity_select_term"/>
         <activity android:name=".classes.ClassesActivity"
                   android:label="@string/title_activity_classes" />
         <activity android:name=".classes.ClassesDetailActivity"
