@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/instructor"
+            android:text="@string/label_instructor"
             style="@style/TextViewLabelStyle"
             android:layout_column="0"
             android:layout_row="0"
@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/section"
+            android:text="@string/label_section"
             style="@style/TextViewLabelStyle"
             android:layout_column="1"
             android:layout_row="0"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/crn"
+            android:text="@string/label_crn"
             style="@style/TextViewLabelStyle"
             android:layout_column="0"
             android:layout_row="2"

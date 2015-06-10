@@ -55,7 +55,7 @@
             android:padding="@dimen/common_margin_padding_medium"
             android:drawableLeft="@drawable/ic_chevron_right_black_18dp"
             android:drawableStart="@drawable/ic_chevron_right_black_18dp"
-            android:text="@string/show_schedules"
+            android:text="@string/button_show_schedules"
             android:id="@+id/text_show_schedule"
             android:background="@drawable/selector_pressed_accent"
             android:clickable="true"/>
