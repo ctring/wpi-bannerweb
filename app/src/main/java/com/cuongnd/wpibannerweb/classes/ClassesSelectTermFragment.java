@@ -33,6 +33,12 @@ public class ClassesSelectTermFragment extends ListFragment {
     private ArrayList<Utils.TermValue> mTermValues = new ArrayList<>();
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 

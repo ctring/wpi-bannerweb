@@ -44,9 +44,10 @@ public class DashboardFragment extends Fragment {
     private CardView mCardCardbalance;
     private SwipeRefreshLayout mSwipeRefresh ;
 
-    private volatile int mTaskCounter;
+    private int mTaskCounter = 0;
     private SimplePageManager mSimplePageManager;
-    private boolean mFirstRun, mTerminated;
+    private boolean mFirstRun = true;
+    private boolean mTerminated;
 
     private GetContentTask mGetMailbox;
     private GetContentTask mGetCardBalance;

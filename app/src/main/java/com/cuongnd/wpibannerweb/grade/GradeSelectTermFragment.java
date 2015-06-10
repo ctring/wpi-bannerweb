@@ -32,6 +32,12 @@ public class GradeSelectTermFragment extends ListFragment {
     private boolean mFirstRun = true;
     private ArrayList<Utils.TermValue> mTermValues = new ArrayList<>();
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     // TODO: think about empty list
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
