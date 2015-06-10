@@ -1,9 +1,11 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
@@ -15,13 +17,16 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
- * Created by Cuong Nguyen on 5/11/2015.
+ * Represent an Advisor Page.
+ *
+ * @author Cuong Nguyen
  */
 public class AdvisorPage extends SimplePage {
 
-    public static final String PAGE_NAME = "AdvisorPage";
+    public static final String PAGE_NAME = AdvisorPage.class.getSimpleName();
 
     public static final String JSON_COUNT_ADVISOR = "count";
     public static final String JSON_ADVISOR = "advisor";
@@ -29,7 +34,7 @@ public class AdvisorPage extends SimplePage {
     public static final String JSON_DEPARTMENT = "department";
     public static final String JSON_LOCATION = "location";
     public static final String JSON_ADVISOR_2 = "advisor2";
-    public static final String JSON_EMAIL2 = "email2";
+    public static final String JSON_EMAIL_2 = "email2";
     public static final String JSON_DEPARTMENT_2 = "department2";
     public static final String JSON_LOCATION_2 = "location2";
 
@@ -44,7 +49,7 @@ public class AdvisorPage extends SimplePage {
     }
 
     @Override
-    public String getUri() {
+    public String getUrl() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwksadv.P_Summary";
     }
 
@@ -53,33 +58,63 @@ public class AdvisorPage extends SimplePage {
         return false;
     }
 
+    /**
+     * Parses a HTML string representing the Advisor Page.
+     *
+     * @param html the HTML string to be parsed
+     * @throws NullPointerException
+     */
     @Override
-    public boolean parse(String html) {
+    public void parse(String html) {
         Document doc = Jsoup.parse(html, ConnectionManager.BASE_URI);
         Element body = doc.body();
 
         Element nameE = body.getElementsContainingOwnText(JSOUP_ADVISOR).first();
         String name = nameE.nextSibling().toString().trim();
-        Element emailE = body.getElementsByAttributeValueContaining("href", "mailto").first();
-        String email = emailE.text().trim();
-        Element departmentE = body.getElementsContainingOwnText(JSOUP_DEPARTMENT).first();
-        String department = departmentE.nextSibling().toString().trim();
-        Element locationE = body.getElementsContainingOwnText(JSOUP_LOCATION).first();
-        String location = locationE.nextSibling().toString().trim();
+        Elements emailE = body.getElementsByAttributeValueContaining("href", "mailto");
+        String email = emailE.first().text();
+        Elements departmentE = body.getElementsContainingOwnText(JSOUP_DEPARTMENT);
+        String department = departmentE.first().nextSibling().toString().trim();
+        Elements locationE = body.getElementsContainingOwnText(JSOUP_LOCATION);
+        String location = locationE.first().nextSibling().toString().trim();
 
         try {
             mData.put(JSON_ADVISOR, name)
                     .put(JSON_EMAIL, email)
                     .put(JSON_DEPARTMENT, department)
-                    .put(JSON_LOCATION, location);
+                    .put(JSON_LOCATION, location)
+                    .put(JSON_COUNT_ADVISOR, 1);
         } catch (JSONException e) {
-            Utils.logError(PAGE_NAME, e);
+            Log.e(PAGE_NAME, "JSON exception occurred!", e);
         }
 
-        // TODO: when to return false?
-        return true;
+        nameE = body.getElementsContainingOwnText(JSOUP_2ND_ADVISOR).first();
+        // If there are two advisors
+        if (nameE != null) {
+            name = nameE.nextSibling().toString().trim();
+            email = emailE.get(1).text();
+            department = departmentE.get(1).nextSibling().toString().trim();
+            location = locationE.get(1).nextSibling().toString().trim();
+
+            try {
+                mData.put(JSON_ADVISOR_2, name)
+                        .put(JSON_EMAIL_2, email)
+                        .put(JSON_DEPARTMENT_2, department)
+                        .put(JSON_LOCATION_2, location)
+                        .put(JSON_COUNT_ADVISOR, 2);
+            } catch (JSONException e) {
+                Log.e(PAGE_NAME, "JSON exception occurred!", e);
+            }
+        }
+
     }
-    
+
+    /**
+     * Updates the view hierarchy that displays the Advisor Page.
+     *
+     * @param context the Context of the application
+     * @param v the view hierarchy to be updated.
+     */
     @Override
     public void updateView(Context context, View v) {
         try {
@@ -91,8 +126,26 @@ public class AdvisorPage extends SimplePage {
             text.setText(mData.getString(JSON_DEPARTMENT));
             text = (TextView) v.findViewById(R.id.text_office);
             text.setText(mData.getString(JSON_LOCATION));
-        } catch (NullPointerException | JSONException e) {
-            Utils.logError(PAGE_NAME, e);
+
+            LinearLayout advisor2 = (LinearLayout) v.findViewById(R.id.advisor_2);
+            if (mData.getInt(JSON_COUNT_ADVISOR) == 2) {
+                advisor2.setVisibility(View.VISIBLE);
+                text = (TextView) v.findViewById(R.id.text_advisor_2);
+                text.setText(mData.getString(JSON_ADVISOR_2));
+                text = (TextView) v.findViewById(R.id.text_email_2);
+                text.setText(mData.getString(JSON_EMAIL_2));
+                text = (TextView) v.findViewById(R.id.text_department_2);
+                text.setText(mData.getString(JSON_DEPARTMENT_2));
+                text = (TextView) v.findViewById(R.id.text_office_2);
+                text.setText(mData.getString(JSON_LOCATION_2));
+            } else {
+                advisor2.setVisibility(View.GONE);
+            }
+
+        } catch (JSONException e) {
+            Log.e(PAGE_NAME, "Cannot find data!", e);
+        } catch (NullPointerException e) {
+            Log.e(PAGE_NAME, "Cannot update view!", e);
         }
     }
 }
