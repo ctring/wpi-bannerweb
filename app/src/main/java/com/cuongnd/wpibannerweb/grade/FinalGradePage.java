@@ -69,7 +69,11 @@ public class FinalGradePage {
      * @param termId the term to get final grade data in
      * @return a JSON object containing the final grade data
      * @throws IOException If a connection error occurred
+<<<<<<< HEAD
      * @throws SocketTimeoutException If connection timed out
+=======
+     * @throws SocketTimeoutException
+>>>>>>> d13e6e0b48b8ce42c303e047f87a07955f58cc51
      * @throws NullPointerException
      */
     public static JSONObject loadData(String termId) throws IOException {
