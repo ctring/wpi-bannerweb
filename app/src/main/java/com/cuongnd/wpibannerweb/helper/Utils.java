@@ -1,10 +1,12 @@
 package com.cuongnd.wpibannerweb.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -12,8 +14,23 @@ import java.util.Calendar;
  * Created by Cuong Nguyen on 5/18/2015.
  */
 public class Utils {
-    public static void logError(String TAG, Exception e) {
-        Log.e(TAG, "exception", e);
+
+    public static void showLongToast(final Activity activity, final String toast) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, toast, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public static void showShortToast(final Activity activity, final String toast) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(activity, toast, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
