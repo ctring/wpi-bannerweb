@@ -88,14 +88,17 @@ public class SimplePageManager {
 
         if (page.dataLoaded()) return;
         String html = ConnectionManager.getInstance().getPage(page.getUrl());
-        page.parse(html);
-        if (!(page instanceof IDImagePage)) {
-            try {
-                JSONSerializer.saveJSONToFile(mContext,
-                        page.getName() + ".json", page.getData());
-            } catch (IOException e) {
-                Log.e(TAG, "Cannot save offline data", e);
+        try {
+            page.parse(html);
+            if (!(page instanceof IDImagePage)) {
+                    JSONSerializer.saveJSONToFile(mContext,
+                            page.getName() + ".json", page.getData());
+
             }
+        } catch (IOException e) {
+            Log.e(TAG, "Cannot save offline data!", e);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Error in parsing html of page " + name, e);
         }
     }
 

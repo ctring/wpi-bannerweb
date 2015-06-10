@@ -3,6 +3,7 @@ package com.cuongnd.wpibannerweb.simplepage;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by Cuong Nguyen on 6/5/2015.
+ * Represents the ID image page.
+ *
+ * @author Cuong Nguyen
  */
 public class IDImagePage extends SimplePage {
     public static final String PAGE_NAME = "IDImagePage";
@@ -34,28 +37,45 @@ public class IDImagePage extends SimplePage {
     }
 
     @Override
+    public String getName() {
+        return PAGE_NAME;
+    }
+
+    @Override
+    public String getUrl() {
+        return "https://bannerweb.wpi.edu/pls/prod/hwwkimage.p_display";
+    }
+
+    @Override
     public boolean dataLoaded() {
         File file = new File(mContext.getFilesDir(), IMAGE_NAME);
         return file.exists();
     }
 
+    /**
+     * Parses a HTML string representing the ID image page.
+     *
+     * @param html the HTML string to be parsed
+     * @throws NullPointerException
+     */
     @Override
-    public boolean parse(String html) {
+    public void parse(String html) {
         Document doc = Jsoup.parse(html);
         Element pic = doc.select("img[src*=photos]").first();
-        if (pic == null)
-            return false;
-        // TODO: use url or uri consistently
-        String uri = "https://bannerweb.wpi.edu" + pic.attr("src");
+        String referrer = "https://bannerweb.wpi.edu" + pic.attr("src");
         try {
-            PictureUtils.downloadPictureAndSave(mContext, uri, getUri(), IMAGE_NAME, 100);
+            PictureUtils.downloadPictureAndSave(mContext, referrer, getUrl(), IMAGE_NAME, 100);
         } catch (IOException e) {
-            Utils.logError(PAGE_NAME, e);
+            Log.e(PAGE_NAME, "Cannot download ID image!", e);
         }
-
-        return true;
     }
 
+    /**
+     * Updates the ID image.
+     *
+     * @param context the Context of the application
+     * @param v image view to hold the id image
+     */
     @Override
     public void updateView(Context context, View v) {
         try {
@@ -64,17 +84,10 @@ public class IDImagePage extends SimplePage {
             ImageView imageView = (ImageView) v.findViewById(R.id.image_id);
             imageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            Utils.logError(PAGE_NAME, e);
+            Log.e(PAGE_NAME, "Cannot find ID image in local storage!", e);
+        } catch (NullPointerException e) {
+            Log.e(PAGE_NAME, "Cannot update view!", e);
         }
     }
 
-    @Override
-    public String getName() {
-        return PAGE_NAME;
-    }
-
-    @Override
-    public String getUri() {
-        return "https://bannerweb.wpi.edu/pls/prod/hwwkimage.p_display";
-    }
 }

@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Table;
 import com.cuongnd.wpibannerweb.helper.Utils;
@@ -23,10 +25,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Cuong Nguyen on 5/11/2015.
+ * Represents a Card balance page
+ *
+ * @author Cuong Nguyen
  */
 public class CardBalancePage extends SimplePage {
-    public static final String PAGE_NAME = "CardBalancePage";
+
+    public static final String PAGE_NAME = CardBalancePage.class.getSimpleName();
 
     public static final String JSON_MEAL_PLAN = "mealplan";
     public static final String JSON_DATE_STAMP = "datestamp";
@@ -39,13 +44,24 @@ public class CardBalancePage extends SimplePage {
     }
 
     @Override
+    public String getUrl() {
+        return "https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display";
+    }
+
+    @Override
     public boolean dataLoaded() {
         return false;
     }
 
+    /**
+     * Parses a HTML string representing the Card balance page.
+     *
+     * @param html the HTML string to be parsed
+     * @throws NullPointerException
+     */
     @Override
-    public boolean parse(String html) {
-        Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
+    public void parse(String html) {
+        Document doc = Jsoup.parse(html, ConnectionManager.BASE_URI);
         Element body = doc.body();
 
         Element mealPlanE1 = body.getElementsContainingOwnText("Your current meal plan").first();
@@ -74,17 +90,17 @@ public class CardBalancePage extends SimplePage {
                     .put(JSON_MEAL_TYPES, mealTable.toJSONArray());
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(PAGE_NAME, "JSON exception occurred!", e);
         }
 
-        return false;
     }
 
-    @Override
-    public String getUri() {
-        return "https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display";
-    }
-
+    /**
+     * Updates the view hierarchy that displays the Card balance page.
+     *
+     * @param context the Context of the application
+     * @param v the view hierarchy to be updated.
+     */
     @Override
     public void updateView(Context context, View v) {
         try {
@@ -104,8 +120,10 @@ public class CardBalancePage extends SimplePage {
                     cell.setText(table.get(i, j));
                 }
             }
-        } catch (NullPointerException | JSONException e) {
-            Utils.logError(PAGE_NAME, e);
+        } catch (JSONException e) {
+            Log.e(PAGE_NAME, "Cannot find data!", e);
+        } catch (NullPointerException e) {
+            Log.e(PAGE_NAME, "Cannot update view!", e);
         }
     }
 

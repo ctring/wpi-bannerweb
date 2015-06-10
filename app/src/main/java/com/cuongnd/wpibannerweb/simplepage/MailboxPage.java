@@ -1,11 +1,13 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
@@ -16,10 +18,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * Created by Cuong Nguyen on 5/11/2015.
+ * Represents the Mailbox page.
+ *
+ * @author Cuong Nguyen
  */
 public class MailboxPage extends SimplePage {
-    public static final String PAGE_NAME = "MailboxPage";
+
+    public static final String PAGE_NAME = MailboxPage.class.getSimpleName();
 
     public static final String JSON_BOX = "box";
     public static final String JSON_NUM1 = "num1";
@@ -32,28 +37,39 @@ public class MailboxPage extends SimplePage {
     }
 
     @Override
+    public String getUrl() {
+        return "https://bannerweb.wpi.edu/pls/prod/hwwkboxs.P_ViewBoxs";
+    }
+
+    @Override
     public boolean dataLoaded() {
         return mData.has(JSON_BOX);
     }
 
+    /**
+     * Parses a HTML string representing the Mailbox page.
+     *
+     * @param html the HTML string to be parsed
+     * @throws NullPointerException
+     */
     @Override
-    public boolean parse(String html) {
+    public void parse(String html) {
 
-        Document doc = Jsoup.parse(html, "https://bannerweb.wpi.edu/pls/prod/");
+        Document doc = Jsoup.parse(html, ConnectionManager.BASE_URI);
         Element body = doc.body();
 
         Element boxE1 = body.getElementsContainingOwnText("You have been assigned").first();
         Element boxE2 = boxE1.getElementsByTag("B").first();
-        String box = boxE2.text().trim();
+        String box = boxE2.text();
 
         Elements steps = body.getElementsContainingOwnText("Rotate the knob");
 
         Elements step1 = steps.get(0).getElementsByTag("B");
-        String num1 = step1.get(1).text().trim();
+        String num1 = step1.get(1).text();
         Elements step2 = steps.get(1).getElementsByTag("B");
-        String num2 = step2.get(1).text().trim();
+        String num2 = step2.get(1).text();
         Elements step3 = steps.get(2).getElementsByTag("B");
-        String num3 = step3.get(1).text().trim();
+        String num3 = step3.get(1).text();
 
         try {
             mData.put(JSON_BOX, box)
@@ -61,19 +77,17 @@ public class MailboxPage extends SimplePage {
                     .put(JSON_NUM2, num2)
                     .put(JSON_NUM3, num3);
         } catch (JSONException e) {
-            Utils.logError(PAGE_NAME, e);
+            Log.e(PAGE_NAME, "JSON exception occurred!", e);
         }
 
-        // TODO: when to return false?
-        return true;
     }
 
-
-    @Override
-    public String getUri() {
-        return "https://bannerweb.wpi.edu/pls/prod/hwwkboxs.P_ViewBoxs";
-    }
-
+    /**
+     * Updates the view hierarchy that displays the Mailbox page.
+     *
+     * @param context the Context of the application
+     * @param v the view hierarchy to be updated.
+     */
     @Override
     public void updateView(Context context, View v) {
         try {
@@ -86,8 +100,10 @@ public class MailboxPage extends SimplePage {
             text = (TextView) v.findViewById(R.id.text_step3);
             text.setText(mData.getString(JSON_NUM3));
 
-        } catch (NullPointerException | JSONException e) {
-            Utils.logError(PAGE_NAME, e);
+        } catch (JSONException e) {
+            Log.e(PAGE_NAME, "Cannot find data!", e);
+        } catch (NullPointerException e) {
+            Log.e(PAGE_NAME, "Cannot update view!", e);
         }
     }
 }

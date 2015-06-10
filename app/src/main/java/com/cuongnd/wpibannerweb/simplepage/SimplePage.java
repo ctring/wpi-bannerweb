@@ -31,6 +31,7 @@ public abstract class SimplePage {
      * Parses data from a HTML string and puts into the internal data variable of this page.
      *
      * @param html the HTML string to be parsed
+     * @throws NullPointerException
      */
     public abstract void parse(String html);
 
@@ -59,6 +60,13 @@ public abstract class SimplePage {
     public abstract String getUrl();
 
     /**
+     * Checks whether data is loaded.
+     *
+     * @return <code>true</code> if data is loaded. And <code>false</code>, otherwise
+     */
+    public abstract boolean dataLoaded();
+
+    /**
      * Sets data for this page. If offline data is found, it can be set by using the method.
      *
      * @param data the data to be set
@@ -76,10 +84,4 @@ public abstract class SimplePage {
         return mData;
     }
 
-    /**
-     * Checks whether data is loaded.
-     *
-     * @return <code>true</code> if data is loaded. And <code>false</code>, otherwise
-     */
-    public abstract boolean dataLoaded();
 }

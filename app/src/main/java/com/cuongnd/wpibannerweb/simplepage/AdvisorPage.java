@@ -20,7 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * Represent an Advisor Page.
+ * Represents an Advisor page.
  *
  * @author Cuong Nguyen
  */
@@ -59,7 +59,7 @@ public class AdvisorPage extends SimplePage {
     }
 
     /**
-     * Parses a HTML string representing the Advisor Page.
+     * Parses a HTML string representing the Advisor page.
      *
      * @param html the HTML string to be parsed
      * @throws NullPointerException
@@ -110,7 +110,7 @@ public class AdvisorPage extends SimplePage {
     }
 
     /**
-     * Updates the view hierarchy that displays the Advisor Page.
+     * Updates the view hierarchy that displays the Advisor page.
      *
      * @param context the Context of the application
      * @param v the view hierarchy to be updated.
