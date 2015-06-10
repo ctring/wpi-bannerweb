@@ -3,39 +3,62 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/common_margin_padding_medium"
+    android:layout_margin="@dimen/common_margin_padding_small"
     android:background="@android:color/white"
-    android:id="@+id/card_class">
+    android:clickable="false">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/common_margin_padding_medium"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CS 101 - Intro to Computer Science"
-            android:textColor="@color/accent_color"
-            style="@style/TextViewCardTitleStyle"
-            android:id="@+id/text_class_name"/>
-        <TextView
+            android:padding="@dimen/common_margin_padding_medium"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CS 101 - Intro to Computer Science"
+                android:textColor="@color/accent_color"
+                style="@style/TextViewCardTitleStyle"
+                android:id="@+id/text_class_name"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin_padding_medium"
+                android:text="Cuong Nguyen  |  A01"
+                android:id="@+id/text_instructor_section"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin_padding_small"
+                android:textColor="@color/grey"
+                android:text="CRN 123456"
+                android:gravity="end"
+                android:id="@+id/text_crn"/>
+
+
+        </LinearLayout>
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_padding_medium"
-            android:text="Gabor N Sarkozy  |  A01"
-            android:id="@+id/text_instructor_section"/>
+            android:layout_height="1dp"
+            style="@style/DividerStyle" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin_padding_medium"
-            android:textColor="@color/grey"
-            android:text="CRN 123456"
-            android:gravity="right"
-            android:id="@+id/text_crn"/>
-
+            android:textStyle="italic"
+            android:padding="@dimen/common_margin_padding_medium"
+            android:drawableLeft="@drawable/ic_chevron_right_black_18dp"
+            android:drawableStart="@drawable/ic_chevron_right_black_18dp"
+            android:text="@string/show_schedules"
+            android:id="@+id/text_show_schedule"
+            android:background="@drawable/selector_pressed_accent"
+            android:clickable="true"/>
     </LinearLayout>
 
 

@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -61,6 +62,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     private WeekView mWeekView;
     private RecyclerView mRecyclerClasses;
     private SwipeRefreshLayout mSwipeRefresh;
+    private Parcelable mRecyclerState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,12 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPause() {
+        mRecyclerState = mRecyclerClasses.getLayoutManager().onSaveInstanceState();
+        super.onPause();
     }
 
     @Override
@@ -215,9 +223,21 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
         ClassesAdapter adapter = new ClassesAdapter(classes);
         mRecyclerClasses.setAdapter(adapter);
+        if (mRecyclerState != null)
+            mRecyclerClasses.getLayoutManager().onRestoreInstanceState(mRecyclerState);
     }
 
     private class GetClassesTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            mSwipeRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefresh.setRefreshing(true);
+                }
+            });
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
@@ -234,12 +254,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 if (!success) return;
                 updateView();
             } finally {
+                mSwipeRefresh.setRefreshing(false);
                 mGetClassesTask = null;
             }
         }
 
         @Override
         protected void onCancelled() {
+            mSwipeRefresh.setRefreshing(false);
             mGetClassesTask = null;
         }
     }
@@ -251,14 +273,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             TextView textClassName;
             TextView textInstructorSection;
             TextView textCrn;
-            CardView card;
+            TextView textShowSchedule;
 
             public ClassesViewHolder(View itemView) {
                 super(itemView);
                 textClassName = (TextView) itemView.findViewById(R.id.text_class_name);
                 textInstructorSection = (TextView) itemView.findViewById(R.id.text_instructor_section);
                 textCrn = (TextView) itemView.findViewById(R.id.text_crn);
-                card = (CardView) itemView.findViewById(R.id.card_class);
+                textShowSchedule = (TextView) itemView.findViewById(R.id.text_show_schedule);
             }
         }
 
@@ -282,13 +304,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             holder.textInstructorSection.setText(String.format("%s  |  %s", c.getInstructor(),
                     c.getSection()));
             holder.textCrn.setText(String.format("CRN %s", c.getCRN()));
-            holder.card.setOnClickListener(new View.OnClickListener() {
+            holder.textShowSchedule.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
                         Intent i = new Intent(getActivity(), ClassesDetailActivity.class);
                         JSONObject data = c.toJSON();
                         i.putExtra(ClassesDetailFragment.EXTRA_WPI_CLASS, data.toString());
+                        startActivity(i);
                     } catch (JSONException e) {
                         Log.e(TAG, "Exception occurred", e);
                     }

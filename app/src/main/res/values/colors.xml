@@ -3,6 +3,7 @@
     <!-- Universal colors -->
     <color name="background_color">#f2f2f2</color>
     <color name="accent_color">#c41230</color>
+    <color name="accent_color_fade">#94c41230</color>
     <color name="grey">#abacab</color>
 
     <color name="event_color_01">#59dbe0</color>
@@ -10,7 +11,7 @@
     <color name="event_color_03">#87d288</color>
     <color name="event_color_04">#f8b552</color>
 
-    <!-- Color used in final grade page -->
+    <!-- Color used in Final Grade Page-->
     <color name="grade_A_color">#02ac1e</color> <!-- ORACLE -->
     <color name="grade_B_color">#fa5732</color> <!-- FASTER -->
     <color name="grade_C_color">#c21515</color> <!-- CRISIS -->

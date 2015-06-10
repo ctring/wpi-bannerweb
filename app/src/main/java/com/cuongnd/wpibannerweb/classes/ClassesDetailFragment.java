@@ -113,7 +113,7 @@ public class ClassesDetailFragment extends Fragment {
         for (int i = 0; i < days.length - 1; i++) {
             strDays += wpiDays[days[i]] + "  |  ";
         }
-        strDays += wpiDays[days[days.length]];
+        strDays += wpiDays[days[days.length - 1]];
         return strDays;
     }
 
