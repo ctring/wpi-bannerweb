@@ -17,14 +17,13 @@ import com.cuongnd.wpibannerweb.view.ListFragmentSwipeRefreshLayout;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
  * Created by Cuong Nguyen on 5/29/2015.
  */
 public class ClassesSelectTermFragment extends ListFragment {
-
-    private static final String TAG = "ClassesSelectTermFragment";
 
     private GetTermsTask mGetTermsTask;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -43,6 +42,9 @@ public class ClassesSelectTermFragment extends ListFragment {
         final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
         mSwipeRefreshLayout = new SwipeRefreshLayout(getActivity());
+
+        if (listFragmentView == null)
+            return mSwipeRefreshLayout;
 
         mSwipeRefreshLayout.addView(listFragmentView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -117,12 +119,17 @@ public class ClassesSelectTermFragment extends ListFragment {
 
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
-            if (isCancelled())
-                return null;
             try {
-                return ClassesPage.getTerms(getActivity());
+
+                if (!isCancelled())
+                    return ClassesPage.getTerms(getActivity());
+
+            } catch (SocketTimeoutException e){
+                Utils.showShortToast(getActivity(), getString(R.string.error_connection_timed_out));
             } catch (IOException e) {
-                Utils.logError(TAG, e);
+                Utils.showShortToast(getActivity(), getString(R.string.error_connection_problem_occurred));
+            } catch (NullPointerException e) {
+                Utils.showShortToast(getActivity(), getString(R.string.error_no_data_received));
             }
             return null;
         }
@@ -130,15 +137,10 @@ public class ClassesSelectTermFragment extends ListFragment {
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
             try {
-                if (termValues == null) {
-                    // TODO: notify by toast
-                    getActivity().finish();
-                    return;
+                if (termValues != null && !isCancelled()) {
+                    mTermValues = termValues;
+                    updateView();
                 }
-                if (isCancelled()) return;
-                mTermValues = termValues;
-                updateView();
-
             } finally {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mGetTermsTask = null;

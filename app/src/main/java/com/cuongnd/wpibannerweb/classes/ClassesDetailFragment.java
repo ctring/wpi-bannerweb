@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by Cuong Nguyen on 6/9/2015.
+ * @author Cuong Nguyen
  */
 public class ClassesDetailFragment extends Fragment {
 
@@ -52,13 +53,12 @@ public class ClassesDetailFragment extends Fragment {
             JSONObject jsonObj = new JSONObject(getArguments().getString(EXTRA_WPI_CLASS));
             mWPIClass = WPIClass.fromJSON(jsonObj);
         } catch (JSONException e) {
-            // TODO: notify user too
+            Utils.showLongToast(getActivity(), getString(R.string.error_occurred));
             Log.e(TAG, "Cannot parse WPI class string!", e);
             getActivity().finish();
         }
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_classes_detail, container, false);
@@ -69,13 +69,15 @@ public class ClassesDetailFragment extends Fragment {
         mTextCrn = (TextView) v.findViewById(R.id.text_crn);
         mListSchedule = (LinearLayout) v.findViewById(R.id.list_schedule);
 
-        mTextClassName.setText(String.format("%s - %s", mWPIClass.getCode(), mWPIClass.getName()));
-        mTextInstructor.setText(mWPIClass.getInstructor());
-        mTextSection.setText(mWPIClass.getSection());
-        mTextCrn.setText(mWPIClass.getCRN());
+        if (mWPIClass != null) {
+            mTextClassName.setText(String.format("%s - %s", mWPIClass.getCode(), mWPIClass.getName()));
+            mTextInstructor.setText(mWPIClass.getInstructor());
+            mTextSection.setText(mWPIClass.getSection());
+            mTextCrn.setText(mWPIClass.getCRN());
 
-        for (WPIClass.Schedule schedule : mWPIClass.getSchedules()) {
-            addScheduleView(inflater, mListSchedule, schedule);
+            for (WPIClass.Schedule schedule : mWPIClass.getSchedules()) {
+                addScheduleView(inflater, mListSchedule, schedule);
+            }
         }
 
         return v;

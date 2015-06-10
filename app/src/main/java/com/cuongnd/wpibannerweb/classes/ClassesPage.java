@@ -61,8 +61,8 @@ public class ClassesPage {
      * @param context application context to sync offline data with
      * @return a list of WPI terms
      * @throws IOException If a connection problem occurred
-     * @throws NullPointerException
      * @throws SocketTimeoutException If connection timed out
+     * @throws NullPointerException
      */
     public static ArrayList<Utils.TermValue> getTerms(Context context) throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
