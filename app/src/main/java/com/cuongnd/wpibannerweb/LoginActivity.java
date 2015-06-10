@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 /**
- * Created by Cuong Nguyen on 5/7/2015.
+ * @author Cuong Nguyen
  */
 public class LoginActivity extends Activity {
+
+    private static final int LOGIN_ATTEMPT_NUMBER = 3;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -174,12 +176,13 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             mConnectionManager.setUsernameAndPin(mUsername, mPassword);
             try {
-                if (mConnectionManager.logIn()) {
-                    SessionManager sm = SessionManager.getInstance(getApplicationContext());
-                    sm.createSession(mUsername, mPassword);
-                    return true;
-                } else
-                    return false;
+                for (int i = 0; i < LOGIN_ATTEMPT_NUMBER; i++)
+                    if (mConnectionManager.logIn()) {
+                        SessionManager sm = SessionManager.getInstance(getApplicationContext());
+                        sm.createSession(mUsername, mPassword);
+                        return true;
+                    }
+                return false;
             } catch (SocketTimeoutException e) {
                 Utils.showShortToast(LoginActivity.this,
                         getString(R.string.error_connection_timed_out));
