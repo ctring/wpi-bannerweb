@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.40"
-            android:text="@string/account"
+            android:text="@string/label_account"
 
             style="@style/TextViewLabelStyle"
             android:gravity="center_horizontal"/>
@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.30"
-            android:text="@string/balance"
+            android:text="@string/label_balance"
 
             style="@style/TextViewLabelStyle"
             android:gravity="center_horizontal"/>
@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.30"
-            android:text="@string/lastused"
+            android:text="@string/label_last_used"
 
             style="@style/TextViewLabelStyle"
             android:gravity="center_horizontal"/>

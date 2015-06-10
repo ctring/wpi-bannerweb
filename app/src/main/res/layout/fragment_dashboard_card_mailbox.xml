@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/first_turn"
+            android:text="@string/step_first_turn"
             android:layout_weight="3"
             android:layout_gravity="center"/>
         <TextView
@@ -61,7 +61,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/second_turn"
+            android:text="@string/step_second_turn"
             android:layout_weight="3"
             android:layout_gravity="center"/>
         <TextView
@@ -119,7 +119,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/to_open"
+            android:text="@string/step_to_open"
             android:layout_weight="1"
             android:layout_gravity="center"
             android:gravity="center"/>

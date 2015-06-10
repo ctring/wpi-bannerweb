@@ -46,7 +46,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:padding="@dimen/common_margin_padding_medium"
-                        android:text="@string/currentterm"
+                        android:text="@string/label_current_term"
                         android:gravity="center_vertical"/>
 
                     <TextView
@@ -67,7 +67,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:padding="@dimen/common_margin_padding_medium"
-                        android:text="@string/cumulative"
+                        android:text="@string/label_cumulative"
                         android:gravity="center_vertical"/>
 
                     <TextView
@@ -88,7 +88,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:padding="@dimen/common_margin_padding_medium"
-                        android:text="@string/transfer"
+                        android:text="@string/label_transfer"
                         android:gravity="center_vertical"/>
 
                     <TextView
@@ -109,7 +109,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="5"
                         android:padding="@dimen/common_margin_padding_medium"
-                        android:text="@string/overall"
+                        android:text="@string/label_overall"
                         android:gravity="center_vertical"/>
 
                     <TextView

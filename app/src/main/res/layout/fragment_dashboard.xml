@@ -78,7 +78,7 @@
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/view_classes"
+                        android:text="@string/button_view_classes"
                         android:id="@+id/button_classes"
                         android:layout_marginBottom="@dimen/common_margin_padding_medium"
                         android:textColor="@color/accent_color"/>
@@ -86,7 +86,7 @@
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/view_final_grade"
+                        android:text="@string/button_view_final_grade"
                         android:id="@+id/button_grade"
                         android:layout_marginBottom="@dimen/common_margin_padding_medium"
                         android:textColor="@color/accent_color"/>
