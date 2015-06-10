@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents a Card balance page
+ * Represents a Card balance page model.
  *
  * @author Cuong Nguyen
  */

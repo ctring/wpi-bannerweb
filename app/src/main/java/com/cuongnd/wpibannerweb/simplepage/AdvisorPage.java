@@ -20,7 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /**
- * Represents an Advisor page.
+ * Represents an Advisor page model.
  *
  * @author Cuong Nguyen
  */

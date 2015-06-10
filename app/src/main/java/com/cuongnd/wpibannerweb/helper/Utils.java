@@ -11,7 +11,9 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 /**
- * Created by Cuong Nguyen on 5/18/2015.
+ * Contains miscellaneous utility classes and static methods.
+ *
+ * @author Cuong Nguyen
  */
 public class Utils {
 
@@ -34,7 +36,7 @@ public class Utils {
     }
 
     /**
-     * Data structure for holding name and id of a term
+     * Data structure for holding name and id of a WPI term
      */
     public static class TermValue {
         private String mValue;
@@ -63,11 +65,12 @@ public class Utils {
     }
 
     /**
-     * Convert a string of days of week in WPI convention to an array of numbers representing the
+     * Converts a string of days of week in WPI convention to an array of numbers representing the
      * corresponding days of week.
-     * @param days The string of days of week in WPI convention.
-     * @return An array of numbers representing the corresponding days of week. The numbers in this
-     * array follow the constants for days of week in the Calendar class.
+     *
+     * @param days the string of days of week in WPI convention.
+     * @return an array of numbers representing the corresponding days of week. The numbers in this
+     * array follow the constants for days of week in the Calendar class
      */
     public static int[] fromWpiDays(String days) {
         int[] ret = new int[days.length()];
@@ -84,9 +87,18 @@ public class Utils {
     }
 
     /**
-     * Convert an array of days of week into a string of days of week in WPI convention.
-     * @param days An array contains the days of week.
-     * @return A string of days of week in WPI convention.
+     * Converts an array of days of week into a string of days of week in WPI convention. The
+     * numbering convention is:
+     * <ul>
+     *     <li>Monday = 2</li>
+     *     <li>Tuesday = 3</li>
+     *     <li>Wednesday = 4</li>
+     *     <li>thuRsday = 5</li>
+     *     <li>Friday = 6</li>
+     * </ul>
+     *
+     * @param days an array contains the days of week
+     * @return a string of days of week in WPI convention
      */
     public static String toWpiDays(int[] days) {
         char[] wpiDays = {'?', '?', 'M', 'T', 'W', 'R', 'F'};

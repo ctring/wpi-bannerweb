@@ -5,7 +5,7 @@ import android.app.Fragment;
 import com.cuongnd.wpibannerweb.SingleFragmentActivity;
 
 /**
- * Created by Cuong Nguyen on 5/13/2015.
+ * @author Cuong Nguyen
  */
 public class FinalGradeActivity extends SingleFragmentActivity {
     @Override

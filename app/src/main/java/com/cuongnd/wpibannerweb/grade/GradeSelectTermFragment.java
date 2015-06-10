@@ -17,14 +17,13 @@ import com.cuongnd.wpibannerweb.view.ListFragmentSwipeRefreshLayout;
 import com.cuongnd.wpibannerweb.helper.Utils;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
- * Created by Cuong Nguyen on 5/29/2015.
+ * @author Cuong Nguyen
  */
 public class GradeSelectTermFragment extends ListFragment {
-
-    private static final String TAG = "GradeSelectTermFragment";
 
     private GetTermsTask mGetTermsTask;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -44,6 +43,9 @@ public class GradeSelectTermFragment extends ListFragment {
         final View listFragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
         mSwipeRefreshLayout = new SwipeRefreshLayout(getActivity());
+
+        if (listFragmentView == null)
+            return mSwipeRefreshLayout;
 
         mSwipeRefreshLayout.addView(listFragmentView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -74,15 +76,6 @@ public class GradeSelectTermFragment extends ListFragment {
         }
     }
 
-    @Override
-    public void onStop() {
-        if (mGetTermsTask != null) {
-            mGetTermsTask.cancel(false);
-            mGetTermsTask = null;
-        }
-        super.onStop();
-    }
-
     void updateView() {
         ArrayAdapter<Utils.TermValue> adapter =
                 new ArrayAdapter<>(getActivity(),
@@ -95,6 +88,15 @@ public class GradeSelectTermFragment extends ListFragment {
             mGetTermsTask = new GetTermsTask();
             mGetTermsTask.execute();
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (mGetTermsTask != null) {
+            mGetTermsTask.cancel(false);
+            mGetTermsTask = null;
+        }
+        super.onStop();
     }
 
     @Override
@@ -120,12 +122,20 @@ public class GradeSelectTermFragment extends ListFragment {
 
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
-            if (isCancelled())
-                return null;
             try {
-                return FinalGradePage.getTerms();
+
+                if (!isCancelled())
+                    return FinalGradePage.getTerms();
+
+            } catch (SocketTimeoutException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_timed_out));
             } catch (IOException e) {
-                Utils.logError(TAG, e);
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_problem_occurred));
+            } catch (NullPointerException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_no_data_received));
             }
             return null;
         }
@@ -133,14 +143,10 @@ public class GradeSelectTermFragment extends ListFragment {
         @Override
         protected void onPostExecute(ArrayList<Utils.TermValue> termValues) {
             try {
-                if (termValues == null) {
-                    // TODO: notify by toast
-                    getActivity().finish();
-                    return;
+                if (termValues != null && !isCancelled()) {
+                    mTermValues = termValues;
+                    updateView();
                 }
-                if (isCancelled()) return;
-                mTermValues = termValues;
-                updateView();
             } finally {
                 mSwipeRefreshLayout.setRefreshing(false);
                 mGetTermsTask = null;

@@ -5,7 +5,7 @@ import android.app.Fragment;
 import com.cuongnd.wpibannerweb.SingleFragmentActivity;
 
 /**
- * Created by Cuong Nguyen on 6/1/2015.
+ * @author Cuong Nguyen
  */
 public class GradeSelectTermActivity extends SingleFragmentActivity {
     @Override
