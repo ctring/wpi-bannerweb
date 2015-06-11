@@ -17,8 +17,8 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:id="@+id/image_id"
-                android:scaleType="centerInside"
-                android:src="@drawable/goat"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_goat"/>
 
             <LinearLayout
                 android:orientation="vertical"

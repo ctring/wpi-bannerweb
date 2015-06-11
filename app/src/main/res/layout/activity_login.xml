@@ -8,7 +8,8 @@
               android:paddingLeft="@dimen/common_margin_padding_large"
               android:paddingRight="@dimen/common_margin_padding_large"
               android:paddingTop="@dimen/common_margin_padding_large"
-              tools:context="com.cuongnd.wpibannerweb.LoginActivity">
+              tools:context="com.cuongnd.wpibannerweb.LoginActivity"
+    >
 
     <!-- Login progress -->
     <ProgressBar
@@ -23,13 +24,23 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:fillViewport="false">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageView"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/ic_wpi_logo_with_text"
+                android:scaleType="center"/>
 
             <EditText
                 android:id="@+id/username"
@@ -38,28 +49,30 @@
                 android:hint="@string/prompt_username"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                />
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
+                android:imeActionId="@integer/customImeActionId"
                 android:imeActionLabel="@string/action_log_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                />
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/action_log_in"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:typeface="normal"/>
 
         </LinearLayout>
     </ScrollView>
