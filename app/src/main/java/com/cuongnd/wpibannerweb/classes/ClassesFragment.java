@@ -136,7 +136,6 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         updateView();
         if (mFirstTime) {
             refresh();
-            mFirstTime = false;
         }
     }
 
@@ -378,8 +377,10 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         @Override
         protected void onPostExecute(Void v) {
             try {
-                if (!isCancelled())
+                if (!isCancelled()) {
                     updateView();
+                    mFirstTime = false;
+                }
             } finally {
                 mSwipeRefresh.setRefreshing(false);
                 mGetClassesTask = null;

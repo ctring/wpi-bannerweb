@@ -103,7 +103,6 @@ public class FinalGradeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (mFirstRun) {
-            mFirstRun = false;
             refresh();
         }
     }
@@ -157,7 +156,7 @@ public class FinalGradeFragment extends Fragment {
             mTextOverall.setText(summary.get(4, 5));
 
         } catch (JSONException | NullPointerException e) {
-            Log.e(TAG, "Cannot read data from result!", e);
+            Log.e(TAG, "Cannot read data from result!");
         }
     }
 
@@ -205,9 +204,10 @@ public class FinalGradeFragment extends Fragment {
         @Override
         protected void onPostExecute(JSONObject result) {
             try {
-                if (result != null && isCancelled()) {
+                if (result != null && !isCancelled()) {
                     mResult = result;
                     updateView();
+                    mFirstRun = false;
                 }
             } finally {
                 mGetGradeTask = null;

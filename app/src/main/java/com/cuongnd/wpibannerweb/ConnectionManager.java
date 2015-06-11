@@ -88,7 +88,7 @@ public class ConnectionManager {
     public boolean logIn() throws IOException {
 
         if (mUsername == null || mPin == null) {
-            Log.e(TAG, "Username and Pin are not set yet!");
+            Log.w(TAG, "Username and Pin are not set yet!");
             return false;
         }
 
@@ -120,6 +120,7 @@ public class ConnectionManager {
     }
 
     public void logOut() {
+        mUsername = null; mPin = null;
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(LOGOUT).openConnection();
 
@@ -127,7 +128,7 @@ public class ConnectionManager {
 
             int responseCode = conn.getResponseCode();
             if (responseCode == 200) {
-                Log.e(TAG, "Log Out Successfully.");
+                Log.i(TAG, "Log out successfully.");
             }
             conn.disconnect();
         } catch (IOException e) {

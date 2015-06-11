@@ -70,7 +70,6 @@ public class GradeSelectTermFragment extends ListFragment {
         super.onStart();
         updateView();
         if (mFirstRun) {
-            mFirstRun = false;
             refresh();
         }
     }
@@ -145,6 +144,7 @@ public class GradeSelectTermFragment extends ListFragment {
                 if (termValues != null && !isCancelled()) {
                     mTermValues = termValues;
                     updateView();
+                    mFirstRun = false;
                 }
             } finally {
                 mSwipeRefreshLayout.setRefreshing(false);

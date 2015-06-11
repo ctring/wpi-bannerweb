@@ -1,14 +1,16 @@
 package com.cuongnd.wpibannerweb;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.io.File;
 
 /**
- * Created by Cuong Nguyen on 6/2/2015.
+ * @author Cuong Nguyen
  */
 public class WPIBannerWebApplication extends Application {
 
+    private static final String TAG = WPIBannerWebApplication.class.getSimpleName();
     private static WPIBannerWebApplication instance;
 
     @Override
@@ -36,20 +38,23 @@ public class WPIBannerWebApplication extends Application {
         }
     }
 
-    public static boolean deleteDir(File dir) {
-        if (dir == null) return false;
+    public static void deleteDir(File dir) {
+        if (dir == null) return;
         if (dir.isDirectory()) {
             String[] children = dir.list();
 
             for(String child : children) {
-                boolean success = deleteDir(new File(dir, child));
-                if(!success) {
-                    return false;
-                }
+                deleteDir(new File(dir, child));
+            }
+            if (!dir.delete()) {
+                Log.e(TAG, "Cannot delete folder: " + dir.getName());
+            }
+        } else {
+            if (!dir.delete()) {
+                Log.e(TAG, "Cannot delete file: " + dir.getName());
             }
         }
 
-        return dir.delete();
     }
 
 }

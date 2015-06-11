@@ -77,7 +77,7 @@ public class DashboardFragment extends Fragment {
 
         setRetainInstance(true);
 
-        mSimplePageManager = SimplePageManager.getInstance(getActivity());
+        mSimplePageManager = new SimplePageManager(getActivity());
         mTaskCounter = 0;
         mFirstRun = true;
     }

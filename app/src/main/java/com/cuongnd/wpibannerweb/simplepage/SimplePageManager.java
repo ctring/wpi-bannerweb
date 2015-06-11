@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 /**
- * SimplePageManager is a singleton that manages all of the simple pages. It performs networking
+ * SimplePageManager manages all of the simple pages. It performs networking
  * and data saving tasks for the simple pages.
  *
  * @author Cuong Nguyen
@@ -22,15 +22,6 @@ import java.net.SocketTimeoutException;
 public class SimplePageManager {
 
     private static final String TAG = SimplePageManager.class.getSimpleName();
-
-    private static SimplePageManager manager;
-
-    public static SimplePageManager getInstance(Context context) {
-        if (manager == null) {
-            manager = new SimplePageManager(context);
-        }
-        return manager;
-    }
 
     private final SimplePage[] mParsers;
     private Context mContext;
@@ -40,7 +31,7 @@ public class SimplePageManager {
      * if any.
      * @param context the application context that hold the offline data
      */
-    private SimplePageManager(Context context) {
+    public SimplePageManager(Context context) {
         mContext = context;
 
         AdvisorPage advisorPage = new AdvisorPage();

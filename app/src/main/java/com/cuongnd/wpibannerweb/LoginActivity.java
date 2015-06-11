@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -51,8 +53,7 @@ public class LoginActivity extends Activity {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                int imeActionId = getResources().getInteger(R.integer.customImeActionId);
-                if (id == imeActionId || id == EditorInfo.IME_NULL) {
+                if (textView.getId() == R.id.password) {
                     attemptLogin();
                     return true;
                 }
@@ -84,6 +85,11 @@ public class LoginActivity extends Activity {
         if (mAuthTask != null) {
             return;
         }
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mPasswordView.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(mUsernameView.getWindowToken(), 0);
 
         // Reset errors.
         mUsernameView.setError(null);
