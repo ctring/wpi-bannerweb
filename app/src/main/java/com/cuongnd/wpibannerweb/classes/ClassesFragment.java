@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import android.util.TypedValue;
 
+import com.alamkanak.weekview.DateTimeInterpreter;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cuongnd.wpibannerweb.R;
@@ -131,7 +132,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         super.onStart();
 
         switchToCalendar(mCalendarMode);
-        mWeekView.setNumberOfVisibleDays(mWeekViewView);
+        setNumberOfVisibleDays(mWeekViewView);
 
         updateView();
         if (mFirstTime) {
@@ -217,7 +218,8 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 if (mWeekViewView != WEEK_VIEW_DAY_VIEW) {
                     item.setChecked(true);
                     mWeekViewView = WEEK_VIEW_DAY_VIEW;
-                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_DAY_VIEW);
+
+                    setNumberOfVisibleDays(WEEK_VIEW_DAY_VIEW);
 
                    changeWeekViewDimensions(8, 12, 12);
                 }
@@ -227,7 +229,8 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 if (mWeekViewView != WEEK_VIEW_THREE_DAY_VIEW) {
                     item.setChecked(true);
                     mWeekViewView = WEEK_VIEW_THREE_DAY_VIEW;
-                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_THREE_DAY_VIEW);
+
+                    setNumberOfVisibleDays(WEEK_VIEW_THREE_DAY_VIEW);
 
                     changeWeekViewDimensions(8, 12, 12);
                 }
@@ -237,7 +240,8 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 if (mWeekViewView != WEEK_VIEW_WEEK_VIEW) {
                     item.setChecked(true);
                     mWeekViewView = WEEK_VIEW_WEEK_VIEW;
-                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_WEEK_VIEW);
+
+                    setNumberOfVisibleDays(WEEK_VIEW_WEEK_VIEW);
 
                     changeWeekViewDimensions(2, 10, 10);
                 }
@@ -246,6 +250,13 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setNumberOfVisibleDays(int numberOfVisibleDays) {
+        Calendar cal = mWeekView.getFirstVisibleDay();
+        mWeekView.setNumberOfVisibleDays(numberOfVisibleDays);
+        if (cal != null)
+            mWeekView.goToDate(cal);
     }
 
     private void switchToCalendar(boolean toCalendar) {
