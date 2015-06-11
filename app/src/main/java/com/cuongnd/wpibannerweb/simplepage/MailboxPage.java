@@ -101,7 +101,7 @@ public class MailboxPage extends SimplePage {
             text.setText(mData.getString(JSON_NUM3));
 
         } catch (JSONException e) {
-            Log.e(PAGE_NAME, "Cannot find data!", e);
+            Log.e(PAGE_NAME, "Cannot find data!");
         } catch (NullPointerException e) {
             Log.e(PAGE_NAME, "Cannot update view!", e);
         }

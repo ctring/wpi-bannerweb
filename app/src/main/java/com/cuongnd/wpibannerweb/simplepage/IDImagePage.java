@@ -67,9 +67,9 @@ public class IDImagePage extends SimplePage {
         try {
             PictureUtils.downloadPictureAndSave(mContext, referrer, getUrl(), IMAGE_NAME, 100);
         } catch (SocketTimeoutException e){
-            Log.e(PAGE_NAME, "Connection timed out!", e);
+            Log.e(PAGE_NAME, "Connection timed out!");
         } catch (IOException e) {
-            Log.e(PAGE_NAME, "Cannot download ID image!", e);
+            Log.e(PAGE_NAME, "Cannot download ID image!");
         }
     }
 
@@ -87,7 +87,7 @@ public class IDImagePage extends SimplePage {
             ImageView imageView = (ImageView) v.findViewById(R.id.image_id);
             imageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
-            Log.e(PAGE_NAME, "Cannot find ID image in local storage!", e);
+            Log.e(PAGE_NAME, "Cannot find ID image in local storage!");
         } catch (NullPointerException e) {
             Log.e(PAGE_NAME, "Cannot update view!", e);
         }

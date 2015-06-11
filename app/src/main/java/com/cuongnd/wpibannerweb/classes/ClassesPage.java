@@ -100,7 +100,7 @@ public class ClassesPage {
                         JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
                         t.setMark(obj.getBoolean(JSON_REMIND));
                     } catch (IOException e) {
-                        Log.e(TAG, "Error opening file!", e);
+                        Log.e(TAG, "Error opening file!");
                     } catch (JSONException e) {
                         Log.e(TAG, "Error reading file!", e);
                     }

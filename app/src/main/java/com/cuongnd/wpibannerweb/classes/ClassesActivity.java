@@ -12,6 +12,7 @@ public class ClassesActivity extends SingleFragmentActivity {
     @Override
     protected Fragment createFragment() {
         String termId = getIntent().getStringExtra(ClassesFragment.EXTRA_TERM_ID);
-        return ClassesFragment.newInstance(termId);
+        String termName = getIntent().getStringExtra(ClassesFragment.EXTRA_TERM_NAME);
+        return ClassesFragment.newInstance(termId, termName);
     }
 }

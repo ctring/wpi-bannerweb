@@ -49,7 +49,7 @@ public class SimplePageManager {
                     AdvisorPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             advisorPage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for AdvisorPage", e);
+            Log.e(TAG, "Cannot find offline data for AdvisorPage");
         }
 
         CardBalancePage cardBalancePage = new CardBalancePage();
@@ -58,7 +58,7 @@ public class SimplePageManager {
                     CardBalancePage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             cardBalancePage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for CardBalancePage", e);
+            Log.e(TAG, "Cannot find offline data for CardBalancePage");
         }
 
         MailboxPage mailboxPage = new MailboxPage();
@@ -67,7 +67,7 @@ public class SimplePageManager {
                     MailboxPage.PAGE_NAME + ".json"));
         } catch (IOException | JSONException e) {
             mailboxPage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for MailboxPage", e);
+            Log.e(TAG, "Cannot find offline data for MailboxPage");
         }
 
         IDImagePage idImagePage = new IDImagePage(mContext);
@@ -96,7 +96,7 @@ public class SimplePageManager {
 
             }
         } catch (IOException e) {
-            Log.e(TAG, "Cannot save offline data!", e);
+            Log.e(TAG, "Cannot save offline data!");
         } catch (NullPointerException e) {
             Log.e(TAG, "Error in parsing html of page " + name, e);
         }

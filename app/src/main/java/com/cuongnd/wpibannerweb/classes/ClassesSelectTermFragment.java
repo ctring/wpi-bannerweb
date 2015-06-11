@@ -70,6 +70,7 @@ public class ClassesSelectTermFragment extends ListFragment {
         Utils.TermValue selectedTerm = (Utils.TermValue) getListAdapter().getItem(position);
         Intent i = new Intent(getActivity(), ClassesActivity.class);
         i.putExtra(ClassesFragment.EXTRA_TERM_ID, selectedTerm.getValue());
+        i.putExtra(ClassesFragment.EXTRA_TERM_NAME, selectedTerm.toString());
         startActivity(i);
     }
 

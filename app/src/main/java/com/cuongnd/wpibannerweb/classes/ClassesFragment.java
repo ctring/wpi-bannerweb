@@ -1,5 +1,6 @@
 package com.cuongnd.wpibannerweb.classes;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
@@ -27,11 +28,13 @@ import android.util.TypedValue;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,14 +47,16 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     private static final String TAG = ClassesFragment.class.getSimpleName();
 
     public static final String EXTRA_TERM_ID = "TermId";
+    public static final String EXTRA_TERM_NAME = "TermName";
 
     private static final int WEEK_VIEW_DAY_VIEW = 1;
     private static final int WEEK_VIEW_THREE_DAY_VIEW = 3;
     private static final int WEEK_VIEW_WEEK_VIEW = 7;
 
-    public static ClassesFragment newInstance(String termId) {
+    public static ClassesFragment newInstance(String termId, String termName) {
         Bundle args = new Bundle();
         args.putString(EXTRA_TERM_ID, termId);
+        args.putString(EXTRA_TERM_NAME, termName);
 
         ClassesFragment fragment = new ClassesFragment();
         fragment.setArguments(args);
@@ -76,8 +81,6 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        String termId = getArguments().getString(EXTRA_TERM_ID);
-        mClassesPage = new ClassesPage(getActivity(), termId);
     }
 
     @Override
@@ -108,6 +111,19 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         mRecyclerClasses.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String termId = getArguments().getString(EXTRA_TERM_ID);
+        mClassesPage = new ClassesPage(getActivity(), termId);
+
+        String termName = getArguments().getString(EXTRA_TERM_NAME);
+        if (getActivity() != null) {
+            ActionBar ab = getActivity().getActionBar();
+            if (ab != null) ab.setTitle(termName);
+        }
     }
 
     @Override
@@ -347,9 +363,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             try {
                 if (!isCancelled())
                     mClassesPage.reload();
+            } catch (SocketTimeoutException e) {
+                Utils.showShortToast(getActivity(), getString(R.string.error_connection_timed_out));
             } catch (IOException e) {
-                // TODO: Be more specific!
-                Log.e(TAG, "Exception occurred", e);
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_connection_problem_occurred));
+            } catch (NullPointerException e) {
+                Utils.showShortToast(getActivity(),
+                        getString(R.string.error_no_data_received));
             }
             return null;
         }
