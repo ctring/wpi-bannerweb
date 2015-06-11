@@ -54,6 +54,7 @@ public class DashboardFragment extends Fragment {
     private GetContentTask mGetMailbox;
     private GetContentTask mGetCardBalance;
     private GetContentTask mGetAdvisor;
+    private GetContentTask mGetIdImage;
 
     public static DashboardFragment newInstance(String username) {
         Bundle args = new Bundle();
@@ -141,7 +142,6 @@ public class DashboardFragment extends Fragment {
                     mSwipeRefresh.setRefreshing(true);
                 }
             });
-            new GetContentTask(IDImagePage.PAGE_NAME, mIDImage).execute();
             refresh();
         }
     }
@@ -150,12 +150,18 @@ public class DashboardFragment extends Fragment {
         cancelTask(mGetCardBalance);
         mGetCardBalance = new GetContentTask(CardBalancePage.PAGE_NAME, mCardCardbalance);
         mGetCardBalance.execute();
+
         cancelTask(mGetAdvisor);
         mGetAdvisor = new GetContentTask(AdvisorPage.PAGE_NAME, mCardAdvisor);
         mGetAdvisor.execute();
+
         cancelTask(mGetMailbox);
         mGetMailbox = new GetContentTask(MailboxPage.PAGE_NAME, mCardMailbox);
         mGetMailbox.execute();
+
+        cancelTask(mGetIdImage);
+        mGetIdImage = new GetContentTask(IDImagePage.PAGE_NAME, mIDImage);
+        mGetIdImage.execute();
     }
 
     @Override
