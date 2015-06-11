@@ -6,6 +6,7 @@
     <color name="accent_color_fade">#94c41230</color>
     <color name="grey">#abacab</color>
 
+    <!-- Color used in the calendar -->
     <color name="event_color_01">#59dbe0</color>
     <color name="event_color_02">#f57f68</color>
     <color name="event_color_03">#87d288</color>

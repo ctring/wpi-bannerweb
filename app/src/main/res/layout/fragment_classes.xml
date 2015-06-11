@@ -9,6 +9,7 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:tag="list"
         android:id="@+id/swipe_refresh_classes">
 
         <android.support.v7.widget.RecyclerView
@@ -21,23 +22,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:tag="calendar">
         <com.alamkanak.weekview.WeekView
             android:id="@+id/weekView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             app:eventTextColor="@android:color/white"
-            app:textSize="10sp"
+
             app:hourHeight="60dp"
-            app:headerColumnPadding="8dp"
-            app:headerColumnTextColor="#8f000000"
-            app:headerRowPadding="12dp"
-            app:columnGap="8dp"
+            app:columnGap="2dp"
             app:noOfVisibleDays="3"
-            app:headerRowBackgroundColor="#ffefefef"
-            app:dayBackgroundColor="#05000000"
-            app:todayBackgroundColor="#1848adff"
-            app:headerColumnBackground="#ffffffff"/>
+            app:dayBackgroundColor="#f3f3f3"
+
+            app:headerRowPadding="12dp"
+            app:headerRowBackgroundColor="@color/accent_color"
+
+            app:todayHeaderTextColor="@android:color/white"
+            app:todayBackgroundColor="#18ff2000"
+
+            app:headerColumnPadding="@dimen/common_margin_padding_small"
+            app:headerColumnTextColor="@android:color/white"
+            app:headerColumnBackground="#ff9a9a9a"/>
+
     </LinearLayout>
 
 

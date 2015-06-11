@@ -41,7 +41,7 @@ import android.widget.ScrollView;
  */
 
 public abstract class GeneralSwipeRefreshLayout extends SwipeRefreshLayout {
-    // TODO: change all TAGS into this form
+
     private static final String TAG = GeneralSwipeRefreshLayout.class.getSimpleName();
 
     private OnChildScrollUpListener mScrollUpListener;
@@ -70,7 +70,6 @@ public abstract class GeneralSwipeRefreshLayout extends SwipeRefreshLayout {
     @Override
     public boolean canChildScrollUp() {
         if (mScrollUpListener == null) {
-            // TODO: change Log error into this form
             Log.e(TAG, "OnChildScrollUpListener is not set!");
             return false;
         }

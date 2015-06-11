@@ -151,7 +151,7 @@ public class ClassesPage {
             }
             mRemind = jsonObject.getBoolean(JSON_REMIND);
         } catch (IOException e) {
-            Log.e(TAG, "Error opening file!", e);
+            Log.e(TAG, "Error opening file!");
         } catch (JSONException e) {
             Log.e(TAG, "Error reading file!", e);
         }

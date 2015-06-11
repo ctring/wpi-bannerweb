@@ -90,7 +90,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_advisor"
+            android:text="@string/label_advisor_2"
             style="@style/TextViewLabelStyle"
             android:layout_marginTop="11dp"/>
 

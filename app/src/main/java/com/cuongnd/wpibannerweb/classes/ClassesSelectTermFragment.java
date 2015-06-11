@@ -21,7 +21,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
- * Created by Cuong Nguyen on 5/29/2015.
+ * @author Cuong Nguyen
  */
 public class ClassesSelectTermFragment extends ListFragment {
 

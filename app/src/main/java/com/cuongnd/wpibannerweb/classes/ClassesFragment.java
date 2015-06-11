@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb.classes;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -8,10 +9,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,13 +19,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+import android.util.TypedValue;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.cuongnd.wpibannerweb.R;
-import com.cuongnd.wpibannerweb.helper.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,13 +37,17 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by Cuong Nguyen on 5/29/2015.
+ * @author Cuong Nguyen
  */
 public class ClassesFragment extends Fragment implements WeekView.MonthChangeListener {
 
-    private static final String TAG = "ClassesFragment";
+    private static final String TAG = ClassesFragment.class.getSimpleName();
 
     public static final String EXTRA_TERM_ID = "TermId";
+
+    private static final int WEEK_VIEW_DAY_VIEW = 1;
+    private static final int WEEK_VIEW_THREE_DAY_VIEW = 3;
+    private static final int WEEK_VIEW_WEEK_VIEW = 7;
 
     public static ClassesFragment newInstance(String termId) {
         Bundle args = new Bundle();
@@ -56,12 +61,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
     private GetClassesTask mGetClassesTask;
     private ClassesPage mClassesPage;
-    private boolean mFirstTime;
+    private boolean mFirstTime = true;
+    private boolean mCalendarMode = false;
+    private int mWeekViewView = WEEK_VIEW_THREE_DAY_VIEW;
 
     private ViewSwitcher mSwitcher;
-    private WeekView mWeekView;
     private RecyclerView mRecyclerClasses;
     private SwipeRefreshLayout mSwipeRefresh;
+    private WeekView mWeekView;
     private Parcelable mRecyclerState;
 
     @Override
@@ -71,7 +78,6 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
         String termId = getArguments().getString(EXTRA_TERM_ID);
         mClassesPage = new ClassesPage(getActivity(), termId);
-        mFirstTime = true;
     }
 
     @Override
@@ -107,10 +113,34 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     @Override
     public void onStart() {
         super.onStart();
+
+        switchToCalendar(mCalendarMode);
+        mWeekView.setNumberOfVisibleDays(mWeekViewView);
+
         updateView();
         if (mFirstTime) {
             refresh();
             mFirstTime = false;
+        }
+    }
+
+    private void updateView() {
+        ArrayList<WPIClass> classes = mClassesPage.getClasses();
+        if (classes == null)
+            return;
+
+        ClassesAdapter adapter = new ClassesAdapter(classes);
+        mRecyclerClasses.setAdapter(adapter);
+        if (mRecyclerState != null)
+            mRecyclerClasses.getLayoutManager().onRestoreInstanceState(mRecyclerState);
+
+        mWeekView.invalidate();
+    }
+
+    private void refresh() {
+        if (mGetClassesTask == null) {
+            mGetClassesTask = new GetClassesTask();
+            mGetClassesTask.execute();
         }
     }
 
@@ -121,14 +151,106 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(R.id.action_switch_to_calendar).setVisible(!mCalendarMode);
+
+        menu.setGroupVisible(R.id.action_group_calendar_view, mCalendarMode);
+        menu.findItem(R.id.action_switch_to_detail).setVisible(mCalendarMode);
+        menu.findItem(R.id.action_go_to).setVisible(mCalendarMode);
+        menu.findItem(R.id.action_go_to_today).setVisible(mCalendarMode);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_switch_view:
-                mSwitcher.showNext();
+            case R.id.action_switch_to_calendar:
+                mCalendarMode = true;
+
+                switchToCalendar(true);
+
+                mSwipeRefresh.setRefreshing(false);
+                getActivity().invalidateOptionsMenu();
                 return true;
+
+            case R.id.action_switch_to_detail:
+                mCalendarMode = false;
+
+                switchToCalendar(false);
+
+                getActivity().invalidateOptionsMenu();
+                return true;
+
+            case R.id.action_go_to_today:
+                mWeekView.goToToday();
+                return true;
+
+            case R.id.action_go_to:
+                DatePickerFragment.newInstance(mWeekView.getFirstVisibleDay().getTimeInMillis(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(year, monthOfYear, dayOfMonth, 6, 0);
+                                mWeekView.goToDate(cal);
+                            }
+                        }).show(getActivity().getFragmentManager(), "DatePicker");
+                return true;
+
+            case R.id.action_day_view:
+                if (mWeekViewView != WEEK_VIEW_DAY_VIEW) {
+                    item.setChecked(true);
+                    mWeekViewView = WEEK_VIEW_DAY_VIEW;
+                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_DAY_VIEW);
+
+                   changeWeekViewDimensions(8, 12, 12);
+                }
+                return true;
+
+            case R.id.action_three_day_view:
+                if (mWeekViewView != WEEK_VIEW_THREE_DAY_VIEW) {
+                    item.setChecked(true);
+                    mWeekViewView = WEEK_VIEW_THREE_DAY_VIEW;
+                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_THREE_DAY_VIEW);
+
+                    changeWeekViewDimensions(8, 12, 12);
+                }
+                return true;
+
+            case R.id.action_week_view:
+                if (mWeekViewView != WEEK_VIEW_WEEK_VIEW) {
+                    item.setChecked(true);
+                    mWeekViewView = WEEK_VIEW_WEEK_VIEW;
+                    mWeekView.setNumberOfVisibleDays(WEEK_VIEW_WEEK_VIEW);
+
+                    changeWeekViewDimensions(2, 10, 10);
+                }
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void switchToCalendar(boolean toCalendar) {
+        View v = mSwitcher.getNextView();
+        if (toCalendar) {
+            if (v.getTag().equals("calendar")) {
+                mSwitcher.showNext();
+            }
+        } else {
+            if (v.getTag().equals("list"))
+                mSwitcher.showNext();
+        }
+    }
+
+    private void changeWeekViewDimensions(int columnGap, int textSize, int eventTextSize) {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        mWeekView.setTextSize(
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, metrics));
+        mWeekView.setEventTextSize(
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, eventTextSize, metrics));
     }
 
     @Override
@@ -209,25 +331,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         return events;
     }
 
-    private void refresh() {
-        if (mGetClassesTask == null) {
-            mGetClassesTask = new GetClassesTask();
-            mGetClassesTask.execute();
-        }
-    }
-
-    private void updateView() {
-        ArrayList<WPIClass> classes = mClassesPage.getClasses();
-        if (classes == null)
-            return;
-
-        ClassesAdapter adapter = new ClassesAdapter(classes);
-        mRecyclerClasses.setAdapter(adapter);
-        if (mRecyclerState != null)
-            mRecyclerClasses.getLayoutManager().onRestoreInstanceState(mRecyclerState);
-    }
-
-    private class GetClassesTask extends AsyncTask<Void, Void, Boolean> {
+    private class GetClassesTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             mSwipeRefresh.post(new Runnable() {
@@ -239,20 +343,22 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             try {
-                return !isCancelled() && mClassesPage.refresh();
+                if (!isCancelled())
+                    mClassesPage.reload();
             } catch (IOException e) {
-                Utils.logError(TAG, e);
+                // TODO: Be more specific!
+                Log.e(TAG, "Exception occurred", e);
             }
-            return false;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
+        protected void onPostExecute(Void v) {
             try {
-                if (!success) return;
-                updateView();
+                if (!isCancelled())
+                    updateView();
             } finally {
                 mSwipeRefresh.setRefreshing(false);
                 mGetClassesTask = null;

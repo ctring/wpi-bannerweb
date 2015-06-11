@@ -1,8 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_switch_view"
-        android:title="Switch"
+        android:id="@+id/action_switch_to_detail"
+        android:icon="@drawable/ic_view_list"
+        android:title="@string/action_show_detail"
         android:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_switch_to_calendar"
+        android:icon="@drawable/ic_calendar_text"
+        android:title="@string/action_show_calendar"
+        android:orderInCategory="1"
+        android:menuCategory="secondary"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_go_to_today"
+        android:title="@string/action_go_to_today"
+        android:icon="@drawable/ic_calendar_today"
+        android:orderInCategory="0"
+        android:menuCategory="secondary"
+        android:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_go_to"
+        android:title="@string/action_go_to"
+        android:orderInCategory="0"
+        android:menuCategory="container"
+        android:showAsAction="collapseActionView"/>
+
+    <group android:checkableBehavior="single"
+           android:id="@+id/action_group_calendar_view">
+        <item android:id="@+id/action_day_view"
+              android:title="@string/action_day_view"
+              android:orderInCategory="1"
+              android:menuCategory="container"
+              android:showAsAction="collapseActionView"/>
+        <item android:id="@+id/action_three_day_view"
+              android:title="@string/action_three_day_view"
+              android:orderInCategory="2"
+              android:menuCategory="container"
+              android:showAsAction="collapseActionView"
+              android:checked="true"/>
+        <item android:id="@+id/action_week_view"
+              android:title="@string/action_week_view"
+              android:orderInCategory="3"
+              android:menuCategory="container"
+              android:showAsAction="collapseActionView"/>
+    </group>
+
 
 </menu>

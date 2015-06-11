@@ -7,6 +7,16 @@
     <string name="title_activity_select_term">Select term</string>
     <string name="title_activity_classes_detail">Detail schedule</string>
 
+    <!-- Error messages -->
+    <string name="error_incorrect_username">This username or&#8230;</string>
+    <string name="error_incorrect_password">&#8230;this password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+    <string name="error_connection_timed_out">Connection timed out!</string>
+    <string name="error_connection_problem_occurred">Connection problem occurred!</string>
+    <string name="error_no_data_received">No data received!</string>
+    <string name="error_occurred">Error occurred!</string>
+
     <!-- Strings in login screen -->
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -14,48 +24,52 @@
     <string name="action_log_in_short">Log in</string>
     <string name="action_log_out">Log out</string>
 
-    <string name="error_invalid_username">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
 
     <!-- Strings in Dashboard page -->
-    <string name="view_final_grade">View final grade</string>
-    <string name="view_classes">View registered classes</string>
+    <string name="button_view_final_grade">View final grade</string>
+    <string name="button_view_classes">View registered classes</string>
     <string name="title_cardbalance">WPI ID Card Balances</string>
     <string name="title_mailbox">Mail Box Information</string>
     <string name="title_advisor">Advisor Contact Information</string>
 
     <!-- Strings in Advisor Page -->
-    <string name="advisor">Primary Advisor</string>
-    <string name="advisor2">Advisor for 2nd Major</string>
-    <string name="email">Email</string>
-    <string name="department">Advisor Department</string>
-    <string name="office">Office Location</string>
+    <string name="label_advisor">Primary Advisor</string>
+    <string name="label_advisor_2">Advisor for 2nd Major</string>
+    <string name="label_email">Email</string>
+    <string name="label_department">Advisor Department</string>
+    <string name="label_office">Office Location</string>
 
     <!-- Strings in Card Balance Page -->
-    <string name="account">Account</string>
-    <string name="balance">Balance</string>
-    <string name="lastused">Date Last Used</string>
+    <string name="label_account">Account</string>
+    <string name="label_balance">Balance</string>
+    <string name="label_last_used">Date Last Used</string>
 
     <!-- Strings in Mail Box Page -->
-    <string name="first_turn">At least 4 complete turns</string>
-    <string name="second_turn">Passing the first number one time</string>
-    <string name="to_open">To open</string>
+    <string name="step_first_turn">At least 4 complete turns</string>
+    <string name="step_second_turn">Passing the first number one time</string>
+    <string name="step_to_open">To open</string>
 
     <!-- Strings in Final Grade Page -->
-    <string name="course">Course</string>
-    <string name="finalgrade">Final Grade</string>
-    <string name="currentterm">Current Term</string>
-    <string name="cumulative">Cumulative</string>
-    <string name="transfer">Transfer</string>
-    <string name="overall">Overall</string>
-    <string name="gpa">GPA</string>
+    <string name="label_course">Course</string>
+    <string name="label_final_grade">Final Grade</string>
+    <string name="label_current_term">Current Term</string>
+    <string name="label_cumulative">Cumulative</string>
+    <string name="label_transfer">Transfer</string>
+    <string name="label_overall">Overall</string>
+    <string name="label_gpa">GPA</string>
 
     <!-- Strings in Classes Page and Class Detail Page-->
-    <string name="show_schedules">Show schedules</string>
-    <string name="instructor">Instructor</string>
-    <string name="section">Section</string>
-    <string name="crn">CRN</string>
+    <string name="button_show_schedules">Show schedules</string>
+    <string name="label_instructor">Instructor</string>
+    <string name="label_section">Section</string>
+    <string name="label_crn">CRN</string>
+
+    <string name="action_show_calendar">Show calendar</string>
+    <string name="action_show_detail">Show detail</string>
+    <string name="action_day_view">Day view</string>
+    <string name="action_three_day_view">3 day view</string>
+    <string name="action_week_view">Week view</string>
+    <string name="action_go_to">Go to&#8230;</string>
+    <string name="action_go_to_today">Go to today</string>
 
 </resources>
