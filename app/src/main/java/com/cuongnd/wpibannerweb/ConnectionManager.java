@@ -33,7 +33,7 @@ public class ConnectionManager {
         return connectionManager;
     }
 
-    public static final int CONNECTION_TIME_OUT = 7000;
+    public static final int CONNECTION_TIME_OUT = 10000;
 
     public static final String BASE_URI = "https://bannerweb.wpi.edu/pls/prod/";
 
