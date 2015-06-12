@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -109,11 +110,30 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
         mWeekView = (WeekView) v.findViewById(R.id.weekView);
         mWeekView.setMonthChangeListener(this);
+        mWeekView.setOnEventClickListener(new WeekView.EventClickListener() {
+            @Override
+            public void onEventClick(WeekViewEvent weekViewEvent, RectF rectF) {
+                int id = (int) weekViewEvent.getId();
+                WPIClass c = mClassesPage.getClasses().get(id);
+                startDetailActivity(c);
+            }
+        });
 
         mRecyclerClasses = (RecyclerView) v.findViewById(R.id.recycler_classes);
         mRecyclerClasses.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return v;
+    }
+
+    private void startDetailActivity(WPIClass c)  {
+        try {
+            Intent i = new Intent(getActivity(), ClassesDetailActivity.class);
+            JSONObject data = c.toJSON();
+            i.putExtra(ClassesDetailFragment.EXTRA_WPI_CLASS, data.toString());
+            startActivity(i);
+        } catch (JSONException e) {
+            Log.e(TAG, "Exception occurred", e);
+        }
     }
 
     @Override
@@ -223,7 +243,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
                     setNumberOfVisibleDays(WEEK_VIEW_DAY_VIEW);
 
-                   changeWeekViewDimensions(8, 12, 12);
+                   changeWeekViewDimensions(12, 12);
                 }
                 return true;
 
@@ -234,7 +254,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
                     setNumberOfVisibleDays(WEEK_VIEW_THREE_DAY_VIEW);
 
-                    changeWeekViewDimensions(8, 12, 12);
+                    changeWeekViewDimensions(12, 12);
                 }
                 return true;
 
@@ -245,7 +265,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
                     setNumberOfVisibleDays(WEEK_VIEW_WEEK_VIEW);
 
-                    changeWeekViewDimensions(2, 10, 10);
+                    changeWeekViewDimensions(10, 10);
                 }
                 return true;
 
@@ -256,6 +276,9 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
     private void setNumberOfVisibleDays(int numberOfVisibleDays) {
 
+        Calendar cal = mWeekView.getFirstVisibleDay();
+        double hour = mWeekView.getFirstVisibleHour();
+
         mWeekView.setNumberOfVisibleDays(numberOfVisibleDays);
 
         if (numberOfVisibleDays > 5) {
@@ -264,9 +287,10 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             mWeekView.setDateTimeInterpreter(new LongDateTimeInterpreter());
         }
 
-        Calendar cal = mWeekView.getFirstVisibleDay();
-        if (cal != null)
+        if (cal != null) {
             mWeekView.goToDate(cal);
+            mWeekView.goToHour(hour);
+        }
     }
 
     private void switchToCalendar(boolean toCalendar) {
@@ -281,7 +305,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         }
     }
 
-    private void changeWeekViewDimensions(int columnGap, int textSize, int eventTextSize) {
+    private void changeWeekViewDimensions(int textSize, int eventTextSize) {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         mWeekView.setTextSize(
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, metrics));
@@ -310,9 +334,11 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         if (classes == null)
             return events;
 
-        for (WPIClass c : classes) {
-            String name = c.getCode() + c.getSection();
+        for (int id = 0; id < classes.size(); id++) {
+            WPIClass c = classes.get(id);
+            String name = c.getCode();
             ArrayList<WPIClass.Schedule> schedules = c.getSchedules();
+
             for (WPIClass.Schedule s : schedules) {
                 String title = name + " - " + s.getType();
                 boolean[] daysOfWeek = new boolean[8];
@@ -333,7 +359,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                     endDate = s.getEndDate();
                 }
 
-                events.addAll(createWeeklyEvents(title, s.getStartTime(), s.getEndTime(),
+                events.addAll(createWeeklyEvents(id, title, s.getStartTime(), s.getEndTime(),
                         startDate, endDate, daysOfWeek));
             }
         }
@@ -341,7 +367,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         return events;
     }
 
-    private ArrayList<WeekViewEvent> createWeeklyEvents(String title,
+    private ArrayList<WeekViewEvent> createWeeklyEvents(long id, String title,
                                                         Calendar startTime, Calendar endTime,
                                                         Calendar startDate, Calendar endDate,
                                                         boolean[] daysOfWeek) {
@@ -356,10 +382,9 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 Calendar end = (Calendar) c.clone();
                 end.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY));
                 end.set(Calendar.MINUTE, endTime.get(Calendar.MINUTE));
-                // TODO: deal with id so that it can be used in clicking event
-                WeekViewEvent event = new WeekViewEvent(1, title, start, end);
+                WeekViewEvent event = new WeekViewEvent(id, title, start, end);
                 // TODO: choose color for event
-                event.setColor(getResources().getColor(R.color.event_color_01));
+                event.setColor(getResources().getColor(R.color.event_color_03));
                 events.add(event);
             }
             c.add(Calendar.DATE, 1);
@@ -506,14 +531,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             holder.textShowSchedule.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        Intent i = new Intent(getActivity(), ClassesDetailActivity.class);
-                        JSONObject data = c.toJSON();
-                        i.putExtra(ClassesDetailFragment.EXTRA_WPI_CLASS, data.toString());
-                        startActivity(i);
-                    } catch (JSONException e) {
-                        Log.e(TAG, "Exception occurred", e);
-                    }
+                    startDetailActivity(c);
                 }
             });
         }
