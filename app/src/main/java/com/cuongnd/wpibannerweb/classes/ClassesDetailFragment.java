@@ -105,7 +105,7 @@ public class ClassesDetailFragment extends Fragment {
     }
 
     private static String formatTime(Calendar time, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
         return sdf.format(time.getTime());
     }
 

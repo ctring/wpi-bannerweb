@@ -36,9 +36,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Cuong Nguyen
@@ -253,8 +255,16 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     }
 
     private void setNumberOfVisibleDays(int numberOfVisibleDays) {
-        Calendar cal = mWeekView.getFirstVisibleDay();
+
         mWeekView.setNumberOfVisibleDays(numberOfVisibleDays);
+
+        if (numberOfVisibleDays > 5) {
+            mWeekView.setDateTimeInterpreter(new ShortDateTimeInterpreter());
+        } else {
+            mWeekView.setDateTimeInterpreter(new LongDateTimeInterpreter());
+        }
+
+        Calendar cal = mWeekView.getFirstVisibleDay();
         if (cal != null)
             mWeekView.goToDate(cal);
     }
@@ -355,6 +365,56 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
             c.add(Calendar.DATE, 1);
         }
         return events;
+    }
+
+    private String interpretTimeHelper(int hour) {
+        String amPm;
+        if (hour >= 0 && hour < 12) amPm = "AM";
+        else amPm = "PM";
+        if (hour == 0) hour = 12;
+        if (hour > 12) hour -= 12;
+        return String.format("%02d %s", hour, amPm);
+    }
+
+    private class ShortDateTimeInterpreter implements DateTimeInterpreter {
+        @Override
+        public String interpretDate(Calendar date) {
+            char dow = 'X';
+            switch (date.get(Calendar.DAY_OF_WEEK)) {
+                case Calendar.MONDAY: dow = 'M'; break;
+                case Calendar.TUESDAY: dow = 'T'; break;
+                case Calendar.WEDNESDAY: dow = 'W'; break;
+                case Calendar.THURSDAY: dow = 'R'; break;
+                case Calendar.FRIDAY: dow = 'F'; break;
+                case Calendar.SATURDAY: dow = 'A'; break;
+                case Calendar.SUNDAY: dow = 'S'; break;
+            }
+            return String.format("%c %d/%02d", dow,
+                    date.get(Calendar.MONTH) + 1,
+                    date.get(Calendar.DAY_OF_MONTH));
+        }
+
+        @Override
+        public String interpretTime(int hour) {
+            return interpretTimeHelper(hour);
+        }
+    }
+
+    private class LongDateTimeInterpreter implements DateTimeInterpreter {
+        @Override
+        public String interpretDate(Calendar date) {
+            SimpleDateFormat sdf;
+            sdf = new SimpleDateFormat("EEE", Locale.getDefault());
+            String dayName = sdf.format(date.getTime()).toUpperCase();
+            return String.format("%s %d/%02d", dayName,
+                    date.get(Calendar.MONTH) + 1,
+                    date.get(Calendar.DAY_OF_MONTH));
+        }
+
+        @Override
+        public String interpretTime(int hour) {
+            return interpretTimeHelper(hour);
+        }
     }
 
     private class GetClassesTask extends AsyncTask<Void, Void, Void> {

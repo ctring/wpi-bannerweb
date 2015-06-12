@@ -235,8 +235,8 @@ public class ClassesPage {
     }
 
     private ArrayList<WPIClass.Schedule> parseSchedule(Table time) {
-        SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.US);
-        SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+        SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.getDefault());
+        SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         ArrayList<WPIClass.Schedule> schedules = new ArrayList<>();
 
         for (int i = 1; i < time.size(); i++) {

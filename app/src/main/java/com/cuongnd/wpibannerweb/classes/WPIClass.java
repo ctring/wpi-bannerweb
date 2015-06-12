@@ -139,8 +139,8 @@ public class WPIClass {
         private String mLocation;
 
         public String toString() {
-            SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.US);
-            SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.US);
+            SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.getDefault());
+            SimpleDateFormat formatDate = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
             return String.format("%s - %s | %s | %s | %s - %s | %s | %s",
                     formatTime.format(mStartTime.getTime()),
                     formatTime.format(mEndTime.getTime()),
