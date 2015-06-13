@@ -60,15 +60,18 @@ public class ClassesPage {
      *
      * @param context application context to sync offline data with
      * @return a list of WPI terms
-     * @throws IOException If a connection problem occurred
-     * @throws SocketTimeoutException If connection timed out
      * @throws NullPointerException
      */
-    public static ArrayList<Utils.TermValue> getTerms(Context context) throws IOException {
+    public static ArrayList<Utils.TermValue> getTerms(Context context) {
         ConnectionManager cm = ConnectionManager.getInstance();
-        String html = cm.getPage(VIEW_TERM, REGISTRATION);
-
         ArrayList<Utils.TermValue> terms = new ArrayList<>();
+        String html;
+        try {
+            html = cm.getPage(VIEW_TERM, REGISTRATION);
+        } catch (IOException e) {
+            syncOfflineData(context, terms);
+            return terms;
+        }
         Document doc = Jsoup.parse(html);
         Element select = doc.getElementById("term_id");
         Elements options = select.getElementsByTag("option");
@@ -108,7 +111,7 @@ public class ClassesPage {
                     break;
                 }
             }
-            if (exist)
+            if (!exist)
                 if (!f.delete()) Log.e(TAG, "Cannot delete file!");
         }
     }
