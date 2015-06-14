@@ -8,32 +8,40 @@
         android:name=".WPIBannerWebApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:logo="@drawable/ic_logo_only"
         android:label="@string/app_name"
+        android:logo="@drawable/ic_logo_only"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".DashboardActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
-                  android:label="@string/title_activity_login"
-                  android:windowSoftInputMode="adjustResize|stateHidden" >
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
-        <activity android:name=".grade.GradeSelectTermActivity"
-                  android:label="@string/title_activity_select_term"/>
-        <activity android:name=".grade.FinalGradeActivity"
-                  android:label="@string/title_activity_final_grade" />
-        <activity android:name=".classes.ClassesSelectTermActivity"
-                  android:label="@string/title_activity_select_term"/>
-        <activity android:name=".classes.ClassesActivity"
-                  android:label="@string/title_activity_classes" />
-        <activity android:name=".classes.ClassesDetailActivity"
-                  android:label="@string/title_activity_classes_detail" />
+        <activity
+            android:name=".grade.GradeSelectTermActivity"
+            android:label="@string/title_activity_select_term" />
+        <activity
+            android:name=".grade.FinalGradeActivity"
+            android:label="@string/title_activity_final_grade" />
+        <activity
+            android:name=".classes.ClassesSelectTermActivity"
+            android:label="@string/title_activity_select_term" />
+        <activity
+            android:name=".classes.ClassesActivity"
+            android:label="@string/title_activity_classes" />
+        <activity
+            android:name=".classes.ClassesDetailActivity"
+            android:label="@string/title_activity_classes_detail" />
+
     </application>
 
 </manifest>
