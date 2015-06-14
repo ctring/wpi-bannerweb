@@ -109,18 +109,12 @@ public class ClassesSelectTermFragment extends ListFragment {
     private class GetTermsTask extends AsyncTask<Void, Void, ArrayList<Utils.TermValue>> {
         @Override
         protected void onPreExecute() {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            Utils.startRefreshing(mSwipeRefreshLayout);
         }
 
         @Override
         protected ArrayList<Utils.TermValue> doInBackground(Void... params) {
             try {
-
                 if (!isCancelled())
                     return ClassesPage.getTerms(getActivity());
 
@@ -131,7 +125,7 @@ public class ClassesSelectTermFragment extends ListFragment {
             } catch (NullPointerException e) {
                 Utils.showShortToast(getActivity(), getString(R.string.error_no_data_received));
             }
-            return null;
+            return ClassesPage.getOfflineTerms(getActivity());
         }
 
         @Override
@@ -143,14 +137,15 @@ public class ClassesSelectTermFragment extends ListFragment {
                     mFirstRun = false;
                 }
             } finally {
-                mSwipeRefreshLayout.setRefreshing(false);
+                // TODO: change to stop and start refreshing in the Utils class
+                Utils.stopRefreshing(mSwipeRefreshLayout);
                 mGetTermsTask = null;
             }
         }
 
         @Override
         protected void onCancelled() {
-            mSwipeRefreshLayout.setRefreshing(false);
+            Utils.stopRefreshing(mSwipeRefreshLayout);
             mGetTermsTask = null;
         }
     }

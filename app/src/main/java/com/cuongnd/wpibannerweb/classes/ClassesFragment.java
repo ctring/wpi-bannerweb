@@ -140,9 +140,10 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String termId = getArguments().getString(EXTRA_TERM_ID);
-        mClassesPage = new ClassesPage(getActivity(), termId);
-
         String termName = getArguments().getString(EXTRA_TERM_NAME);
+        Utils.TermValue term = new Utils.TermValue(termId, termName);
+        mClassesPage = new ClassesPage(getActivity(), term);
+
         if (getActivity() != null) {
             ActionBar ab = getActivity().getActionBar();
             if (ab != null) ab.setTitle(termName);
@@ -208,7 +209,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
                 switchToCalendar(true);
 
-                mSwipeRefresh.setRefreshing(false);
+                Utils.stopRefreshing(mSwipeRefresh);
                 getActivity().invalidateOptionsMenu();
                 return true;
 
@@ -445,12 +446,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     private class GetClassesTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            mSwipeRefresh.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefresh.setRefreshing(true);
-                }
-            });
+            Utils.startRefreshing(mSwipeRefresh);
         }
 
         @Override
@@ -478,14 +474,14 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                     mFirstTime = false;
                 }
             } finally {
-                mSwipeRefresh.setRefreshing(false);
+                Utils.stopRefreshing(mSwipeRefresh);
                 mGetClassesTask = null;
             }
         }
 
         @Override
         protected void onCancelled() {
-            mSwipeRefresh.setRefreshing(false);
+            Utils.stopRefreshing(mSwipeRefresh);
             mGetClassesTask = null;
         }
     }

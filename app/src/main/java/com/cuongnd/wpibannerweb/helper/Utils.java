@@ -2,11 +2,15 @@ package com.cuongnd.wpibannerweb.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -35,10 +39,32 @@ public class Utils {
         });
     }
 
+    public static void startRefreshing(final SwipeRefreshLayout swipeRefreshLayout) {
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
+    }
+
+    public static void stopRefreshing(final SwipeRefreshLayout swipeRefreshLayout) {
+        swipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
+    }
+
     /**
      * Data structure for holding name and id of a WPI term
      */
     public static class TermValue {
+        public static final String JSON_TERM_VALUE = "TermValue";
+        public static final String JSON_TERM_NAME = "TermName";
+        public static final String JSON_MARK = "Mark";
+
         private String mValue;
         private String mText;
         private boolean mMark;
@@ -55,6 +81,23 @@ public class Utils {
 
         public String toString() {
             return mText;
+        }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(JSON_TERM_VALUE, mValue);
+            jsonObject.put(JSON_TERM_NAME, mText);
+            jsonObject.put(JSON_MARK, mMark);
+            return jsonObject;
+        }
+
+        public static TermValue fromJSON(JSONObject jsonObject) throws JSONException {
+            String termValue = jsonObject.getString(JSON_TERM_VALUE);
+            String termName = jsonObject.getString(JSON_TERM_NAME);
+            boolean termMark = jsonObject.getBoolean(JSON_MARK);
+            TermValue term = new TermValue(termValue, termName);
+            term.setMark(termMark);
+            return term;
         }
 
         public boolean isMark() { return mMark;}

@@ -18,7 +18,6 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +36,7 @@ public class ClassesPage {
 
     private static final String JSON_CLASSES = "classes";
     private static final String JSON_REMIND = "remind";
+    private static final String JSON_TERM = "term";
 
     private static final String REGISTRATION =
             "https://bannerweb.wpi.edu/pls/prod/twbkwbis.P_GenMenu?name=bmenu.P_RegMnu";
@@ -60,18 +60,15 @@ public class ClassesPage {
      *
      * @param context application context to sync offline data with
      * @return a list of WPI terms
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException If connection timed out
      * @throws NullPointerException
      */
-    public static ArrayList<Utils.TermValue> getTerms(Context context) {
+    public static ArrayList<Utils.TermValue> getTerms(Context context) throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
         ArrayList<Utils.TermValue> terms = new ArrayList<>();
         String html;
-        try {
-            html = cm.getPage(VIEW_TERM, REGISTRATION);
-        } catch (IOException e) {
-            syncOfflineData(context, terms);
-            return terms;
-        }
+        html = cm.getPage(VIEW_TERM, REGISTRATION);
         Document doc = Jsoup.parse(html);
         Element select = doc.getElementById("term_id");
         Elements options = select.getElementsByTag("option");
@@ -116,8 +113,26 @@ public class ClassesPage {
         }
     }
 
+    public static  ArrayList<Utils.TermValue> getOfflineTerms(Context context) {
+        ArrayList<Utils.TermValue> terms = new ArrayList<>();
+        File dir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
+        File[] files = dir.listFiles();
+        for (File f : files) {
+            try {
+                JSONObject obj = JSONSerializer.loadJSONFromFile(context, dir, f.getName());
+                Utils.TermValue term = Utils.TermValue.fromJSON(obj.getJSONObject(JSON_TERM));
+                terms.add(term);
+            } catch (IOException e) {
+                Log.e(TAG, "Error opening file!");
+            } catch (JSONException e) {
+                Log.e(TAG, "Error reading file!", e);
+            }
+        }
+        return terms;
+    }
+
     private Context mContext;
-    private String mTermId;
+    private Utils.TermValue mTerm;
     private File mClassesPageDir;
 
     private volatile ArrayList<WPIClass> mClasses;
@@ -127,11 +142,11 @@ public class ClassesPage {
      * Constructs a new class page model. The data is initially loaded from local, if any.
      *
      * @param context application context to load and save offline data
-     * @param termId id of the term to be represented
+     * @param term the term to be represented
      */
-    public ClassesPage(Context context, String termId) {
+    public ClassesPage(Context context, Utils.TermValue term) {
         mContext = context;
-        mTermId = termId;
+        mTerm = term;
         mClassesPageDir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
 
         loadFromLocal(); // Always call this after mClassesPageDir is initiated
@@ -145,7 +160,7 @@ public class ClassesPage {
         ArrayList<WPIClass> classes = new ArrayList<>();
         try {
             JSONObject jsonObject = JSONSerializer
-                    .loadJSONFromFile(mContext, mClassesPageDir,getFileName(mTermId));
+                    .loadJSONFromFile(mContext, mClassesPageDir,getFileName(mTerm.getValue()));
 
             JSONArray jsonArray = jsonObject.getJSONArray(JSON_CLASSES);
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -153,6 +168,7 @@ public class ClassesPage {
                 classes.add(c);
             }
             mRemind = jsonObject.getBoolean(JSON_REMIND);
+            mTerm = Utils.TermValue.fromJSON(jsonObject.getJSONObject(JSON_TERM));
         } catch (IOException e) {
             Log.e(TAG, "Error opening file!");
         } catch (JSONException e) {
@@ -234,7 +250,7 @@ public class ClassesPage {
 
     private void selectTerm() throws IOException {
         ConnectionManager cm = ConnectionManager.getInstance();
-        cm.getPage(SELECT_TERM, VIEW_TERM, "term_in=" + mTermId);
+        cm.getPage(SELECT_TERM, VIEW_TERM, "term_in=" + mTerm.getValue());
     }
 
     private ArrayList<WPIClass.Schedule> parseSchedule(Table time) {
@@ -289,8 +305,9 @@ public class ClassesPage {
             }
             jsonObject.put(JSON_CLASSES, jsonArray);
             jsonObject.put(JSON_REMIND, mRemind);
+            jsonObject.put(JSON_TERM, mTerm.toJSON());
             JSONSerializer
-                    .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTermId), jsonObject);
+                    .saveJSONToFile(mContext, mClassesPageDir, getFileName(mTerm.getValue()), jsonObject);
         } catch (JSONException | IOException e) {
             Log.e(TAG, "Cannot save offline data", e);
         }

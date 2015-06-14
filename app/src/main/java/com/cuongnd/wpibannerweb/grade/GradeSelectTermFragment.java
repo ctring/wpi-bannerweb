@@ -110,12 +110,7 @@ public class GradeSelectTermFragment extends ListFragment {
 
         @Override
         protected void onPreExecute() {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            Utils.startRefreshing(mSwipeRefreshLayout);
         }
 
         @Override
@@ -147,14 +142,14 @@ public class GradeSelectTermFragment extends ListFragment {
                     mFirstRun = false;
                 }
             } finally {
-                mSwipeRefreshLayout.setRefreshing(false);
+                Utils.stopRefreshing(mSwipeRefreshLayout);
                 mGetTermsTask = null;
             }
         }
 
         @Override
         protected void onCancelled() {
-            mSwipeRefreshLayout.setRefreshing(false);
+            Utils.stopRefreshing(mSwipeRefreshLayout);
             mGetTermsTask = null;
         }
     }

@@ -174,12 +174,7 @@ public class FinalGradeFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            Utils.startRefreshing(mSwipeRefreshLayout);
         }
 
         @Override
@@ -210,15 +205,15 @@ public class FinalGradeFragment extends Fragment {
                     mFirstRun = false;
                 }
             } finally {
+                Utils.stopRefreshing(mSwipeRefreshLayout);
                 mGetGradeTask = null;
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         }
 
         @Override
         protected void onCancelled() {
+            Utils.stopRefreshing(mSwipeRefreshLayout);
             mGetGradeTask = null;
-            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 

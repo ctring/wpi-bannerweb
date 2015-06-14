@@ -84,7 +84,7 @@ public class ClassesDetailFragment extends Fragment {
     }
 
     private void addScheduleView(LayoutInflater inflater, ViewGroup container, WPIClass.Schedule schedule) {
-        View v = inflater.inflate(R.layout.fragment_classes_detail_schedule, container, true);
+        View v = inflater.inflate(R.layout.fragment_classes_detail_schedule, container, false);
 
         TextView textType = (TextView) v.findViewById(R.id.text_type);
         TextView textTime = (TextView) v.findViewById(R.id.text_time);
@@ -99,9 +99,10 @@ public class ClassesDetailFragment extends Fragment {
         textDays.setText(formatDays(schedule.getDays()));
         textLocation.setText(schedule.getLocation());
         textInstructor.setText(schedule.getInstructor());
-        textDateRange.setText(String.format("%s - %s", formatTime(schedule.getStartDate(), "MMM dd"),
+        textDateRange.setText(String.format("%s - %s", formatTime(schedule.getStartDate(), "MMM dd, yyyy"),
                 formatTime(schedule.getEndDate(), "MMM dd, yyyy")));
 
+        container.addView(v);
     }
 
     private static String formatTime(Calendar time, String format) {
