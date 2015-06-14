@@ -456,12 +456,15 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                     mClassesPage.reload();
             } catch (SocketTimeoutException e) {
                 Utils.showShortToast(getActivity(), getString(R.string.error_connection_timed_out));
+                Log.e(TAG, getString(R.string.error_connection_timed_out), e);
             } catch (IOException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_connection_problem_occurred));
+                Log.e(TAG, getString(R.string.error_connection_problem_occurred), e);
             } catch (NullPointerException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_no_data_received));
+                Log.e(TAG, getString(R.string.error_no_data_received), e);
             }
             return null;
         }

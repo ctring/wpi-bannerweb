@@ -206,9 +206,11 @@ public class DashboardFragment extends Fragment {
             } catch (SocketTimeoutException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_connection_timed_out));
+                Log.e(TAG, "Connection timed out", e);
             } catch (IOException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_connection_problem_occurred));
+                Log.e(TAG, "Connection problem occurred", e);
             }
             return null;
         }

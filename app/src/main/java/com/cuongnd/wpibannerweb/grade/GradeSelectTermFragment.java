@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
  * @author Cuong Nguyen
  */
 public class GradeSelectTermFragment extends ListFragment {
+
+    private static final String TAG = GradeSelectTermFragment.class.getSimpleName();
 
     private GetTermsTask mGetTermsTask;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -123,13 +126,17 @@ public class GradeSelectTermFragment extends ListFragment {
             } catch (SocketTimeoutException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_connection_timed_out));
+                Log.e(TAG, getString(R.string.error_connection_timed_out), e);
             } catch (IOException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_connection_problem_occurred));
+                Log.e(TAG, getString(R.string.error_connection_problem_occurred), e);
             } catch (NullPointerException e) {
                 Utils.showShortToast(getActivity(),
                         getString(R.string.error_no_data_received));
+                Log.e(TAG, getString(R.string.error_no_data_received), e);
             }
+
             return null;
         }
 

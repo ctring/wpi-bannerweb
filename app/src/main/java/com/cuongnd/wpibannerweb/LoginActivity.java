@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -28,6 +29,7 @@ import java.net.SocketTimeoutException;
  */
 public class LoginActivity extends Activity {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int LOGIN_ATTEMPT_NUMBER = 3;
 
     /**
@@ -193,9 +195,11 @@ public class LoginActivity extends Activity {
             } catch (SocketTimeoutException e) {
                 Utils.showShortToast(LoginActivity.this,
                         getString(R.string.error_connection_timed_out));
+                Log.e(TAG, getString(R.string.error_connection_timed_out), e);
             } catch (IOException e) {
                 Utils.showShortToast(LoginActivity.this,
                         getString(R.string.error_connection_problem_occurred));
+                Log.e(TAG, getString(R.string.error_connection_problem_occurred), e);
             }
             return false;
         }
