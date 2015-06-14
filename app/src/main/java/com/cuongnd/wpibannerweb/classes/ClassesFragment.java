@@ -80,6 +80,9 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     private WeekView mWeekView;
     private Parcelable mRecyclerState;
 
+    private Calendar mFirstVisibleDay;
+    private double mFirstVisibleHour;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,7 +158,13 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         super.onStart();
 
         switchToCalendar(mCalendarMode);
+
         setNumberOfVisibleDays(mWeekViewView);
+
+        if (mFirstVisibleDay != null) {
+            mWeekView.goToDate(mFirstVisibleDay);
+            mWeekView.goToHour(mFirstVisibleHour);
+        }
 
         updateView();
         if (mFirstTime) {
@@ -277,20 +286,19 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
 
     private void setNumberOfVisibleDays(int numberOfVisibleDays) {
 
-        Calendar cal = mWeekView.getFirstVisibleDay();
-        double hour = mWeekView.getFirstVisibleHour();
+        Calendar firstVisibleDay = mWeekView.getFirstVisibleDay();
+        double firstVisibleHour = mWeekView.getFirstVisibleHour();
 
         mWeekView.setNumberOfVisibleDays(numberOfVisibleDays);
-
         if (numberOfVisibleDays > 5) {
             mWeekView.setDateTimeInterpreter(new ShortDateTimeInterpreter());
         } else {
             mWeekView.setDateTimeInterpreter(new LongDateTimeInterpreter());
         }
 
-        if (cal != null) {
-            mWeekView.goToDate(cal);
-            mWeekView.goToHour(hour);
+        if (firstVisibleDay != null) {
+            mWeekView.goToDate(firstVisibleDay);
+            mWeekView.goToHour(firstVisibleHour);
         }
     }
 
@@ -315,13 +323,10 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
     }
 
     @Override
-    public void onPause() {
-        mRecyclerState = mRecyclerClasses.getLayoutManager().onSaveInstanceState();
-        super.onPause();
-    }
-
-    @Override
     public void onStop() {
+        mRecyclerState = mRecyclerClasses.getLayoutManager().onSaveInstanceState();
+        mFirstVisibleDay = mWeekView.getFirstVisibleDay();
+        mFirstVisibleHour = mWeekView.getFirstVisibleHour();
         if (mGetClassesTask != null) {
             mGetClassesTask.cancel(false);
         }
@@ -384,7 +389,6 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 end.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY));
                 end.set(Calendar.MINUTE, endTime.get(Calendar.MINUTE));
                 WeekViewEvent event = new WeekViewEvent(id, title, start, end);
-                // TODO: choose color for event
                 event.setColor(getResources().getColor(R.color.event_color_03));
                 events.add(event);
             }
