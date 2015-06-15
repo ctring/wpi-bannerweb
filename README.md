@@ -2,9 +2,9 @@
 
 WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just one to two taps away, you will get all the information you need!
 
-![Login Screen](/screenshots/login.png "Login Screen") 
-![Dashboard Screen](/screenshots/dashbaord.png "Dashboard Screen")
-![Calendar](/screenshots/calendar.png "Calendar Screen")
+![Login Screen](/screenshots/login.png =200 "Login Screen") 
+![Dashboard Screen](/screenshots/dashboard.png =200 "Dashboard Screen")
+![Calendar](/screenshots/calendar.png =200 "Calendar Screen")
 
 
 ## Features
