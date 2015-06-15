@@ -7,6 +7,14 @@ WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just
 ![Calendar](/screenshots/calendar.png "Calendar Screen")
 
 
+<br/>
+<p align="center">
+<a href="https://play.google.com/store/apps/details?id=com.cuongnd.wpibannerweb">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
+</a>
+</p>
+
 ## Features
 * Automatically log in to the BannerWeb after your first login. 
 * Last updated information will be saved locally so that you can view without the internet.
