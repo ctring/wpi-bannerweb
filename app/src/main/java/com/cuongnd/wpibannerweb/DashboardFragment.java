@@ -108,7 +108,6 @@ public class DashboardFragment extends Fragment {
         buttonClasses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
                 Intent i = new Intent(getActivity(), ClassesSelectTermActivity.class);
                 startActivity(i);
             }
@@ -174,6 +173,9 @@ public class DashboardFragment extends Fragment {
 
         cancelTask(mGetMailbox);
         mGetMailbox = null;
+
+        cancelTask(mGetIdImage);
+        mGetIdImage = null;
         super.onStop();
     }
 

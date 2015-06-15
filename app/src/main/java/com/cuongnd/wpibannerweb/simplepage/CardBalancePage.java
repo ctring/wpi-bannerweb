@@ -104,6 +104,9 @@ public class CardBalancePage extends SimplePage {
     @Override
     public void updateView(Context context, View v) {
         try {
+            TextView textMealPlan = (TextView) v.findViewById(R.id.text_meal_plan);
+            textMealPlan.setText(mData.getString(JSON_MEAL_PLAN));
+
             TableLayout tableView = (TableLayout) v
                     .findViewById(R.id.table_cardbalance);
             Table table = new Table(mData.getJSONArray(JSON_MEAL_TYPES));

@@ -1,44 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    android:layout_gravity="center"
-    android:id="@+id/table_cardbalance">
+    android:orientation="vertical">
 
-    <TableRow
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_padding_medium"
+        android:layout_gravity="center_horizontal"
+        android:text="Meal plan"
+        android:id="@+id/text_meal_plan" />
+
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp">
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/common_margin_padding_medium"
+        android:id="@+id/table_cardbalance">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.40"
-            android:text="@string/label_account"
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-            style="@style/TextViewLabelStyle"
-            android:gravity="center_horizontal"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.40"
+                android:text="@string/label_account"
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.30"
-            android:text="@string/label_balance"
+                style="@style/TextViewLabelStyle"
+                android:gravity="center_horizontal"/>
 
-            style="@style/TextViewLabelStyle"
-            android:gravity="center_horizontal"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.30"
+                android:text="@string/label_balance"
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.30"
-            android:text="@string/label_last_used"
+                style="@style/TextViewLabelStyle"
+                android:gravity="center_horizontal"/>
 
-            style="@style/TextViewLabelStyle"
-            android:gravity="center_horizontal"/>
-    </TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.30"
+                android:text="@string/label_last_used"
+
+                style="@style/TextViewLabelStyle"
+                android:gravity="center_horizontal"/>
+        </TableRow>
 
 
-</TableLayout>
+    </TableLayout>
+</LinearLayout>
 

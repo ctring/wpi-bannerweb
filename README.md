@@ -1,7 +1,7 @@
 # WPI BannerWeb
 
 ## Description
-WPI BannerWeb is a more convinient BannerWeb for WPI students. Just one to two taps away, you will get all the information you need!
+WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just one to two taps away, you will get all the information you need!
 
 ## Features
 * Automatically log in to the BannerWeb after your first login. 
