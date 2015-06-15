@@ -1,6 +1,6 @@
 # WPI BannerWeb
 
-WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just one to two taps away, you will get all the information you need!
+WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just one or two taps away, you will get all the information you need!
 
 ![Login Screen](/screenshots/login.png "Login Screen") 
 ![Dashboard Screen](/screenshots/dashboard.png "Dashboard Screen")
@@ -19,7 +19,7 @@ WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just
 
 ## Acknowledgements
 
-* Thanks to [Alam Kanak](https://github.com/alamkanak) for [Android-Week-View](https://github.com/alamkanak/Android-Week-View) library.
+* Thanks to [Alam Kanak](https://github.com/alamkanak) for the [Android-Week-View](https://github.com/alamkanak/Android-Week-View) library.
 
 ## Lincense
 
