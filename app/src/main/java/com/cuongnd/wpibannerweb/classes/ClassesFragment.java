@@ -353,6 +353,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
                 Calendar startDate = Calendar.getInstance();
                 startDate.set(Calendar.YEAR, newYear);
                 startDate.set(Calendar.MONTH, newMonth - 1);
+                startDate.set(Calendar.DAY_OF_MONTH, 1);
                 if (startDate.before(s.getStartDate())) {
                     startDate = s.getStartDate();
                 }
