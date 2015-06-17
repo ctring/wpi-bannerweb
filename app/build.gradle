@@ -16,7 +16,7 @@ android {
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "com.cuongnd.wpibannerweb"
-        minSdkVersion 14
+        minSdkVersion 10
         targetSdkVersion 22
         versionCode 2
         versionName "1.0.1"
