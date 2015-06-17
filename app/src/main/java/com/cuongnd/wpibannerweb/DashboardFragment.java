@@ -1,6 +1,6 @@
 package com.cuongnd.wpibannerweb;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,7 +33,7 @@ import java.net.SocketTimeoutException;
 
 
 /**
- * Created by Cuong Nguyen on 5/10/2015.
+ * @author Cuong Nguyen
  */
 public class DashboardFragment extends Fragment {
 

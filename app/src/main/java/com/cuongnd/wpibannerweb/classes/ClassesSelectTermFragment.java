@@ -1,6 +1,6 @@
 package com.cuongnd.wpibannerweb.classes;
 
-import android.app.ListFragment;
+import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;

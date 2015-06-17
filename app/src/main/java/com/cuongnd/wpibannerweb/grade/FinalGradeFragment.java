@@ -1,7 +1,7 @@
 package com.cuongnd.wpibannerweb.grade;
 
 import android.app.ActionBar;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;

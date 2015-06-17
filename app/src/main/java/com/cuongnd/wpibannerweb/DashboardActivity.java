@@ -1,13 +1,13 @@
 package com.cuongnd.wpibannerweb;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 /**
- * Created by Cuong Nguyen on 5/10/2015.
+ * @author Cuong Nguyen
  */
 public class DashboardActivity extends SingleFragmentActivity {
 
