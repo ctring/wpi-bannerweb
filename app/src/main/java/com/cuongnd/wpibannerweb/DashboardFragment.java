@@ -33,7 +33,7 @@ import java.net.SocketTimeoutException;
 
 
 /**
- * Created by Cuong Nguyen on 5/10/2015.
+ * @author Cuong Nguyen
  */
 public class DashboardFragment extends Fragment {
 

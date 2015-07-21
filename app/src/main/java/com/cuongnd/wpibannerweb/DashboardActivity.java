@@ -7,7 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 /**
- * Created by Cuong Nguyen on 5/10/2015.
+ * @author Cuong Nguyen
  */
 public class DashboardActivity extends SingleFragmentActivity {
 
