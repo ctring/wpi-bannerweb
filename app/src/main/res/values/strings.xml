@@ -24,13 +24,18 @@
     <string name="action_log_in_short">Log in</string>
     <string name="action_log_out">Log out</string>
 
-
     <!-- Strings in Dashboard page -->
     <string name="button_view_final_grade">View final grade</string>
     <string name="button_view_classes">View registered classes</string>
     <string name="title_cardbalance">WPI ID Card Balances</string>
     <string name="title_mailbox">Mail Box Information</string>
     <string name="title_advisor">Advisor Contact Information</string>
+    <string name="title_today">Today Schedule</string>
+
+    <!-- Strings in Today Schedule page -->
+    <string name="label_class">Class</string>
+    <string name="label_time">Time</string>
+    <string name="label_where">Where</string>
 
     <!-- Strings in Advisor Page -->
     <string name="label_advisor">Primary Advisor</string>

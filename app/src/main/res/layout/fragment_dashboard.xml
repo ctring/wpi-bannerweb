@@ -43,7 +43,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/swipe_refresh_dashboard">
-            <ScrollView android:layout_width="match_parent"
+            <ScrollView android:id="@+id/main_container"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="none"
                         android:overScrollMode="never">
@@ -53,6 +54,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/common_margin_padding_medium">
+
+                    <include layout="@layout/fragment_dashboard_card_today" />
 
                     <include layout="@layout/fragment_dashboard_card_cardbalance" />
 

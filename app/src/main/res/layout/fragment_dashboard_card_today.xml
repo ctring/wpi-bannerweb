@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/cv_cardbalance"
+    android:id="@+id/cv_today"
     android:layout_marginBottom="@dimen/common_margin_padding_medium">
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_cardbalance"
+            android:text="@string/title_today"
             android:padding="@dimen/common_margin_padding_medium"
             style="@style/TextViewCardTitleStyle"/>
         <include layout="@layout/divider" />
@@ -44,8 +44,8 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.40"
-                        android:text="@string/label_account"
+                        android:layout_weight="0.50"
+                        android:text="@string/label_class"
 
                         style="@style/TextViewLabelStyle"
                         android:gravity="center_horizontal"/>
@@ -53,20 +53,20 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.30"
-                        android:text="@string/label_balance"
+                        android:layout_weight="0.20"
+                        android:text="@string/label_time"
 
                         style="@style/TextViewLabelStyle"
-                        android:gravity="center_horizontal"/>
+                        android:gravity="center_horizontal" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.30"
-                        android:text="@string/label_last_used"
+                        android:text="@string/label_where"
 
                         style="@style/TextViewLabelStyle"
-                        android:gravity="center_horizontal"/>
+                        android:gravity="center_horizontal" />
                 </TableRow>
 
 
