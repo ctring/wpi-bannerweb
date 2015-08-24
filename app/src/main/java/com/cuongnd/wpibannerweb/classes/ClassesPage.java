@@ -18,11 +18,13 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 
 /**
@@ -174,11 +176,22 @@ public class ClassesPage {
         } catch (JSONException e) {
             Log.e(TAG, "Error reading file!", e);
         }
-        mClasses = classes;
+
+        setClasses(classes);
     }
 
     /**
-     * Gets a list of WPI class object that this page is holding.
+     * Sets a list of WPI classes and sort it.
+     *
+     * @param classes a list of WPI classes to be set
+     */
+    private void setClasses(ArrayList<WPIClass> classes) {
+        mClasses = classes;
+        Collections.sort(mClasses);
+    }
+
+    /**
+     * Gets a list of sorted WPI class object that this page is holding.
      *
      * @return a list of WPI class object
      */
@@ -243,7 +256,7 @@ public class ClassesPage {
             classes.add(wpiclass);
         }
 
-        mClasses = classes;
+        setClasses(classes);
 
         saveToLocal();
     }

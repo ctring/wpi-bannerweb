@@ -27,9 +27,11 @@ import java.util.Locale;
  * Each class contains a list of schedules for lectures, labs or conferences. A schedule model
  * is represented by the class {@link com.cuongnd.wpibannerweb.classes.WPIClass.Schedule}.
  *
+ * Two classes are compared by their starting date (assuming every schedule has the same starting date).
+ *
  * @author Cuong Nguyen
  */
-public class WPIClass {
+public class WPIClass implements Comparable<WPIClass> {
 
     public static final String JSON_NAME = "name";
     public static final String JSON_CODE = "code";
@@ -53,6 +55,14 @@ public class WPIClass {
         mInstructor = instructor;
         mCRN = CRN;
         mSchedules = schedules;
+    }
+
+    @Override
+    public int compareTo(WPIClass wpiClass) {
+        Schedule firstThisSchedule = mSchedules.get(0);
+        Schedule firstOtherSchedule = wpiClass.mSchedules.get(0);
+        //return firstOtherSchedule.getStartDate().compareTo(firstThisSchedule.getStartDate());
+        return firstThisSchedule.getStartDate().compareTo(firstOtherSchedule.getStartDate());
     }
 
     public String toString() {

@@ -528,7 +528,7 @@ public class ClassesFragment extends Fragment implements WeekView.MonthChangeLis
         @Override
         public void onBindViewHolder(ClassesViewHolder holder, int position) {
             final WPIClass c = mClasses.get(position);
-            holder.textClassName.setText(c.getName());
+            holder.textClassName.setText(String.format("%s - %s", c.getCode(), c.getName()));
             holder.textInstructorSection.setText(String.format("%s  |  %s", c.getInstructor(),
                     c.getSection()));
             holder.textCrn.setText(String.format("CRN %s", c.getCRN()));
