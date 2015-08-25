@@ -92,9 +92,9 @@ public class AdvisorPage extends SimplePage {
         // If there are two advisors
         if (nameE != null) {
             name = nameE.nextSibling().toString().trim();
-            email = emailE.get(1).text();
-            department = departmentE.get(1).nextSibling().toString().trim();
-            location = locationE.get(1).nextSibling().toString().trim();
+            email = emailE.last().text();
+            department = departmentE.last().nextSibling().toString().trim();
+            location = locationE.last().nextSibling().toString().trim();
 
             try {
                 mData.put(JSON_ADVISOR_2, name)
