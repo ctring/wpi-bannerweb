@@ -100,13 +100,6 @@ public class CardBalancePage extends SimplePage {
 
     }
 
-    @Override
-    public View getView(Context context) {
-        LayoutInflater inflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.fragment_dashboard_card_cardbalance, null, false);
-    }
-
     /**
      * Updates the view hierarchy that displays the Card balance page.
      *

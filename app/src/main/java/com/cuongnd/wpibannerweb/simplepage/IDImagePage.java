@@ -85,7 +85,7 @@ public class IDImagePage extends SimplePage {
     }
 
     @Override
-    public View getView(Context context) {
+    public View createView(Context context) {
         return null;
     }
 

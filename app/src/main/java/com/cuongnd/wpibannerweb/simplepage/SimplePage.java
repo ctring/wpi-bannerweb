@@ -65,7 +65,7 @@ public abstract class SimplePage {
      *
      * @return a new view associating with this page
      */
-    public View getView(Context context) {
+    public View createView(Context context) {
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(getLayoutResource(), null, false);
