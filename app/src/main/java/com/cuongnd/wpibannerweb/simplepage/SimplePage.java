@@ -1,10 +1,15 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
+
+import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 /**
  * SimplePage is an abstract class for all simple pages model. A simple page is defined as a page
@@ -14,6 +19,8 @@ import org.json.JSONObject;
  * @author Cuong Nguyen
  */
 public abstract class SimplePage {
+
+    private static final String TAG = SimplePage.class.getSimpleName();
 
     /**
      * Data of a simple page.
@@ -34,6 +41,20 @@ public abstract class SimplePage {
      * @throws NullPointerException
      */
     public abstract void parse(String html);
+
+    /**
+     * Loads offline data from JSON file if exists.
+     *
+     * @param context the Context of the application
+     */
+    public void loadFromLocal(Context context) {
+        try {
+            setData(JSONSerializer.loadJSONFromFile(context, this.getName() + ".json"));
+        } catch (IOException | JSONException e) {
+            setData(new JSONObject());
+            Log.e(TAG, "Cannot find offline data for " + this.getName());
+        }
+    }
 
     /**
      * Updates a view hierarchy with current data. If at least one view id needed for the concrete

@@ -27,7 +27,8 @@ import java.net.SocketTimeoutException;
  * @author Cuong Nguyen
  */
 public class IDImagePage extends SimplePage {
-    public static final String PAGE_NAME = "IDImagePage";
+
+    public static final String PAGE_NAME = IDImagePage.class.getSimpleName();
 
     public static final String IMAGE_NAME = "IdImage";
 
@@ -71,6 +72,11 @@ public class IDImagePage extends SimplePage {
         } catch (IOException e) {
             Log.e(PAGE_NAME, "Cannot download ID image!");
         }
+    }
+
+    @Override
+    public void loadFromLocal(Context context) {
+        // Do nothing because this class behaves differently
     }
 
     /**

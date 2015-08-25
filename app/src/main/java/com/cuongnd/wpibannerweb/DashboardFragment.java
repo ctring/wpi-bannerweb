@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import android.widget.ImageView;
 
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
@@ -45,6 +46,7 @@ public class DashboardFragment extends Fragment {
     private CardView mCardMailbox;
     private CardView mCardCardbalance;
     private SwipeRefreshLayout mSwipeRefresh ;
+    private ScrollView mMainContainer;
 
     private int mTaskCounter = 0;
     private SimplePageManager mSimplePageManager;
@@ -86,6 +88,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        mMainContainer = (ScrollView) v.findViewById(R.id.main_container);
         mIDImage = (ImageView) v.findViewById(R.id.image_id);
         mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
         mCardMailbox = (CardView) v.findViewById(R.id.cv_mailbox);

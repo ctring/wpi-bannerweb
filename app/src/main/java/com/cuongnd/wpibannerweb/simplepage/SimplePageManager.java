@@ -34,36 +34,14 @@ public class SimplePageManager {
     public SimplePageManager(Context context) {
         mContext = context;
 
-        AdvisorPage advisorPage = new AdvisorPage();
-        try {
-            advisorPage.setData(JSONSerializer.loadJSONFromFile(context,
-                    AdvisorPage.PAGE_NAME + ".json"));
-        } catch (IOException | JSONException e) {
-            advisorPage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for AdvisorPage");
+        mParsers = new SimplePage[]{ new AdvisorPage(),
+                                     new CardBalancePage() ,
+                                     new MailboxPage(),
+                                     new IDImagePage(mContext) };
+
+        for (SimplePage page : mParsers) {
+            page.loadFromLocal(mContext);
         }
-
-        CardBalancePage cardBalancePage = new CardBalancePage();
-        try {
-            cardBalancePage.setData(JSONSerializer.loadJSONFromFile(context,
-                    CardBalancePage.PAGE_NAME + ".json"));
-        } catch (IOException | JSONException e) {
-            cardBalancePage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for CardBalancePage");
-        }
-
-        MailboxPage mailboxPage = new MailboxPage();
-        try {
-            mailboxPage.setData(JSONSerializer.loadJSONFromFile(context,
-                    MailboxPage.PAGE_NAME + ".json"));
-        } catch (IOException | JSONException e) {
-            mailboxPage.setData(new JSONObject());
-            Log.e(TAG, "Cannot find offline data for MailboxPage");
-        }
-
-        IDImagePage idImagePage = new IDImagePage(mContext);
-
-        mParsers = new SimplePage[]{advisorPage, cardBalancePage, mailboxPage, idImagePage};
     }
 
     /**
