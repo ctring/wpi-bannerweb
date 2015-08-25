@@ -2,8 +2,10 @@ package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 
+import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
 import org.json.JSONException;
@@ -57,6 +59,22 @@ public abstract class SimplePage {
     }
 
     /**
+     * Creates and return a new view for this page.
+     *
+     * @param context the Context to get a layout inflater
+     *
+     * @return a new view associating with this page
+     */
+    public View getView(Context context) {
+        LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflater.inflate(getLayoutResource(), null, false);
+        v.setTag(getName());
+
+        return v;
+    }
+
+    /**
      * Updates a view hierarchy with current data. If at least one view id needed for the concrete
      * implementation of a simple page is not found, nothing will happen.
      *
@@ -71,6 +89,8 @@ public abstract class SimplePage {
      * @return name of the page
      */
     public abstract String getName();
+
+    public abstract int getLayoutResource();
 
     /**
      * Returns the main url of the page. In the case when multiple urls are needed to reach the content,

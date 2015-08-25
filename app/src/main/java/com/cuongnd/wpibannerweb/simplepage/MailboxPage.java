@@ -37,6 +37,11 @@ public class MailboxPage extends SimplePage {
     }
 
     @Override
+    public int getLayoutResource() {
+        return R.layout.fragment_dashboard_card_mailbox;
+    }
+
+    @Override
     public String getUrl() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwkboxs.P_ViewBoxs";
     }

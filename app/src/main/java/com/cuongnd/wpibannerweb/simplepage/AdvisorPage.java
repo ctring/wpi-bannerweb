@@ -49,6 +49,11 @@ public class AdvisorPage extends SimplePage {
     }
 
     @Override
+    public int getLayoutResource() {
+        return R.layout.fragment_dashboard_card_advisor;
+    }
+
+    @Override
     public String getUrl() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwksadv.P_Summary";
     }

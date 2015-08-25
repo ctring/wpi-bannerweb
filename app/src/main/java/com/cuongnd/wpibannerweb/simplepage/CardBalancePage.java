@@ -44,6 +44,11 @@ public class CardBalancePage extends SimplePage {
     }
 
     @Override
+    public int getLayoutResource() {
+        return R.layout.fragment_dashboard_card_cardbalance;
+    }
+
+    @Override
     public String getUrl() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwkcbrd.P_Display";
     }
@@ -93,6 +98,13 @@ public class CardBalancePage extends SimplePage {
             Log.e(PAGE_NAME, "JSON exception occurred!", e);
         }
 
+    }
+
+    @Override
+    public View getView(Context context) {
+        LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        return inflater.inflate(R.layout.fragment_dashboard_card_cardbalance, null, false);
     }
 
     /**

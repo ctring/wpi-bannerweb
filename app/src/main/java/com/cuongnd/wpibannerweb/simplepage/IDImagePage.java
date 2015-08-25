@@ -44,6 +44,11 @@ public class IDImagePage extends SimplePage {
     }
 
     @Override
+    public int getLayoutResource() {
+        return 0;
+    }
+
+    @Override
     public String getUrl() {
         return "https://bannerweb.wpi.edu/pls/prod/hwwkimage.p_display";
     }
@@ -77,6 +82,11 @@ public class IDImagePage extends SimplePage {
     @Override
     public void loadFromLocal(Context context) {
         // Do nothing because this class behaves differently
+    }
+
+    @Override
+    public View getView(Context context) {
+        return null;
     }
 
     /**
