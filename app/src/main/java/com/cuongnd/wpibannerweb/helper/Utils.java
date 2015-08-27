@@ -12,7 +12,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Contains miscellaneous utility classes and static methods.
@@ -152,6 +154,17 @@ public class Utils {
         String ret = "";
         for (int c : days) ret += wpiDays[c];
         return ret;
+    }
+
+    /**
+     * Converts a Calendar object into a string using provided format.
+     * @param time Calendar object to be converted
+     * @param format format of the result
+     * @return a string representing the date and time of the given Calendar object in provided format
+     */
+    public static String formatTime(Calendar time, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+        return sdf.format(time.getTime());
     }
 
 }

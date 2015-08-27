@@ -97,22 +97,19 @@ public class ClassesDetailFragment extends Fragment {
 
         textType.setText(schedule.getType());
         textTime.setText(String.format(Utils.CLASS_FULL_TITLE,
-                formatTime(schedule.getStartTime(), Utils.TIME_FORMAT),
-                formatTime(schedule.getEndTime(), Utils.TIME_FORMAT)));
+                Utils.formatTime(schedule.getStartTime(), Utils.TIME_FORMAT),
+                Utils.formatTime(schedule.getEndTime(), Utils.TIME_FORMAT)));
         textDays.setText(formatDays(schedule.getDays()));
         textLocation.setText(schedule.getLocation());
         textInstructor.setText(schedule.getInstructor());
         textDateRange.setText(String.format(Utils.CLASS_FULL_TITLE,
-                formatTime(schedule.getStartDate(), Utils.DATE_FORMAT),
-                formatTime(schedule.getEndDate(), Utils.DATE_FORMAT)));
+                Utils.formatTime(schedule.getStartDate(), Utils.DATE_FORMAT),
+                Utils.formatTime(schedule.getEndDate(), Utils.DATE_FORMAT)));
 
         container.addView(v);
     }
 
-    private static String formatTime(Calendar time, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-        return sdf.format(time.getTime());
-    }
+
 
     private static String formatDays(int[] days) {
         String[] wpiDays = {"?", "?", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
