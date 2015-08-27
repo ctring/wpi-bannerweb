@@ -147,6 +147,7 @@ public class WPIClass implements Comparable<WPIClass> {
         private String mInstructor;
         private String mType;
         private String mLocation;
+        private Object mTag;
 
         public String toString() {
             SimpleDateFormat formatTime = new SimpleDateFormat("h:mm a", Locale.getDefault());
@@ -249,6 +250,10 @@ public class WPIClass implements Comparable<WPIClass> {
             return this;
         }
 
+        public void setTag(Object tag) {
+            this.mTag = tag;
+        }
+
         public Calendar getStartTime() {
             return mStartTime;
         }
@@ -279,6 +284,10 @@ public class WPIClass implements Comparable<WPIClass> {
 
         public String getLocation() {
             return mLocation;
+        }
+
+        public Object getTag() {
+            return mTag;
         }
     }
 }

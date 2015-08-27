@@ -115,7 +115,7 @@ public class ClassesPage {
         }
     }
 
-    public static  ArrayList<Utils.TermValue> getOfflineTerms(Context context) {
+    public static ArrayList<Utils.TermValue> getOfflineTerms(Context context) {
         ArrayList<Utils.TermValue> terms = new ArrayList<>();
         File dir = context.getDir(CLASSES_PAGE_FOLDER, Context.MODE_PRIVATE);
         File[] files = dir.listFiles();
