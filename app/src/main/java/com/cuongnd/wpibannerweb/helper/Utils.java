@@ -54,7 +54,7 @@ public class Utils {
             public void run() {
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }, 1000);
+        }, 200);
     }
 
     /**
