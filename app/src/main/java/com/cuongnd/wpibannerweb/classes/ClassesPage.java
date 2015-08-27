@@ -253,14 +253,20 @@ public class ClassesPage {
 
             String fullname = infoE.getElementsByTag("caption").first().text();
             String[] parts = fullname.split(" - ");
-            for (String test : parts) {
-                Log.e(TAG, test);
-            }
             String name = parts[0];
             String code = parts[1];
             String section = parts[2];
-            String CRN = info.get(1, 1);
-            String instructor = info.get(3, 1);
+            String CRN = "";
+            String instructor = "";
+
+            for (int r = 0; r < info.size(); r++) {
+                if (info.get(r, 0).equals("CRN:")) {
+                    CRN = info.get(r, 1);
+                }
+                if (info.get(r, 0).equals("Assigned Instructor:")) {
+                    instructor = info.get(r, 1);
+                }
+            }
 
             WPIClass wpiclass = new WPIClass(name, code, section, CRN, instructor,
                     parseSchedule(time));
