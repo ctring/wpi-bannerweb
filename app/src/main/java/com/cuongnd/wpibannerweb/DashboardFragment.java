@@ -15,21 +15,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.classes.ClassesSelectTermActivity;
 import com.cuongnd.wpibannerweb.grade.GradeSelectTermActivity;
 import com.cuongnd.wpibannerweb.helper.Utils;
-import com.cuongnd.wpibannerweb.simplepage.AdvisorPage;
-import com.cuongnd.wpibannerweb.simplepage.CardBalancePage;
 import com.cuongnd.wpibannerweb.simplepage.IDImagePage;
-import com.cuongnd.wpibannerweb.simplepage.MailboxPage;
 import com.cuongnd.wpibannerweb.simplepage.SimplePageManager;
 
-import org.json.JSONException;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -44,9 +37,6 @@ public class DashboardFragment extends Fragment {
     public static final String EXTRA_USERNAME = "username";
 
     private ImageView mIDImage;
-    private CardView mCardAdvisor;
-    private CardView mCardMailbox;
-    private CardView mCardCardbalance;
     private SwipeRefreshLayout mSwipeRefresh ;
     private LinearLayout mMainContainer;
     private ArrayList<View> mPageViews;
@@ -58,10 +48,6 @@ public class DashboardFragment extends Fragment {
 
     private ArrayList<GetContentTask> mTasks;
     private GetContentTask mGetIdImage;
-
-    /*private GetContentTask mGetMailbox;
-    private GetContentTask mGetCardBalance;
-    private GetContentTask mGetAdvisor;*/
 
     public static DashboardFragment newInstance(String username) {
         Bundle args = new Bundle();
@@ -100,10 +86,7 @@ public class DashboardFragment extends Fragment {
         }
 
         mIDImage = (ImageView) v.findViewById(R.id.image_id);
-
-        /*mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
-        mCardMailbox = (CardView) v.findViewById(R.id.cv_mailbox);
-        mCardCardbalance = (CardView) v.findViewById(R.id.cv_cardbalance);*/
+        mIDImage.setTag(IDImagePage.PAGE_NAME);
 
         TextView textName = (TextView) v.findViewById(R.id.text_name);
         textName.setText(SessionManager.getInstance(getActivity().getApplicationContext())
@@ -144,6 +127,7 @@ public class DashboardFragment extends Fragment {
         super.onStart();
         if (mTerminated) return;
         mSimplePageManager.updateViews(mMainContainer);
+        mSimplePageManager.updateView(mIDImage);
         if (mFirstRun) {
             mFirstRun = false;
             mSwipeRefresh.post(new Runnable() {
