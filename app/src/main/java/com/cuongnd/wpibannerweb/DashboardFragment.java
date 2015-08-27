@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import android.widget.ImageView;
 
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ import org.json.JSONException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 
 /**
@@ -46,17 +48,20 @@ public class DashboardFragment extends Fragment {
     private CardView mCardMailbox;
     private CardView mCardCardbalance;
     private SwipeRefreshLayout mSwipeRefresh ;
-    private ScrollView mMainContainer;
+    private LinearLayout mMainContainer;
+    private ArrayList<View> mPageViews;
 
     private int mTaskCounter = 0;
     private SimplePageManager mSimplePageManager;
     private boolean mFirstRun = true;
     private boolean mTerminated;
 
-    private GetContentTask mGetMailbox;
-    private GetContentTask mGetCardBalance;
-    private GetContentTask mGetAdvisor;
+    private ArrayList<GetContentTask> mTasks;
     private GetContentTask mGetIdImage;
+
+    /*private GetContentTask mGetMailbox;
+    private GetContentTask mGetCardBalance;
+    private GetContentTask mGetAdvisor;*/
 
     public static DashboardFragment newInstance(String username) {
         Bundle args = new Bundle();
@@ -88,11 +93,17 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        mMainContainer = (ScrollView) v.findViewById(R.id.main_container);
+        mMainContainer = (LinearLayout) v.findViewById(R.id.main_container);
+        mPageViews = mSimplePageManager.createViews(mMainContainer);
+        for (View pv : mPageViews) {
+            mMainContainer.addView(pv);
+        }
+
         mIDImage = (ImageView) v.findViewById(R.id.image_id);
-        mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
+
+        /*mCardAdvisor = (CardView) v.findViewById(R.id.cv_advisor);
         mCardMailbox = (CardView) v.findViewById(R.id.cv_mailbox);
-        mCardCardbalance = (CardView) v.findViewById(R.id.cv_cardbalance);
+        mCardCardbalance = (CardView) v.findViewById(R.id.cv_cardbalance);*/
 
         TextView textName = (TextView) v.findViewById(R.id.text_name);
         textName.setText(SessionManager.getInstance(getActivity().getApplicationContext())
@@ -132,10 +143,7 @@ public class DashboardFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (mTerminated) return;
-        mSimplePageManager.updateView(CardBalancePage.PAGE_NAME, mCardCardbalance);
-        mSimplePageManager.updateView(AdvisorPage.PAGE_NAME, mCardAdvisor);
-        mSimplePageManager.updateView(MailboxPage.PAGE_NAME, mCardMailbox);
-        mSimplePageManager.updateView(IDImagePage.PAGE_NAME, mIDImage);
+        mSimplePageManager.updateViews(mMainContainer);
         if (mFirstRun) {
             mFirstRun = false;
             mSwipeRefresh.post(new Runnable() {
@@ -149,17 +157,23 @@ public class DashboardFragment extends Fragment {
     }
 
     private void refresh() {
-        cancelTask(mGetCardBalance);
-        mGetCardBalance = new GetContentTask(CardBalancePage.PAGE_NAME, mCardCardbalance);
-        mGetCardBalance.execute();
+        if (mTasks != null) {
+            for (GetContentTask task : mTasks) {
+                cancelTask(task);
+            }
+            mTasks.clear();
+        } else {
+            mTasks = new ArrayList<>();
+        }
 
-        cancelTask(mGetAdvisor);
-        mGetAdvisor = new GetContentTask(AdvisorPage.PAGE_NAME, mCardAdvisor);
-        mGetAdvisor.execute();
+        for (View view : mPageViews) {
+            String pageName = view.getTag().toString();
+            mTasks.add(new GetContentTask(pageName, view));
+        }
 
-        cancelTask(mGetMailbox);
-        mGetMailbox = new GetContentTask(MailboxPage.PAGE_NAME, mCardMailbox);
-        mGetMailbox.execute();
+        for (GetContentTask task : mTasks) {
+            task.execute();
+        }
 
         cancelTask(mGetIdImage);
         mGetIdImage = new GetContentTask(IDImagePage.PAGE_NAME, mIDImage);
@@ -168,17 +182,16 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public void onStop() {
-        cancelTask(mGetCardBalance);
-        mGetCardBalance = null;
-
-        cancelTask(mGetAdvisor);
-        mGetAdvisor = null;
-
-        cancelTask(mGetMailbox);
-        mGetMailbox = null;
+        if (mTasks != null) {
+            for (GetContentTask task : mTasks) {
+                cancelTask(task);
+            }
+            mTasks.clear();
+        }
 
         cancelTask(mGetIdImage);
         mGetIdImage = null;
+
         super.onStop();
     }
 
@@ -223,7 +236,7 @@ public class DashboardFragment extends Fragment {
         @Override
         protected void onPostExecute(Void nothing) {
             if (!this.isCancelled()) {
-                mSimplePageManager.updateView(mPageName, mView);
+                mSimplePageManager.updateView(mView);
             }
 
             mTaskCounter--;

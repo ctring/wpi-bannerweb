@@ -2,16 +2,17 @@ package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 /**
  * SimplePageManager manages all of the simple pages. It performs networking
@@ -23,7 +24,7 @@ public class SimplePageManager {
 
     private static final String TAG = SimplePageManager.class.getSimpleName();
 
-    private final SimplePage[] mParsers;
+    private final SimplePage[] mPages;
     private Context mContext;
 
     /**
@@ -34,12 +35,12 @@ public class SimplePageManager {
     public SimplePageManager(Context context) {
         mContext = context;
 
-        mParsers = new SimplePage[]{ new AdvisorPage(),
-                                     new CardBalancePage() ,
-                                     new MailboxPage(),
-                                     new IDImagePage(mContext) };
+        mPages = new SimplePage[]{  new CardBalancePage(),
+                                    new AdvisorPage(),
+                                    new MailboxPage(),
+                                    new IDImagePage(mContext) };
 
-        for (SimplePage page : mParsers) {
+        for (SimplePage page : mPages) {
             page.loadFromLocal(mContext);
         }
     }
@@ -47,12 +48,16 @@ public class SimplePageManager {
     /**
      * Reloads data for a page with specified name then saves the data locally.
      *
-     * @param name name of the page to be reload
+     * @param name name of the page to be load
      * @throws IOException If a connection error occurred
      * @throws SocketTimeoutException If connection timed out
      */
     public void reloadPage(String name) throws IOException {
         SimplePage page = getPageParserByName(name);
+        if (page != null) {
+            page.load(mContext);
+        }
+        /*SimplePage page = getPageParserByName(name);
         if (page == null) return;
 
         if (page.dataLoaded()) return;
@@ -68,24 +73,58 @@ public class SimplePageManager {
             Log.e(TAG, "Cannot save offline data!");
         } catch (NullPointerException e) {
             Log.e(TAG, "Error in parsing html of page " + name, e);
-        }
+        }*/
     }
 
     /**
-     * Update the view hierarchy with the data of the specified page.
+     * Create the view hierarchy of the pages.
      *
-     * @param name name of the page
+     * @return a list of cards representing pages
+     */
+    public ArrayList<View> createViews(ViewGroup container) {
+        ArrayList<View> views = new ArrayList<>();
+        for (SimplePage page : mPages) {
+            View newView = page.createView(mContext, container);
+            if (newView != null) {
+                views.add(newView);
+            }
+        }
+
+        return views;
+    }
+
+    /**
+     * Update the view hierarchy with the data of the specified page. The page of the view is
+     * identified using its tag.
+     *
      * @param view the view hierarchy to be updated
      */
-    public void updateView(String name, View view) {
-        SimplePage page = getPageParserByName(name);
+    public void updateView(View view) {
+        Object tag = view.getTag();
+
+        if (tag == null) {
+            return;
+        }
+
+        SimplePage page = getPageParserByName(tag.toString());
         if (page != null) {
             page.updateView(mContext, view);
         }
     }
 
+    /**
+     * Update a list of view hierarchies.
+     *
+     * @param views the view group containing the view hierarchies to be updated
+     */
+    public void updateViews(ViewGroup views) {
+        for (int i = 0; i < views.getChildCount(); i++) {
+            updateView(views.getChildAt(i));
+        }
+    }
+
     private SimplePage getPageParserByName(String name) {
-        for (SimplePage page : mParsers) {
+        for (SimplePage page : mPages) {
             if (page.getName().equals(name))
                 return page;
         }

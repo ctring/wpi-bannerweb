@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.JSONSerializer;
 
@@ -12,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 /**
  * SimplePage is an abstract class for all simple pages model. A simple page is defined as a page
@@ -45,6 +48,25 @@ public abstract class SimplePage {
     public abstract void parse(String html);
 
     /**
+     *  Reloads this page then saves the data locally.
+     *
+     * @param context Context for saving the data locally
+     * @throws IOException If a connection error occurred
+     * @throws SocketTimeoutException If connection timed out
+     */
+    public void load(Context context) throws IOException {
+        String html = ConnectionManager.getInstance().getPage(getUrl());
+        try {
+            parse(html);
+            JSONSerializer.saveJSONToFile(context, getName() + ".json", getData());
+        } catch (IOException e) {
+            Log.e(TAG, "Cannot save offline data!");
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Error in parsing html of page " + getName(), e);
+        }
+    }
+
+    /**
      * Loads offline data from JSON file if exists.
      *
      * @param context the Context of the application
@@ -59,16 +81,17 @@ public abstract class SimplePage {
     }
 
     /**
-     * Creates and return a new view for this page.
+     * Creates and return a new view for this page. The name of the page is set as a tag of the
+     * view to later identify what page the view belongs to.
      *
      * @param context the Context to get a layout inflater
      *
      * @return a new view associating with this page
      */
-    public View createView(Context context) {
+    public View createView(Context context, ViewGroup container) {
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(getLayoutResource(), null, false);
+        View v = inflater.inflate(getLayoutResource(), container, false);
         v.setTag(getName());
 
         return v;

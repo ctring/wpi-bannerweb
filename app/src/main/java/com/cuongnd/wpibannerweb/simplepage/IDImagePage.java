@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.cuongnd.wpibannerweb.ConnectionManager;
 import com.cuongnd.wpibannerweb.R;
 import com.cuongnd.wpibannerweb.helper.PictureUtils;
 import com.cuongnd.wpibannerweb.helper.Utils;
@@ -79,13 +81,30 @@ public class IDImagePage extends SimplePage {
         }
     }
 
+    /**
+     * Reloads this page then saves the data locally.
+     *
+     * @param context Context for saving the data locally
+     *
+     * @throws IOException            If a connection error occurred
+     * @throws SocketTimeoutException If connection timed out
+     */
+    @Override
+    public void load(Context context) throws IOException {
+        if (dataLoaded()) {
+            return;
+        }
+        String html = ConnectionManager.getInstance().getPage(getUrl());
+        parse(html);
+    }
+
     @Override
     public void loadFromLocal(Context context) {
         // Do nothing because this class behaves differently
     }
 
     @Override
-    public View createView(Context context) {
+    public View createView(Context context, ViewGroup container) {
         return null;
     }
 
