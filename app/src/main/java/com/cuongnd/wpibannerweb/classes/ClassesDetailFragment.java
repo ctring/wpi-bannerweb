@@ -70,7 +70,9 @@ public class ClassesDetailFragment extends Fragment {
         mListSchedule = (LinearLayout) v.findViewById(R.id.list_schedule);
 
         if (mWPIClass != null) {
-            mTextClassName.setText(String.format("%s - %s", mWPIClass.getCode(), mWPIClass.getName()));
+            mTextClassName.setText(String.format(Utils.CLASS_FULL_TITLE,
+                    mWPIClass.getCode(),
+                    mWPIClass.getName()));
             mTextInstructor.setText(mWPIClass.getInstructor());
             mTextSection.setText(mWPIClass.getSection());
             mTextCrn.setText(mWPIClass.getCRN());
@@ -94,13 +96,15 @@ public class ClassesDetailFragment extends Fragment {
         TextView textDateRange = (TextView) v.findViewById(R.id.text_date_range);
 
         textType.setText(schedule.getType());
-        textTime.setText(String.format("%s - %s", formatTime(schedule.getStartTime(), "h:mm a"),
-                formatTime(schedule.getEndTime(), "h:mm a")));
+        textTime.setText(String.format(Utils.CLASS_FULL_TITLE,
+                formatTime(schedule.getStartTime(), Utils.TIME_FORMAT),
+                formatTime(schedule.getEndTime(), Utils.TIME_FORMAT)));
         textDays.setText(formatDays(schedule.getDays()));
         textLocation.setText(schedule.getLocation());
         textInstructor.setText(schedule.getInstructor());
-        textDateRange.setText(String.format("%s - %s", formatTime(schedule.getStartDate(), "MMM dd, yyyy"),
-                formatTime(schedule.getEndDate(), "MMM dd, yyyy")));
+        textDateRange.setText(String.format(Utils.CLASS_FULL_TITLE,
+                formatTime(schedule.getStartDate(), Utils.DATE_FORMAT),
+                formatTime(schedule.getEndDate(), Utils.DATE_FORMAT)));
 
         container.addView(v);
     }
@@ -111,7 +115,7 @@ public class ClassesDetailFragment extends Fragment {
     }
 
     private static String formatDays(int[] days) {
-        String[] wpiDays = {"?", "?", "Mon", "Tue", "Wed", "Thu", "Fri"};
+        String[] wpiDays = {"?", "?", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         String strDays = "";
         for (int i = 0; i < days.length - 1; i++) {
             strDays += wpiDays[days[i]] + "  |  ";

@@ -21,6 +21,10 @@ import java.util.Calendar;
  */
 public class Utils {
 
+    public static final String CLASS_FULL_TITLE = "%s - %s";
+    public static final String TIME_FORMAT = "h:mm a";
+    public static final String DATE_FORMAT = "MMM dd, yyyy";
+
     public static void showLongToast(final Activity activity, final String toast) {
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -144,7 +148,7 @@ public class Utils {
      * @return a string of days of week in WPI convention
      */
     public static String toWpiDays(int[] days) {
-        char[] wpiDays = {'?', '?', 'M', 'T', 'W', 'R', 'F'};
+        char[] wpiDays = {'?', '?', 'M', 'T', 'W', 'R', 'F', '?'};
         String ret = "";
         for (int c : days) ret += wpiDays[c];
         return ret;
