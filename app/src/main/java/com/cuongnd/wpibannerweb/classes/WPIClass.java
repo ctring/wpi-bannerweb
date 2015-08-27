@@ -129,7 +129,7 @@ public class WPIClass implements Comparable<WPIClass> {
         return mSchedules;
     }
 
-    public static class Schedule {
+    public static class Schedule implements Comparable<Schedule> {
         public static final String JSON_START_TIME = "startTime";
         public static final String JSON_END_TIME = "endTime";
         public static final String JSON_START_DATE = "startDate";
@@ -160,6 +160,11 @@ public class WPIClass implements Comparable<WPIClass> {
                     formatDate.format(mStartDate.getTime()),
                     formatDate.format(mEndDate.getTime()),
                     mType, mInstructor);
+        }
+
+        @Override
+        public int compareTo(Schedule schedule) {
+            return mStartTime.compareTo(schedule.mStartTime);
         }
 
         public static Schedule fromJSON(JSONObject jsonObject) throws JSONException {

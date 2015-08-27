@@ -16,35 +16,25 @@
             android:padding="@dimen/common_margin_padding_medium"
             style="@style/TextViewCardTitleStyle"/>
         <include layout="@layout/divider" />
-        
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/common_margin_padding_medium"
-                android:layout_gravity="center_horizontal"
-                android:text="Meal plan"
-                android:id="@+id/text_meal_plan" />
-
+            android:layout_height="match_parent">
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/common_margin_padding_medium"
-                android:id="@+id/table_cardbalance">
+                android:id="@+id/table_today">
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="0dp">
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="@dimen/common_margin_padding_small">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.50"
+                        android:layout_weight="0.20"
                         android:text="@string/label_class"
 
                         style="@style/TextViewLabelStyle"
@@ -53,7 +43,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.20"
+                        android:layout_weight="0.45"
                         android:text="@string/label_time"
 
                         style="@style/TextViewLabelStyle"
@@ -62,17 +52,21 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.30"
+                        android:layout_weight="0.35"
                         android:text="@string/label_where"
 
                         style="@style/TextViewLabelStyle"
                         android:gravity="center_horizontal" />
                 </TableRow>
-
-
             </TableLayout>
-        </LinearLayout>
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:text="@string/no_class_today"
+                android:id="@+id/text_no_class" />
+        </FrameLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>
 

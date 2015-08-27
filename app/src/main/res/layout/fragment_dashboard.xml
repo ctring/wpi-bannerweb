@@ -44,21 +44,22 @@
             android:layout_height="match_parent"
             android:id="@+id/swipe_refresh_dashboard">
 
-            <ScrollView android:id="@+id/main_container"
+            <ScrollView android:id="@+id/wrapper"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="none"
                         android:overScrollMode="never">
 
                 <LinearLayout
+                    android:id="@+id/main_container"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/common_margin_padding_medium">
 
-                    <include layout="@layout/fragment_dashboard_card_today" />
+                    <!--<include layout="@layout/fragment_dashboard_card_today" />-->
 
-                    <include layout="@layout/fragment_dashboard_card_cardbalance" />
+                    <!--<include layout="@layout/fragment_dashboard_card_cardbalance" />-->
 
                     <Button
                         android:layout_width="match_parent"
@@ -76,9 +77,9 @@
                         android:layout_marginBottom="@dimen/common_margin_padding_medium"
                         android:textColor="@color/accent_color"/>
 
-                    <include layout="@layout/fragment_dashboard_card_advisor" />
+                    <!--<include layout="@layout/fragment_dashboard_card_advisor" />-->
 
-                    <include layout="@layout/fragment_dashboard_card_mailbox" />
+                    <!--<include layout="@layout/fragment_dashboard_card_mailbox" />-->
 
                 </LinearLayout>
 

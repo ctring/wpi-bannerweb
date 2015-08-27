@@ -35,7 +35,8 @@ public class SimplePageManager {
     public SimplePageManager(Context context) {
         mContext = context;
 
-        mPages = new SimplePage[]{  new CardBalancePage(),
+        mPages = new SimplePage[]{  new TodayPage(),
+                                    new CardBalancePage(),
                                     new AdvisorPage(),
                                     new MailboxPage(),
                                     new IDImagePage(mContext) };
@@ -57,23 +58,6 @@ public class SimplePageManager {
         if (page != null) {
             page.load(mContext);
         }
-        /*SimplePage page = getPageParserByName(name);
-        if (page == null) return;
-
-        if (page.dataLoaded()) return;
-        String html = ConnectionManager.getInstance().getPage(page.getUrl());
-        try {
-            page.parse(html);
-            if (!(page instanceof IDImagePage)) {
-                    JSONSerializer.saveJSONToFile(mContext,
-                            page.getName() + ".json", page.getData());
-
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Cannot save offline data!");
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Error in parsing html of page " + name, e);
-        }*/
     }
 
     /**

@@ -36,6 +36,7 @@
     <string name="label_class">Class</string>
     <string name="label_time">Time</string>
     <string name="label_where">Where</string>
+    <string name="no_class_today">You have no class today</string>
 
     <!-- Strings in Advisor Page -->
     <string name="label_advisor">Primary Advisor</string>
