@@ -240,11 +240,22 @@ public class ClassesPage {
         Elements tables = doc.getElementsByClass("datadisplaytable");
 
         for (int i = 0; i < tables.size(); i+= 2) {
-            Table info = new Table(tables.get(i));
-            Table time = new Table(tables.get(i + 1));
+            Element infoE = tables.get(i);
+            Table info = new Table(infoE);
+            Table time = null;
+            if (i + 1 < tables.size()
+                    && tables.get(i + 1).attr("summary").contains("meeting times")) {
+                time = new Table(tables.get(i + 1));
+            }
+            else {
+                i--;
+            }
 
-            String fullname = tables.get(i).getElementsByTag("caption").first().text();
+            String fullname = infoE.getElementsByTag("caption").first().text();
             String[] parts = fullname.split(" - ");
+            for (String test : parts) {
+                Log.e(TAG, test);
+            }
             String name = parts[0];
             String code = parts[1];
             String section = parts[2];
@@ -270,6 +281,9 @@ public class ClassesPage {
         SimpleDateFormat formatTime = new SimpleDateFormat(Utils.TIME_FORMAT, Locale.getDefault());
         SimpleDateFormat formatDate = new SimpleDateFormat(Utils.DATE_FORMAT, Locale.getDefault());
         ArrayList<WPIClass.Schedule> schedules = new ArrayList<>();
+        if (time == null) {
+            return schedules;
+        }
 
         for (int i = 1; i < time.size(); i++) {
             try {

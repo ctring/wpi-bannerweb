@@ -59,6 +59,15 @@ public class WPIClass implements Comparable<WPIClass> {
 
     @Override
     public int compareTo(WPIClass wpiClass) {
+        if (mSchedules.isEmpty()) {
+            if (wpiClass.mSchedules.isEmpty()) {
+                return 0;
+            }
+            return 1;
+        }
+        if (wpiClass.mSchedules.isEmpty()) {
+            return -1;
+        }
         Schedule firstThisSchedule = mSchedules.get(0);
         Schedule firstOtherSchedule = wpiClass.mSchedules.get(0);
         //return firstOtherSchedule.getStartDate().compareTo(firstThisSchedule.getStartDate());

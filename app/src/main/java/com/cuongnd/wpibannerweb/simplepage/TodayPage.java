@@ -1,6 +1,7 @@
 package com.cuongnd.wpibannerweb.simplepage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.cuongnd.wpibannerweb.R;
+import com.cuongnd.wpibannerweb.classes.ClassesDetailActivity;
+import com.cuongnd.wpibannerweb.classes.ClassesDetailFragment;
 import com.cuongnd.wpibannerweb.classes.ClassesPage;
 import com.cuongnd.wpibannerweb.classes.WPIClass;
 import com.cuongnd.wpibannerweb.helper.Utils;
@@ -97,6 +100,9 @@ public class TodayPage extends SimplePage {
         mTodayEvents.clear();
         for (WPIClass c : classes) {
             ArrayList<WPIClass.Schedule> schedules = c.getSchedules();
+            if (schedules.isEmpty()) {
+                continue;
+            }
             Calendar startDate = schedules.get(0).getStartDate();
 
             Calendar endDate = schedules.get(0).getEndDate();
@@ -139,7 +145,7 @@ public class TodayPage extends SimplePage {
      * @param v the view hierarchy to be updated.
      */
     @Override
-    public void updateView(Context context, View v) {
+    public void updateView(final Context context, View v) {
         try {
             TextView noClass = (TextView) v.findViewById(R.id.text_no_class);
             TableLayout tableView = (TableLayout) v
@@ -168,7 +174,7 @@ public class TodayPage extends SimplePage {
                     TextView textTime = (TextView) row.getChildAt(1);
                     TextView textWhere = (TextView) row.getChildAt(2);
 
-                    WPIClass.Schedule s = mTodayEvents.get(i - 1);
+                    final WPIClass.Schedule s = mTodayEvents.get(i - 1);
 
                     JSONObject temp = (JSONObject) s.getTag();
                     // String name = temp.getString(WPIClass.JSON_NAME);
@@ -182,6 +188,15 @@ public class TodayPage extends SimplePage {
 
                     textWhere.setText(s.getLocation());
 
+                    row.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(context, ClassesDetailActivity.class);
+                            JSONObject data = (JSONObject) s.getTag();
+                            i.putExtra(ClassesDetailFragment.EXTRA_WPI_CLASS, data.toString());
+                            context.startActivity(i);
+                        }
+                    });
                 } catch (JSONException e) {
                     Log.e(PAGE_NAME, "Error retrieving class ", e);
                 }
