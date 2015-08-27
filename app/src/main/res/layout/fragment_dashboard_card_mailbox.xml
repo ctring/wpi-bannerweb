@@ -38,7 +38,7 @@
                 android:paddingRight="16dp">
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_ccw_arrow"
                     android:scaleType="fitCenter"
@@ -70,7 +70,7 @@
                 android:paddingRight="16dp">
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_cw_arrow"
                     android:scaleType="fitCenter"
@@ -102,7 +102,7 @@
                 android:paddingRight="16dp">
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_ccw_arrow"
                     android:scaleType="fitCenter"
@@ -128,7 +128,7 @@
                 android:paddingRight="16dp">
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:src="@drawable/ic_cw_arrow"
                     android:scaleType="fitCenter"
