@@ -26,7 +26,7 @@ WPI BannerWeb on Android is the more convenient BannerWeb for WPI students. Just
 	- Final grade
 
 ## Acknowledgements
-
+* This project is inspired and built upon code from [Ted Meyer's WPI Bannerweb](https://github.com/tmathmeyer/wpibannerweb) project.  
 * Thanks to [Alam Kanak](https://github.com/alamkanak) for the [Android-Week-View](https://github.com/alamkanak/Android-Week-View) library.
 
 ## Lincense
