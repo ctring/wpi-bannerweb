@@ -69,12 +69,17 @@ public class MailboxPage extends SimplePage {
 
         Elements steps = body.getElementsContainingOwnText("Rotate the knob");
 
-        Elements step1 = steps.get(0).getElementsByTag("B");
-        String num1 = step1.get(1).text();
-        Elements step2 = steps.get(1).getElementsByTag("B");
-        String num2 = step2.get(1).text();
-        Elements step3 = steps.get(2).getElementsByTag("B");
-        String num3 = step3.get(1).text();
+        String num1 = "";
+        String num2 = "";
+        String num3 = "";
+        if (steps != null && steps.size() >= 3) {
+            Elements step1 = steps.get(0).getElementsByTag("B");
+            num1 = step1.get(1).text();
+            Elements step2 = steps.get(1).getElementsByTag("B");
+            num2 = step2.get(1).text();
+            Elements step3 = steps.get(2).getElementsByTag("B");
+            num3 = step3.get(1).text();
+        }
 
         try {
             mData.put(JSON_BOX, box)
