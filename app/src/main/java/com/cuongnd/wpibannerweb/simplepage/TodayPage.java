@@ -151,30 +151,28 @@ public class TodayPage extends SimplePage {
             TableLayout tableView = (TableLayout) v
                     .findViewById(R.id.table_today);
 
+            while (tableView.getChildCount() > 1) {
+                tableView.removeViewAt(tableView.getChildCount() - 1);
+            }
+
             if (mTodayEvents.isEmpty()) {
-                while (tableView.getChildCount() > 1) {
-                    tableView.removeViewAt(tableView.getChildCount() - 1);
-                }
                 noClass.setVisibility(View.VISIBLE);
                 return;
             }
             noClass.setVisibility(View.GONE);
 
+            for (int i = 0; i < mTodayEvents.size(); i++)
+                addRow(context, tableView);
 
-            int diff = mTodayEvents.size() - tableView.getChildCount() + 1;
-            if (diff > 0) {
-                for (int i = 0; i < diff; i++)
-                    addRow(context, tableView);
-            }
-            for (int i = 1; i < tableView.getChildCount(); i++) {
+            for (int i = 0; i < mTodayEvents.size(); i++) {
                 try {
-                    TableRow row = (TableRow) tableView.getChildAt(i);
+                    TableRow row = (TableRow) tableView.getChildAt(i + 1);
 
                     TextView textName = (TextView) row.getChildAt(0);
                     TextView textTime = (TextView) row.getChildAt(1);
                     TextView textWhere = (TextView) row.getChildAt(2);
 
-                    final WPIClass.Schedule s = mTodayEvents.get(i - 1);
+                    final WPIClass.Schedule s = mTodayEvents.get(i);
 
                     JSONObject temp = (JSONObject) s.getTag();
                     // String name = temp.getString(WPIClass.JSON_NAME);
